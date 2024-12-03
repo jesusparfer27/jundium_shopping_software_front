@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 import React from 'react';
 import { UserProvider } from '../src/hooks/useUser.jsx'; // Asegúrate de usar la ruta correcta
 import { ProductProvider } from './pages/admin_page/context/ProductContext.jsx';
-import '../src/css/main/main.css';
+import '../src/css/main/main.css'; 
  
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
