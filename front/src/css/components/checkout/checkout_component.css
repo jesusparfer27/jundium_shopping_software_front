@@ -1,0 +1,91 @@
+/* Estilos para el CartContainer */
+.checkoutContainer_slide {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 40%;
+    height: 100%;
+    background-color: white; /* Fondo blanco grisáceo */
+    color: #333; /* Texto en tono gris oscuro */
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1); /* Sombra ligera para dar profundidad */
+}
+
+@keyframes slideInHorizontalRightToLeft {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOutHorizontalRightToLeft {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(100%);
+    }
+}
+
+.mainContainer_renderContent {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 2rem;
+}
+
+.closeButton {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.containerButton_renderContent {
+    padding-top: 1.5rem;
+    width: 80%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Aplicación de animaciones */
+.overlay.slideInHorizontalRightToLeft {
+    animation: slideInHorizontalRightToLeft 0.3s ease-in-out forwards;
+}
+
+.overlay.slideOutHorizontalRightToLeft {
+    animation: slideOutHorizontalRightToLeft 0.3s ease-in-out forwards;
+}
+
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Botón para cerrar el carrito */
+.closeContainer {
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 1.5rem;
+    cursor: pointer;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+.checkoutContainer_slide.active {
+    animation: slideInHorizontalRightToLeft 0.3s ease forwards;
+}

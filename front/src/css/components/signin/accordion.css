@@ -1,0 +1,26 @@
+.accordion-container {
+    /* Estilos para el contenedor del acordeón */
+}
+
+.accordion-group1 {
+    background-color: #ececec;
+}
+
+.accordion-container.email-validation-padding {
+    padding-bottom: 10rem;
+}
+
+.accordion-item {
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.accordion-item.open .accordion-body {
+    display: block;
+}
+
+.accordion-body {
+    display: none;
+    padding: 10px;
+    background-color: #f0f0f0;
+}

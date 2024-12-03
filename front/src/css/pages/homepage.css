@@ -1,0 +1,344 @@
+body,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Quita los estilos por defecto del NavLink */
+.myCustomClass {
+    text-decoration: none;
+    color: black;
+
+}
+
+.pHome {
+    color: black;
+    text-decoration: none;
+}
+
+/* Estilos para cuando el enlace está activo */
+.myCustomActiveClass {
+    text-decoration: none;
+    color: black;
+}
+
+/* Estilos para la imagen con desplazamiento */
+.scrollImage {
+    margin-top: -30rem;
+    margin-bottom: -14rem;
+    height: 145vh;
+    width: 100%;
+    object-fit: cover;
+    position: sticky;
+    z-index: -99;
+}
+
+/* Estilos generales para la sección de nuevos drops */
+.newCollections {
+    text-align: center;
+    z-index: 1;
+    position: relative;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+}
+
+.h1Style {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+    padding-top: 3rem;
+    padding-bottom: 1.4rem;
+}
+
+/* Estilo para la cuadrícula de nuevos drops */
+.newDropsHome {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, auto);
+    width: 80%;
+    min-height: 800px;
+    gap: 2rem;
+    padding-top: 2rem;
+    justify-content: center;
+    padding-bottom: 2rem;
+    border-radius: 10px;
+}
+
+.newCollections_Container{
+    display: flex;
+    flex-direction: column;
+}
+
+.newDropsHome_Container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+
+/* Estilos para el enlace de video */
+.videoLink {
+    display: block;
+  
+    text-align: center;
+}
+
+/* Estilos para la sección de video */
+.homeVideo {
+    width: 100%;
+    height: auto;
+}
+
+/* Estilos para container_videoSession-2 */
+.container_videoSession-2 {
+    top: 0;
+    width: 100%;
+    height: 120vh;
+    overflow: hidden;
+    position: sticky;
+    z-index: 1; /* Asegúrate de que el z-index sea menor */
+}
+
+/* Sección posterior a container_videoSession-2 */
+.carruselHome,
+.container_image_autumn,
+.newCollections,
+.newDropsHome2,
+.newDropsHome {
+    z-index: 2; /* Valor más alto para superponer por encima de container_videoSession-2 */
+    position: relative; /* Asegura que el z-index sea aplicado correctamente */
+    background-color: white;
+}
+
+.videoElement {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+.textOverlay {
+    position: absolute;
+    bottom: 20%; /* Ajusta la posición según sea necesario */
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff;
+}
+
+/* Contenedor de video con posición fija */
+.videoWrapper {
+    position: sticky;
+    top: 0;
+    padding-top: 13rem;
+    overflow: hidden;
+}
+
+/* Estilo para la imagen de los productos */
+.itemImage {
+    width: 20vw;
+    height: 445px;
+    
+}
+
+/* Contenedor del carrusel en la página principal */
+.carruselHome {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff; /* Cambia el color de fondo si deseas */
+    z-index: 9999;
+}
+
+.images-loading {
+    display: none;
+}
+
+.images-loaded {
+    display: block;
+}
+
+.imageAutumn {
+    object-fit: cover;
+    width: 62%;
+    padding-left: 17rem;
+    padding-top: -2rem;
+    height: 100vh;
+    margin-top: 24.5rem;
+}
+
+/* Estilo para el contenedor de texto a la izquierda */
+.leftTextContainer {
+    width: 30%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    text-align: right;
+}
+
+.leftTextContainer p{
+    font-size: 24px;
+}
+
+/* Estilo para el contenedor del carrusel a la derecha */
+.rightCarouselContainer {
+    width: 65%;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+    position: relative;
+    margin-left: 2rem;
+    background-color: white;
+}
+
+/* Carrusel animado en bucle infinito */
+.carousel {
+    display: flex;
+    gap: 2rem;
+    animation: scroll 120s linear infinite;
+    position: relative;
+}
+
+/* Elemento individual del carrusel */
+.carouselItem {
+    flex: 0 0 auto;
+    width: 550px;
+    height: 650px;
+    text-align: center;
+    color: black;
+    text-decoration: none;
+}
+
+/* Sección de video sticky */
+.container_image_autumn.stickyVideo {
+    top: 0;  /* Fija la parte superior */
+    width: 100%;  /* Ancho completo */
+    height: 120vh;  /* Altura ajustable según tus necesidades */
+    overflow: hidden;  /* Ocultar el desbordamiento */
+    position: sticky;  /* Hacer que se quede fijo al desplazarse */
+    z-index: 1;  /* Asegúrate de que el z-index sea menor */
+}
+
+/* Asegúrate de que el último section tenga un z-index más alto */
+.newCollections.lastSection {
+    position: relative;  /* Asegúrate de que el z-index se aplique correctamente */
+    z-index: 2;  /* Valor más alto para que se superponga por encima de otros elementos */
+}
+
+
+/* Estilo de imagen del carrusel */
+.carouselImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Animación para el carrusel */
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+/* Detener la animación cuando se hace hover */
+.carousel:hover {
+    animation-play-state: paused;
+}
+
+/* Duplica el contenido del carrusel para crear un efecto continuo */
+.carousel::after {
+    content: '';
+    display: flex;
+    gap: 2rem;
+    position: absolute;
+    top: 0;
+    left: 100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+}
+
+/* Contenedor para el scroll de video */
+.videoScrollContainer {
+    height: 2000px;
+    position: sticky;
+    z-index: -1;
+    top: 0;
+}
+
+/* Contenedor para los productos recientes */
+.containerProductsLast {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    justify-items: center;
+}
+
+/* Estilos para los productos */
+.product {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+}
+
+/* Simulación de imagen */
+.imageSimulator {
+    width: 100%;
+    height: 400px;
+    background-color: gray;
+    border-radius: 8px;
+}
+
+/* Estilo para los ítems de drops */
+.dropItem {
+    justify-content: center;
+    text-decoration: none;
+    color: black;
+}
+
+/* Sección adicional para nuevos drops */
+.newDropsHome2 {
+    display: flex;
+    gap: 3rem;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    padding-bottom: 3.6rem;
+}
+
+.newCollections_Block {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* Estilo para la imagen de los drops */
+.itemImageDrops {
+    width: 100%;
+    height: 700px;
+}
+

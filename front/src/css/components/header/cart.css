@@ -1,0 +1,200 @@
+
+
+/* Estilos para el CartContainer */
+.cartContainer {
+    position: fixed;
+    top: -2px;
+    right: 0;
+    width: 50%;
+    background-color: white;
+    color: #333;
+    padding: 2rem;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+
+
+.submit-buttonProfile.Cart button{
+    padding-top: .4rem;
+    padding-bottom: .4rem;
+}
+
+.textCard_Header {
+    margin: .3rem;
+}
+
+
+.cartContainer.active {
+    animation: slideInVertical 0.3s ease forwards;
+}
+
+.checkoutSection {
+    padding-top: 5.9rem;
+}
+
+.closeContainerCart {
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.cartHeader, .cartSummary, .checkoutButtonContainer {
+    width: 70%;
+}
+
+.cartHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 3rem;
+}
+
+.cartItems {
+    width: 70%;
+    list-style: none;
+    padding: 0;
+}
+
+
+/* Añadido para permitir desplazamiento cuando hay 3 o más productos */
+.scrollableCartItems {
+    max-height: 800px; /* Ajusta la altura máxima según sea necesario */
+    overflow-y: auto; /* Agrega el scrollbar vertical */
+    overflow-x: hidden; /* Evita el scrollbar horizontal */
+    padding: 1rem; /* Espaciado interno opcional */
+    border-radius: 8px; /* Esquinas redondeadas opcionales */
+}
+
+.scrollableCartItems::-webkit-scrollbar {
+    width: 10px; /* Ancho de la scrollbar */
+}
+
+.scrollableCartItems::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color del fondo de la scrollbar */
+    border-radius: 8px; /* Esquinas redondeadas del track */
+}
+
+.scrollableCartItems::-webkit-scrollbar-thumb {
+    background: #888; /* Color del thumb (parte que se desplaza) */
+    border-radius: 8px; /* Esquinas redondeadas del thumb */
+}
+
+.scrollableCartItems::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color del thumb al pasar el mouse */
+}
+
+.redirectToHome {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.cartTitle {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.cartItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.2rem;
+}
+
+.cartItem img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.cartItemContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+    margin-top: 1rem;
+}
+
+.cartItemContent :nth-child(4),
+.cartItemContent :nth-child(3){
+    align-self: flex-end;
+}
+
+
+
+
+
+.cartSummary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 1rem;
+    text-align: center;
+}
+
+.checkoutButton {
+    background-color: black;
+    color: #fff;
+    border: none;
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    border-radius: 22px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.checkoutButton:hover {
+    background-color: transparent;
+    border: 1px solid black;
+    color: black;
+}
+
+.emptyCart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+    height: 90vh;
+    width: 100%;
+}
+
+.emptyCartButton {
+    width: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.emptyCartMessage {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.emptyCartButton {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.emptyCartButton:hover {
+    background-color: transparent;
+    color: black;
+    border: 1px solid black;
+}

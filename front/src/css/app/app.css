@@ -1,0 +1,163 @@
+* {
+    font-family: 'AntonioFont', sans-serif;
+    -webkit-font-smoothing: antialiased; /* Mejora la suavidad en navegadores WebKit */
+    -moz-osx-font-smoothing: grayscale;  /* Mejora la suavidad en navegadores Firefox */
+    text-rendering: optimizeLegibility;  /* Optimiza la legibilidad */
+}
+
+/* Aplicación global de estilos más finos */
+body,
+*::before,
+*::after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-weight: 200; /* Ajuste de peso más ligero para darle un toque delicado */
+    line-height: 1.6; /* Mejora la legibilidad con una altura de línea cómoda */
+    letter-spacing: 0.5px; /* Un poco de espacio entre letras para un aspecto más aireado */
+}
+
+/* Estilos adicionales para títulos y párrafos */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 300; /* Aumentar el peso de los títulos */
+    line-height: 1.4; /* Altura de línea más ajustada para los títulos */
+    letter-spacing: 1px; /* Un poco más de espacio en los títulos */
+}
+
+p {
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.8;
+    letter-spacing: 0.3px; /* Espaciado más sutil en párrafos */
+}
+
+/* Estilos específicos para enlaces */
+a {
+    text-decoration: none;
+    color: inherit;
+    font-weight: 300;
+    transition: color 0.3s ease; /* Transición suave al cambiar de color */
+}
+
+a:hover {
+    color: #333; /* Cambia el color en el hover para resaltar */
+}
+/* src/css/pages/homepage.css */
+
+/* Capa de fondo que cubre la aplicación */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Fondo oscuro */
+    z-index: 500; /* Z-index debajo del menú */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+}
+
+
+/* Cuando el overlay está activo */
+.overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Estilo para el menú activo */
+.activeMenu {
+    z-index: 1000; /* Z-index superior al de la capa */
+}
+
+/* Animaciones */
+@keyframes slideInVertical {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideOutVertical {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-100%);
+    }
+}
+
+@keyframes slideInHorizontal {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOutHorizontal {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes slideInHorizontalRightToLeft {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOutHorizontalRightToLeft {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(100%);
+    }
+}
+
+/* Aplicación de animaciones */
+.overlay.slideInHorizontalRightToLeft {
+    animation: slideInHorizontalRightToLeft 0.3s ease-in-out forwards;
+}
+
+.overlay.slideOutHorizontalRightToLeft {
+    animation: slideOutHorizontalRightToLeft 0.3s ease-in-out forwards;
+}
+
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Clase para activar la animación en la capa */
+.overlay.slideInVertical {
+    animation: slideInVertical 0.3s ease-in-out forwards;
+}
+
+.overlay.slideOutVertical {
+    animation: slideOutVertical 0.3s ease-in-out forwards;
+}
+
+.overlay.slideInHorizontal {
+    animation: slideInHorizontal 0.3s ease-in-out forwards;
+}
+
+.overlay.slideOutHorizontal {
+    animation: slideOutHorizontal 0.3s ease-in-out forwards;
+}
+

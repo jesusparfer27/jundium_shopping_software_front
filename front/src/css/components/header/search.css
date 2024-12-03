@@ -1,0 +1,309 @@
+/* Animaciones */
+@keyframes slideInVertical {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideOutVertical {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-100%);
+    }
+}
+
+/* Clases de animación para la transición secuencial */
+.slideInVertical {
+    animation: slideInVertical 0.3s ease forwards;
+}
+
+.slideOutVertical {
+    animation: slideOutVertical 0.3s ease forwards;
+}
+
+.groupButtons_Header {
+    display: flex;
+    padding-left: 1rem;
+}
+
+/* Estilos para el componente HeaderSearch */
+.searchContainer {
+    position: fixed;
+    top: -2px; /* Se ajusta para que quede justo debajo del header */
+    width: 100%;
+    height: auto;
+    background-color: white; /* Fondo gris claro */
+    color: #333; /* Texto en gris oscuro */
+    padding-top: 1rem;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Cambiado a flex-start para evitar el espacio extra */
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+}
+
+.searchContainer.active {
+    animation: slideInVertical 0.3s ease forwards;
+}
+
+.searchBarRecentSearches_Container {
+    border-bottom: 1px solid black;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.searchRecomendation_Container.hidden {
+    display: none;
+}
+
+.searchRecomendation_Container.visible {
+    display: block;
+    background-color: white;
+    width: 45%;
+    position: absolute;
+    top: 80px;
+    padding-top: 2rem;
+    padding-bottom: .7rem;
+    padding-left: 4rem;
+}
+
+.recomendSearches {
+    list-style: none;
+    display: flex;
+}
+
+.searchRecommendation_Navlink {
+    display: flex;
+    gap: 1rem;
+    padding-top: .8rem;
+}
+
+.searchRecomendation_flexColumn span{
+    font-size: 20px;
+}
+
+.groupList_searchesRecomendations {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Primer div para la barra de búsqueda */
+.searchInputContainer {
+    display: flex;
+    flex-direction: row ; /* Organizar en columnas */
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.recentSearches_Block {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.searchContent {
+    width: 80%;
+    display: flex;
+    gap: 14rem;
+    justify-content: center;
+}
+
+.searchContent.flexRow {
+    width: 55%;
+    border: 1px solid black;
+    display: flex;
+    border-radius: 36px;
+    align-items: center;
+}
+
+.searchBar.activeSearch {
+    border: none; /* Sin borde cuando está activo */
+    outline: none; /* También eliminamos el outline para que no aparezca el borde de foco */
+}
+
+/* Estilos para el input de búsqueda */
+.searchBar {
+    border: none; /* Borde gris claro */
+    width: 62%; /* Ancho completo */
+    height: 20px;
+}
+
+/* Botón de eliminar */
+.clearButton {
+    border: 1px solid black;
+    color: black; /* Texto blanco */
+    border-radius: 0.25rem; /* Bordes redondeados */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Animación suave en hover */
+}
+
+/* Efecto hover en el botón de eliminar */
+.clearButton:hover {
+    background-color: black; /* Color más oscuro */
+    color: white;
+    border: none;
+}
+
+/* Segundo div para el texto adicional */
+.additionalTextContainer {
+    border-bottom: 1px solid black;
+    width: 100%; /* Ancho completo */
+}
+
+/* Estilos para el botón de búsqueda */
+.searchButton {
+    color: black;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+/* Estilo de botones de filtro */
+.filterButton {
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+}
+
+/* Flex row para organizar los dos divs */
+.flexRow {
+    display: flex;
+    width: 100%;
+}
+
+/* Estilos para lo más buscado */
+.popularSearches {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
+}
+
+.popularSearches h3 {
+    width: 30%;
+    padding-left: 3rem;
+}
+
+.genderSearch {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 2rem;
+    padding-top: 2rem;
+    gap: 3rem;
+    padding-left: 6rem;
+}
+
+.maleSearch, .femaleSearch {
+    width: 30%;
+    
+}
+
+.maleSearch ul li a, .femaleSearch ul li a {
+    display: block; /* Asegurarse de que el enlace sea un elemento de bloque */
+    margin-bottom: 0.5rem; /* Añadir margen inferior para separar los enlaces */
+    color: #191919;
+    text-decoration: none;
+}
+
+
+.maleSearch h4, .femaleSearch h4 {
+    margin-bottom: 0.5rem;
+}
+
+.maleSearch ul, .femaleSearch ul {
+    list-style: none;
+    padding: 0;
+    
+}
+
+/* Estilos para el grid de productos */
+.productGridHeader {
+    width: 50%;
+    border-left: 1px solid black;
+    padding-bottom: 2rem;
+}
+
+.productGridHeader h3 {
+    width: 50%;
+    padding-left: 7.3rem;
+}
+
+.gridContainer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Repartir el espacio equitativamente en dos columnas */
+    grid-template-rows: repeat(2, 1fr); 
+    gap: 1rem;
+    width: 80%; /* Reducir el ancho para centrar mejor el contenedor */
+    margin: 0 auto; /* Centrar el contenedor en su padre */
+    
+    align-items: center; /* Centrar elementos en el eje vertical */
+}
+
+/* Elemento individual de la cuadrícula */
+/* Elemento individual de la cuadrícula */
+.productItemHeader {
+    display: flex;
+    flex-direction: row; /* Organizar imagen y texto en una columna */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 0.5rem; /* Ajustar el espacio entre la imagen y el texto */
+    padding: 1rem;
+    width: 100%;
+}
+
+
+/* Estilo para la imagen */
+.productItemHeader img {
+    width: 55%; /* La imagen ocupa un 80% del ancho disponible */
+    height: auto;
+    object-fit: cover;
+    border-radius: 0.5rem;
+}
+
+/* Estilo para el texto */
+.productItemHeader p {
+    width: 100%;
+    text-align: center;
+    margin: 0;
+}
+
+.productItem {
+    text-align: center;
+}
+
+.productItem img {
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.closeButtonHeader {
+   font-size: 16px;
+    right: 0;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+}
+
+.recentSearches_flexRow {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}

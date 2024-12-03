@@ -1,0 +1,241 @@
+@keyframes slideInHorizontalRightToLeft {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOutHorizontalRightToLeft {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(100%);
+    }
+}
+
+
+.filterContainer {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background-color: white; /* Fondo blanco grisáceo */
+    color: #333; /* Texto en tono gris oscuro */
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1); /* Sombra ligera para dar profundidad */
+}
+
+/* Aplicación de animaciones */
+.overlay.slideInHorizontalRightToLeft {
+    animation: slideInHorizontalRightToLeft 0.3s ease-in-out forwards;
+}
+
+.overlay.slideOutHorizontalRightToLeft {
+    animation: slideOutHorizontalRightToLeft 0.3s ease-in-out forwards;
+}
+
+.filterContainer.active {
+    animation: slideInHorizontalRightToLeft 0.3s ease forwards;
+}
+
+
+.contactContainer {
+    background-color: white;
+    border: 1px solid #ccc;
+}
+
+.closeContainer {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.filterMenuContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.filterContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.filterAccordion_Container{
+    width: 100%;
+    display: flex;
+    border-bottom: 1px solid black;
+    flex-direction: column;
+}
+
+.filtersSection {
+    width: 70%;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+}
+
+.filterHeader {
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.filterHeader span {
+    font-size: 18px;
+}
+
+.headerContent {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.filterContent {
+    padding: 10px;
+    width: 100%;
+    display: flex;
+}
+
+.custom-label {
+    width: auto;
+    display: flex;
+    justify-content: center;
+    padding-left: 0;
+    gap: 1rem;
+}
+
+.inputCheckbox_Container {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.checkboxes {
+    width: 50%;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: .8rem;
+
+}
+
+.checkboxes_Container {
+    display: flex;
+    align-items: center;
+}
+
+.sizeFilter {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+}
+
+.sizeButton, .colorButton {
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.sizeButton.active, .colorButton.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.colorFilter {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+}
+
+.colorBox {
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.divider {
+    border-bottom: 1px solid black;
+}
+
+.removeFiltersButton {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.removeFiltersButton:hover {
+    background-color: #0056b3;
+}
+
+.container_applyFilter {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 8rem;
+}
+
+
+.applyFilterButton {
+    padding: 10px;
+    width: 50%;
+    color: white;
+    background-color: black;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid black;
+
+}
+
+.applyFilterButton:hover {
+    background-color: transparent;
+    border: 1px solid black;
+    color: black;
+}
+
+
+.material-symbols-outlined {
+    color: black;
+    font-size: 24px;
+}
+
+.collectionFilter {
+    display: flex;
+    flex-direction: column;
+    max-height: 150px; /* Altura máxima para el scroll */
+    overflow-y: auto; /* Habilita el scrollbar */
+}
+
+.priceFilter {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+input[type="range"] {
+    width: 100%; /* Asegura que el slider ocupe todo el ancho */
+}

@@ -1,0 +1,122 @@
+/* Estilos para el CartContainer */
+.contactContainer {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background-color: white; /* Fondo blanco grisáceo */
+    color: #333; /* Texto en tono gris oscuro */
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1); /* Sombra ligera para dar profundidad */
+}
+
+/* Botón para cerrar el carrito */
+.closeContainer {
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 1.5rem;
+    cursor: pointer;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+/* Estilos para la lista de productos (puedes ajustar o eliminar esto si no es necesario) */
+.contactContainer ul {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+}
+
+/* Estilo para el botón de eliminar (opcional, según necesites) */
+.contactContainer .cart-item button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Estilo para los elementos de contacto */
+.headerContactContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.borderContact {
+    border-bottom: 1px solid black;
+    width: 100%;
+    padding-bottom: 2rem;
+
+}
+
+.contactList {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+.contactItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+    padding-left: 6.5rem;
+}
+
+.contactItem a {
+    text-decoration: none;
+    color: black;
+}
+
+.contactItem span {
+    color: black;
+    
+}
+
+.formContainer {
+    padding-top: 1rem;
+    width: 80%;
+}
+
+.formContainer form{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.formContainer input,
+.formContainer textarea {
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.formContainer button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin-top: 1rem;
+    cursor: pointer;
+    width: 102%;
+    transition: background-color 0.3s ease;
+}
+
+/* Efecto hover en el botón de enviar */
+.formContainer button:hover {
+    background-color: #000; /* Cambia a negro en el hover */
+}

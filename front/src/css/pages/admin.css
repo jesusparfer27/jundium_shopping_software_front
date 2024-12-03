@@ -1,0 +1,220 @@
+.container_adminContainer {
+    background-color: #D9D9D9;
+}
+
+.admin-panel {
+    width: 100%;
+    background-color: #D9D9D9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 4rem;
+}
+
+.containerTittle_AdminContainer_Create {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.containerTittle_AdminCreate {
+    width: 90%;
+}
+
+.previewImage {
+    width: 200px;
+}
+
+.containerForPreviews {
+    display: grid;
+    grid-template-columns: repeat(4, 20%);
+    grid-template-rows: auto; /* Ajusta la altura según el contenido */
+    gap: 10px; /* Espaciado entre las columnas */
+    justify-content: center; /* Centra el grid horizontalmente */
+}
+
+.productForm {
+    width: 100%;
+    flex-direction: column;
+    display: flex;
+}
+
+.godSon {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.accordionContainer {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    padding-top: 4rem;
+    gap: 12rem;
+
+}
+
+.godDiv {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 10rem;
+}
+
+.accordionContainer.open {
+    background-color: white;
+    border: none;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.container_ButtonSubmit {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    padding-bottom: 3rem;
+}
+
+.container_ButtonSubmitContainer {
+    display: flex;
+    width: 92%;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.createVariant_Container {
+    width: 92%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.variantForm {
+    width: 100%;
+    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.divForm_ColumnContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center ;
+    gap: 1rem;
+}
+
+.text_createVariant {
+    padding-bottom: 1rem;
+}
+
+
+
+.divForm_Column {
+    width: 88%;
+    gap: .6rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.createProductContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: -20rem;
+    z-index: 10;
+}
+
+.adminPanel_Variants {
+    flex-direction: column;
+}
+
+.editProductContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.createProductContainer, .editProductContainer {
+    width: 100%;
+    padding-top: 10rem;
+}
+
+.createProduct, .editProduct {
+    width: 90%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    margin-top: 1rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.containerTittle_Admin {
+    width: 95%;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.containerTittle_Admin h1 {
+    display: flex;
+    justify-content: center;
+}
+
+
+
+.containerTittle_AdminContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.submitEdition, .submitEditProduct {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.submitEdition,
+.submitEditProduct {
+    width: 100%;
+    justify-content: center;
+    padding-top: 2rem;
+}
+
+
+.submitCreateButton, .submitEditProductButton {
+    background-color: black;
+    color: white;
+    padding: 0.75rem 2rem;
+    border: 1px solid black;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    width: 100%;
+}
+
+.submitCreateButton:hover, .submitEditProductButton:hover {
+    background-color: #D9D9D9;
+    color: black;
+}
+
+.error-text {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    width: 90%;
+}

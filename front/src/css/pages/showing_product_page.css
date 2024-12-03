@@ -1,0 +1,112 @@
+.productSection {
+    display: flex;
+    border-bottom: 2px solid #000; /* Borde inferior para el div de producto */
+    padding-top: 6rem;
+}
+
+.imageContainer {
+    display: flex;
+    flex-direction: column; /* Coloca las imágenes en columna */
+    width: 60%; /* Cambiado a 60% */
+    margin-bottom: 8rem;
+}
+
+.paraphHidden_Accordion {
+    padding-top: 0;
+}
+
+.productImage_ShowingPage {
+    width: 100%; /* Ocupa todo el ancho */
+    height: 100%; /* Altura fija para las imágenes */
+}
+
+.productImage_ShowingPage img {
+    width: 100%;
+    height: auto;
+    object-fit: cover; /* Mantiene la proporción de las imágenes */
+}
+
+.infoProduct_Container {
+    width: 100%;
+    display: flex;
+}
+
+
+.infoProduct_Row {
+    position: sticky;
+    top: 200px; /* El elemento se fijará al alcanzar el top de la página */
+    background-color: white;
+    padding: 1rem;
+    z-index: 10;
+    height: 60vh;
+}
+
+.h2_ShowingPage {
+    padding: 0;
+}
+
+.infoProduct_ShowingProduct {
+    width: 100%; /* Cambiado a 35% */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 12rem;
+    background-color: white; /* Fondo blanco para la información */
+}
+
+.accordion {
+    background-color: transparent; /* Botón de acordeón transparente */
+    border: 1px solid #000; /* Borde negro */
+    padding: 0.5rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.accordionContent {
+    margin-top: 0.5rem; /* Espacio superior */
+}
+
+.addToCart {
+    background-color: black; /* Fondo negro */
+    color: white; /* Texto blanco */
+    border: none;
+    padding: 1rem 1rem;
+    width: 100%;
+    border-radius: 22px;
+    margin-top: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+
+
+.addToCart:hover {
+    background-color: transparent; /* Cambio a un negro más oscuro */
+    color: black;
+    border: 1px solid black;
+}
+
+.label_Size,
+.label_Color {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.select_Size,
+.select_Color {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.option_Size,
+.option_Color {
+    padding: 0.5rem;
+    background-color: #fff;
+    color: #000;
+}

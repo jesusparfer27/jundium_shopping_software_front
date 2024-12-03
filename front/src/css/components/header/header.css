@@ -1,0 +1,265 @@
+html,
+*::before,
+*::after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+@keyframes slideInVertical {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideOutVertical {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-100%);
+    }
+}
+
+@keyframes slideInHorizontal {
+    from {
+        transform: translateX(150%);
+    }
+    to {
+        transform: translateX(50%);
+        
+    }
+}
+
+@keyframes slideOutHorizontal {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.newsInformation {
+    padding-left: 2.5rem;
+}
+
+.slideInVertical {
+    animation: slideInVertical 0.3s ease forwards;
+}
+
+.zoomContainer {
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.zoomContainer img {
+    width: 100%;
+    height: auto;
+    display: block; 
+}
+
+
+.slideOutVertical {
+    animation: slideOutVertical 0.3s ease forwards;
+}
+
+.slideInHorizontal {
+    animation: slideInHorizontal 0.3s ease forwards;
+}
+
+.slideOutHorizontal {
+    animation: slideOutHorizontal 0.3s ease forwards;
+}
+
+.headerMainContainer {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 11; /* Para superposición del contenedor completo */
+    background-color: white;
+    border-bottom: 1px solid #dcdcdc;
+}
+
+.headerContainer {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 11; /* Asegúrate de que quede por debajo del headerNews */
+    background-color: white;
+    border-bottom: 1px solid rgb(229, 228, 228);
+}
+
+
+.headerContainer .logo,
+.headerContainer .material-symbols-outlined,
+.headerContainer .buttonText,
+.headerContainer .button {
+    color: black;
+}
+
+.headerContainer .material-symbols-outlined,
+.headerContainer .logo{
+    font-size: 24px;
+}
+
+.removeNews {
+    cursor: pointer;
+}
+
+.headerLeft,
+.headerRight {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+}
+
+.headerCentral {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+.logo {
+    font-size: 16px;
+    color: white;
+    padding-left: 3rem;
+}
+
+.material-symbols-outlined,
+.buttonText {
+    font-size: 16px;
+    color: white;
+    display: flex;
+    align-items: center;
+}
+
+.button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sideMenu,
+.favouriteContainer,
+.filterMenu,
+.genderMenu,
+.contactContainer {
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    height: 2vh;
+}
+
+.button_filterButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    border: 1px solid black;
+    border-radius: 22px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    font-size: 16px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    color: black;
+    height: 4vh;
+    cursor: pointer;
+}
+
+.flexButton_FilterColumn {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+}
+
+.flexButton_Filter {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.headerFilter_Container {
+    width: 100%;
+    background-color: white;
+    display: flex;
+    padding-top:10px;
+    padding-bottom: 10px;
+    
+}
+
+.headerFilter {
+    display: flex;
+    width: 97%;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+
+.headerFilter h3 {
+    font-size: 16px;
+}
+
+.headerNews_Container {
+    display: flex;
+    width: 100%;
+    height: 3vh;
+    position: sticky;
+    top: 0;
+    justify-content: center;
+    background-color: white;
+    border-bottom: 1px solid rgb(226, 226, 226);
+}
+
+.logoHeader {
+    height: auto;
+    width: 50%;
+}
+
+.logoHeaderBlack {
+    width: 100%;
+    height: 4vh;
+    object-fit: cover; /* Esto hará que la imagen rellene el espacio, recortando si es necesario */
+    object-position: center; /* Centra la imagen si se recorta */
+}
+
+.containerNews_sections {
+    display: flex;
+    width: 95%;
+    justify-content: space-between;
+}
+
+.containerNews_sections p{
+    margin: 0;
+    font-size: 14px;
+}

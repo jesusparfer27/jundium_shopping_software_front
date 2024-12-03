@@ -1,0 +1,205 @@
+.womanCollectionSection {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.h4Products {
+    margin: 0;
+    padding-top: 1rem;
+}
+
+.pProducts {
+    margin: 0;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.containerInfo_productPage {
+    padding-left: 1rem;
+    background-color: rgb(238, 238, 236) ;
+    
+}
+
+.videoWrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.heroSection {
+    background-color: white;
+}
+
+.scrollVideo {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    transition: transform 0.1s ease;
+}
+
+.productGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columnas */
+    gap: 0; /* Sin espacio entre los elementos */
+    background-color: rgb(238, 238, 236);
+}
+
+.productItem_ProductPage {
+    width: 100%; /* Ocupará el 25% del ancho del contenedor */
+    height: auto; /* Altura de cada producto */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.productItem_ProductPage img {
+    height: 550px;
+}
+
+.featuredProduct {
+    grid-column: span 2; /* Ocupa 2 columnas */
+    grid-row: span 2; /* Ocupa 2 filas */
+    height: 800px; /* Altura del producto destacado */
+    background-color: white; /* Color de fondo opcional */
+    position: relative; /* Para posicionar elementos internos si es necesario */
+}
+
+.featuredImage {
+    width: 100%;
+    height: 100%;
+    background-image: url('url_de_la_imagen_destacada'); /* URL de la imagen destacada */
+    background-size: cover;
+    background-position: center;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0; /* Espaciado alrededor de la paginación */
+}
+
+.paginationButton {
+    background-color: #4CAF50; /* Color del botón */
+    color: white; /* Color del texto */
+    border: none; /* Sin borde */
+    padding: 10px 15px; /* Espaciado interno */
+    margin: 0 5px; /* Espaciado entre botones */
+    cursor: pointer; /* Cambiar cursor al pasar el mouse */
+    transition: background-color 0.3s; /* Transición de color */
+}
+
+.paginationButton:hover {
+    background-color: #45a049; /* Color al pasar el mouse */
+}
+
+.paginationButton:disabled {
+    background-color: #ccc; /* Color para botones deshabilitados */
+    cursor: not-allowed; /* Cambiar cursor cuando está deshabilitado */
+}
+
+.paginationInfo {
+    margin: 0 10px; /* Espaciado alrededor del texto de información */
+    font-weight: bold; /* Texto en negrita */
+}
+
+.seasonalCollection {
+    grid-column: span 4; /* Ocupa 4 columnas */
+    grid-row: span 2;    /* Ocupa 2 filas */
+    height: 800px;       /* Ajusta la altura para mantener las proporciones */
+    position: relative;
+    overflow: hidden;
+}
+
+.seasonalImage {
+    width: 100%;
+    height: 100%;
+    background-image: url('url_de_la_imagen_temporada'); /* URL de la imagen de la colección de temporada */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.seasonalLink {
+    width: 100%;
+    height: 100%;
+    text-decoration: none; /* Sin subrayado */
+    color: inherit; /* Heredar color del texto */
+}
+
+.groupCollection {
+    grid-column: span 2; /* Ocupa 2 columnas */
+    grid-row: span 2;    /* Ocupa 2 filas */
+    height: 800px;       /* Ajusta la altura para mantener las proporciones */
+    position: relative;
+    overflow: hidden;
+}
+
+.groupImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Asegúrate de incluir esta clase en tu archivo product_page.css */
+.overlayFade {
+    position: absolute; /* Para que se superponga sobre el contenedor */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; /* Cubre todo el área del contenedor */
+    z-index: 10; /* Asegura que esté encima del contenido subyacente */
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+    pointer-events: none; /* Evita que interfiera con los clics */
+}
+
+
+.likeIcon {
+    position: absolute; /* Cambia de relative a absolute */
+    top: 15px; /* Sitúa el ícono en la parte superior */
+    right: 15px; /* Opcional: sitúa el ícono en la esquina superior derecha */
+    z-index: 10; /* Asegúrate de que esté encima de la imagen */
+    padding: 10px; /* Opcional: agrega un poco de espacio alrededor del ícono */
+    border: 0;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.productImageWrapper {
+    position: relative; /* Necesario para que .likeIcon se posicione dentro de este contenedor */
+}
+
+.imageProducts_Container {
+    padding-bottom: -10rem;
+}
+
+.imageProducts_Container img{
+    max-width: 100%;
+    margin-top: -10rem;
+    z-index: -99;
+}
+
+.container_ImageEffect {
+    overflow: hidden;
+    position: relative;
+    margin-bottom: -.4rem;
+}
+
+.likeIcon span {
+    font-size: 28px;
+    color: black;
+}
+
+
+.variantOptions {
+    position: absolute;
+    
+}
