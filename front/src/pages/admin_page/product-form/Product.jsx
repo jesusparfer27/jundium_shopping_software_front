@@ -11,7 +11,7 @@ export const Product = () => {
     const [currentVariant, setCurrentVariant] = useState({});
 
     const navigate = useNavigate();
-    const VITE_API_BACKEND = import.meta.env.VITE_API_BACKEND;
+    const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -57,7 +57,7 @@ export const Product = () => {
         try {
             const token = localStorage.getItem("authToken");
 
-            const response = await fetch(`${VITE_API_BACKEND}/create-product`, {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/create-product`, {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${token}`,

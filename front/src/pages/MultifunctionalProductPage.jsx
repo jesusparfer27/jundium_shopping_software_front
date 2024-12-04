@@ -7,7 +7,7 @@ export const MultifunctionalProductPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL } = import.meta.env;
+    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT } = import.meta.env;
 
     useEffect(() => {
         const fetchLikedProducts = async () => {
@@ -18,7 +18,7 @@ export const MultifunctionalProductPage = () => {
                     'Content-Type': 'application/json',
                 };
 
-                const response = await fetch(`${VITE_API_BACKEND}/wishlist`, { headers });
+                const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, { headers });
                 if (!response.ok) {
                     throw new Error('Error al obtener los productos de la wishlist');
                 }
@@ -55,7 +55,7 @@ export const MultifunctionalProductPage = () => {
         }
 
         try {
-            const response = await fetch(`${VITE_API_BACKEND}/wishlist/${productId}/${variantId}`, {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist/${productId}/${variantId}`, {
                 method: 'DELETE',  // Usamos DELETE para eliminar
                 headers: {
                     'Content-Type': 'application/json',

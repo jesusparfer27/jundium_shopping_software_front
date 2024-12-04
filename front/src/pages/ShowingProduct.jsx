@@ -11,7 +11,7 @@ export const ShowingProductPage = () => {
     const [selectedSize, setSelectedSize] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
-    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_PRODUCTS_ENDPOINT } = import.meta.env;
+    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_PRODUCTS_ENDPOINT, VITE_BACKEND_ENDPOINT } = import.meta.env;
 
     const toggleAccordion = () => setAccordionOpen(!accordionOpen);
 
@@ -108,11 +108,11 @@ export const ShowingProductPage = () => {
         if (id) {
             fetchProductById(id);
         }
-    }, [id, VITE_API_BACKEND, VITE_PRODUCTS_ENDPOINT]);
+    }, [id, VITE_API_BACKEND, VITE_BACKEND_ENDPOINT, VITE_PRODUCTS_ENDPOINT]);
 
     const fetchProductById = async (productId) => {
         try {
-            const response = await fetch(`${VITE_API_BACKEND}${VITE_PRODUCTS_ENDPOINT}/${productId}`);
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}${VITE_PRODUCTS_ENDPOINT}/${productId}`);
             if (!response.ok) throw new Error('Error al obtener el producto');
 
             const productData = await response.json();

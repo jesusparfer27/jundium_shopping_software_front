@@ -12,7 +12,7 @@ export const Admin = () => {
     const [activeAccordion, setActiveAccordion] = useState("general");
     const navigate = useNavigate();
     const { user, loading } = useUser();
-    const { VITE_API_BACKEND } = import.meta.env;
+    const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
     const [isLoading, setIsLoading] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
     const [adminData, setAdminData] = useState(null);
@@ -21,7 +21,7 @@ export const Admin = () => {
 
     const fetchAdminData = async (token) => {
         try {
-            const response = await fetch(`${VITE_API_BACKEND}/me`, {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/me`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -45,7 +45,7 @@ export const Admin = () => {
 
     const fetchUserPermissions = async (token) => {
         try {
-            const response = await fetch(`${VITE_API_BACKEND}/admin`, {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/admin`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -93,7 +93,7 @@ export const Admin = () => {
         }
 
         fetchUserPermissions(token);
-    }, [navigate, VITE_API_BACKEND]);
+    }, [navigate, VITE_API_BACKEND, VITE_BACKEND_ENDPOINT]);
     
 
     return (

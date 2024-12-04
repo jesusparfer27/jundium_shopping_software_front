@@ -25,7 +25,7 @@ export const Variant = () => {
         is_main: false,
         description: '',
     });
-    const { VITE_API_BACKEND } = import.meta.env;
+    const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
 
     useEffect(() => {
         localStorage.setItem("variants", JSON.stringify(variants));
@@ -194,7 +194,7 @@ export const Variant = () => {
         console.log("Productos enviados:", totalProducts);
 
         try {
-            const response = await fetch(`${VITE_API_BACKEND}/create-product`, {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/create-product`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

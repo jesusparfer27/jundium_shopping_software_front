@@ -8,7 +8,7 @@ import '../../css/components/header/contact.css'
 const ContactContainer = () => { 
     const { activeMenu, closeMenu } = useContext(HeaderContext);
     const contactContainerRef = useRef(null);
-    const { VITE_API_BACKEND } = import.meta.env
+    const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env
     
     const { user } = useUser()
     console.log(user)
@@ -34,7 +34,7 @@ const ContactContainer = () => {
         try {
             const token = localStorage.getItem('authToken');
     
-            const response = await fetch(`${VITE_API_BACKEND}/support/email`, {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/support/email`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

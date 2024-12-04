@@ -12,7 +12,7 @@ export const EmailSignIn = () => {
     const [emailExists, setEmailExists] = useState(false);
     const [submitAttempted, setSubmitAttempted] = useState(false);
     const [emailRequired, setEmailRequired] = useState(false);
-    const { VITE_API_BACKEND } = import.meta.env; 
+    const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env; 
 
     const toggleAccordion = (index) => {
         const updatedState = [...isAccordionOpen];
@@ -23,7 +23,7 @@ export const EmailSignIn = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`${VITE_API_BACKEND}/users`);
+                const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/users`);
                 if (!response.ok) {
                     throw new Error('Error en la respuesta de la API');
                 }

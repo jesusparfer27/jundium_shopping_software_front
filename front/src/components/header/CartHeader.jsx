@@ -8,7 +8,7 @@ import '../../css/components/header/cart.css';
 const CartContainer = () => {
     const { activeMenu, closeMenu } = useContext(HeaderContext);
     const navigate = useNavigate();
-    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL } = import.meta.env;
+    const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT, VITE_IMAGES_BASE_URL } = import.meta.env;
     const { user } = useUser();
     const [cartItems, setCartItems] = useState([]);
 
@@ -18,7 +18,7 @@ const CartContainer = () => {
         try {
             const token = localStorage.getItem('authToken');
 
-            const response = await fetch(`${VITE_API_BACKEND}/cart`, {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/cart`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -59,7 +59,7 @@ const CartContainer = () => {
 
         try {
             const token = localStorage.getItem('authToken');
-            const response = await fetch(`${VITE_API_BACKEND}/cart/${productId}/${variantId}`, {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/cart/${productId}/${variantId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,

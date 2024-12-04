@@ -13,7 +13,7 @@ export const Profile = () => {
     const navigate = useNavigate();
     const { user, setUser, loading, error, fetchUserDetails } = useUser();
     const [isUserLoaded, setIsUserLoaded] = useState(false);
-    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL } = import.meta.env;
+    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT } = import.meta.env;
     const [isDirty, setIsDirty] = useState(false);
     const [saveStatus, setSaveStatus] = useState(null);
 
@@ -48,7 +48,7 @@ export const Profile = () => {
             const token = localStorage.getItem('authToken');
             console.log("Token del usuario logueado:", token);
 
-            const response = await fetch(`${VITE_API_BACKEND}/wishlist`, {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -69,7 +69,7 @@ export const Profile = () => {
         } catch (error) {
             console.error('Error al obtener la wishlist:', error);
         }
-    }, [VITE_API_BACKEND, user]);
+    }, [VITE_API_BACKEND, VITE_BACKEND_ENDPOINT, user]);
 
     useEffect(() => {
         fetchWishlistItems();
@@ -92,7 +92,7 @@ export const Profile = () => {
             if (!token) return;
 
             try {
-                const response = await fetch(`${VITE_API_BACKEND}/orders`, {
+                const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/orders`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -191,7 +191,7 @@ export const Profile = () => {
         console.log("Guardando cambios con los siguientes datos del usuario:", user);
 
         try {
-            const response = await fetch(`${VITE_API_BACKEND}/me/update`, {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/me/update`, {
                 method: 'PATCH',
                 headers: {
                     Authorization: `Bearer ${token}`,

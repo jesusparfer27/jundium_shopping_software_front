@@ -10,7 +10,7 @@ export const FilterProducts = () => {
     const [productTypes, setProductTypes] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const { VITE_API_BACKEND, VITE_PRODUCTS_ENDPOINT } = import.meta.env;
+    const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT, VITE_PRODUCTS_ENDPOINT } = import.meta.env;
 
     const [filters, setFilters] = useState({
         size: [],
@@ -47,7 +47,7 @@ export const FilterProducts = () => {
     const fetchProductTypes = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${VITE_API_BACKEND}${VITE_PRODUCTS_ENDPOINT}`);
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}${VITE_PRODUCTS_ENDPOINT}`);
             if (!response.ok) throw new Error('Error al cargar tipos de productos');
             const data = await response.json();
             const uniqueTypes = Array.from(new Set(data.map(product => product.type)));

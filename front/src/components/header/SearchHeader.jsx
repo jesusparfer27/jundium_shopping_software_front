@@ -26,7 +26,7 @@ const HeaderSearch = () => {
     const [type, setType] = useState('');
     const [showRecommendations, setShowRecommendations] = useState(false);
     const [recommendations, setRecommendations] = useState([]);
-    const { VITE_API_BACKEND, VITE_PRODUCTS_ENDPOINT } = import.meta.env;
+    const { VITE_API_BACKEND, VITE_PRODUCTS_ENDPOINT, VITE_BACKEND_ENDPOINT } = import.meta.env;
 
     const handleSearch = async (e) => {
         const term = e.target.value;
@@ -35,7 +35,7 @@ const HeaderSearch = () => {
 
         if (term) {
             try {
-                const response = await axios.get(`${VITE_API_BACKEND}${VITE_PRODUCTS_ENDPOINT}`);
+                const response = await axios.get(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}${VITE_PRODUCTS_ENDPOINT}`);
                 const products = response.data;
 
                 const filteredRecommendations = products

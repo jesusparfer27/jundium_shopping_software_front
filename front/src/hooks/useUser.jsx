@@ -6,7 +6,7 @@ export function UserProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const VITE_API_BACKEND = import.meta.env.VITE_API_BACKEND;
+    const {VITE_API_BACKEND, VITE_BACKEND_ENDPOINT} = import.meta.env;
     const isFetched = useRef(false);
 
 
@@ -30,7 +30,7 @@ export function UserProvider({ children }) {
         if (!token) return;
 
         try {
-            const response = await fetch(`${VITE_API_BACKEND}/wishlist`, {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -47,7 +47,7 @@ export function UserProvider({ children }) {
         if (!token) return;
 
         try {
-            const response = await fetch(`${VITE_API_BACKEND}/me/update`, {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/me/update`, {
                 method: 'PATCH',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -80,7 +80,7 @@ export function UserProvider({ children }) {
     const login = async (userData) => {
         setError(null); // Resetear error al intentar login
         try {
-            const response = await fetch(`${VITE_API_BACKEND}/login`, {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/login`, {
                 method: "POST",
                 headers: {
                     'Content-type': 'application/json'
@@ -107,7 +107,7 @@ export function UserProvider({ children }) {
     const register = async (userData) => {
         setError(null); // Resetear error al intentar registro
         try {
-            const response = await fetch(`${VITE_API_BACKEND}/register`, {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/register`, {
                 method: "POST",
                 headers: {
                     "Content-type": "application/json"
@@ -140,7 +140,7 @@ export function UserProvider({ children }) {
                 throw new Error("VITE_API_BACKEND no está definido.");
             }
 
-            const response = await fetch(`${VITE_API_BACKEND}/me`, {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/me`, {
                 method: "GET",
                 headers: {
                     'Authorization': `Bearer ${token}`,

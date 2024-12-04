@@ -13,7 +13,7 @@ const Footer = () => {
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState(null); // Mensaje de error o éxito
     const [isInputActive, setIsInputActive] = useState(false);
-    const { VITE_API_BACKEND } = import.meta.env
+    const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env
 
     const { user } = useUser(); // Usa el hook useUser para obtener el usuario logueado
     const loggedUser = JSON.parse(localStorage.getItem('user')) || {};
@@ -75,7 +75,7 @@ const handleSubscribe = async () => {
         console.log("Usuario logueado detectado con token:", token); // Verifica el token
         console.log("Correo enviado al parámetro:", email); // Verifica el correo que se enviará
 
-        const response = await fetch(`${VITE_API_BACKEND}/newsletter`, {
+        const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/newsletter`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

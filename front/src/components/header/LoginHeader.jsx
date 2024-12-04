@@ -12,7 +12,7 @@ const LoginContainer = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const { VITE_API_BACKEND } = import.meta.env;
+    const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
 
     const handleSignIn = () => {
         navigate('/email-validation'); // Redirige a /email-validation
@@ -28,7 +28,7 @@ const LoginContainer = () => {
         }
     
         try {
-            const url = `${VITE_API_BACKEND}/login`;
+            const url = `${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/login`;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

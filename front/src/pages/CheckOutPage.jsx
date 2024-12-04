@@ -9,7 +9,7 @@ export const CheckOutPage = () => {
     const [total, setTotal] = useState({ price: 0, verySpenses: 0, endingPrice: 0 });
     const [expandedSections, setExpandedSections] = useState({});
     const { user } = useUser();
-    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL } = import.meta.env;
+    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT } = import.meta.env;
     const { activeMenu, openMenu } = useContext(HeaderContext);
 
     const removeItem = (product_id) => {
@@ -36,7 +36,7 @@ export const CheckOutPage = () => {
         }
 
         try {
-            const response = await fetch(`${VITE_API_BACKEND}/cart`, {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/cart`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -57,7 +57,7 @@ export const CheckOutPage = () => {
         } catch (error) {
             console.error('Error al obtener el carrito:', error);
         }
-    }, [user, VITE_API_BACKEND]);
+    }, [user, VITE_API_BACKEND, VITE_BACKEND_ENDPOINT]);
 
     useEffect(() => {
         fetchCartItems();
@@ -97,7 +97,7 @@ export const CheckOutPage = () => {
         }
 
         try {
-            const response = await fetch(`${VITE_API_BACKEND}/wishlist`, {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
