@@ -106,7 +106,7 @@ export const Profile = () => {
         };
 
         fetchOrderItems();
-    }, [VITE_API_BACKEND]);
+    }, [VITE_API_BACKEND, VITE_BACKEND_ENDPOINT]);
 
     useEffect(() => {
         if (error) {

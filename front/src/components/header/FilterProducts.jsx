@@ -78,7 +78,7 @@ export const FilterProducts = () => {
                 queryParams.append('maxPrice', filters.priceRange[1]);
             }
 
-            const response = await fetch(`${VITE_API_BACKEND}${VITE_PRODUCTS_ENDPOINT}?${queryParams.toString()}`);
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}${VITE_PRODUCTS_ENDPOINT}?${queryParams.toString()}`);
             if (!response.ok) throw new Error('Error al cargar los productos');
             const data = await response.json();
             setProducts(data);

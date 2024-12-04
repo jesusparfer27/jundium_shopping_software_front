@@ -88,7 +88,7 @@ export const ProductsPage = () => {
         }
 
         try {
-            const response = await fetch(`${VITE_API_BACKEND}/wishlist`, {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

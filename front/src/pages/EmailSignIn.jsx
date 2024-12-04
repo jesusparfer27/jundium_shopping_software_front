@@ -35,7 +35,7 @@ export const EmailSignIn = () => {
         };
 
         fetchData();
-    }, [VITE_API_BACKEND]);
+    }, [VITE_API_BACKEND, VITE_BACKEND_ENDPOINT]);
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);

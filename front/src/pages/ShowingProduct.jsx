@@ -77,7 +77,7 @@ export const ShowingProductPage = () => {
         }
 
         try {
-            const response = await fetch(`${VITE_API_BACKEND}/cart`, {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/cart`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

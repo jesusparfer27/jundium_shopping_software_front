@@ -37,7 +37,7 @@ const CartContainer = () => {
         } catch (error) {
             console.error('Error al obtener el carrito:', error);
         }
-    }, [VITE_API_BACKEND, user]);
+    }, [VITE_API_BACKEND, VITE_BACKEND_ENDPOINT, user]);
 
     useEffect(() => {
         fetchCartItems();

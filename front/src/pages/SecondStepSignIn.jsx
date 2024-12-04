@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import AccordionContainer from '../components/signin/AccordionContainer';
 
 export const SecondStepSignIn = () => {
+
+  const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     password: '',
@@ -63,7 +65,7 @@ export const SecondStepSignIn = () => {
     try {
       // Almacenar datos en la base de datos (o enviarlos al backend)
       const userData = { email: formData.email, password, gender, first_name, last_name };
-      const registerResponse = await fetch(`${import.meta.env.VITE_API_BACKEND}/register`, {
+      const registerResponse = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
@@ -74,7 +76,7 @@ export const SecondStepSignIn = () => {
       }
   
       // Realizar inicio de sesión automático
-      const loginResponse = await fetch(`${import.meta.env.VITE_API_BACKEND}/login`, {
+      const loginResponse = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email, password }),
