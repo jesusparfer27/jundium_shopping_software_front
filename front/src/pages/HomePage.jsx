@@ -6,7 +6,7 @@ import '../css/pages/homepage.css';
 // HOME-SECTIONS
 import SeasonVideo from '../assets/home-sections/home-video-season.mp4';
 import AutumnImage from '../assets/home-sections/autumn-session-home.jpg';
-import winterImage from '../assets/home-sections/winter-session-home.jpg';
+import winterImage from '../assets/home-sections/winter-session-home.jpg'; 
 
 // HOME-ARTICLES
 import WomanBags from '../assets/different-articles/example-bags-woman-home.jpg';
