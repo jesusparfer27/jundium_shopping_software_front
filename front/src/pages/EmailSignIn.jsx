@@ -12,7 +12,7 @@ export const EmailSignIn = () => {
     const [emailExists, setEmailExists] = useState(false);
     const [submitAttempted, setSubmitAttempted] = useState(false);
     const [emailRequired, setEmailRequired] = useState(false);
-    const { VITE_API_BACKEND } = import.meta.env;
+    const { VITE_API_BACKEND } = import.meta.env; 
 
     const toggleAccordion = (index) => {
         const updatedState = [...isAccordionOpen];
