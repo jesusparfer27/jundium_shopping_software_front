@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import '../css/pages/emailsignin.css';
 import AccordionContainer from '../components/signin/AccordionContainer';
 import { useNavigate } from 'react-router-dom';
-
-export const EmailSignIn = () => {
+ 
+export const EmailSignIn = () => { 
     const navigate = useNavigate();
     const [isAccordionOpen, setIsAccordionOpen] = useState([false, false, false, false, false, false, false, false]);
     const [apiData, setApiData] = useState(null);
