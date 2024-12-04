@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { NavLink, useLocation, useParams } from 'react-router-dom';
+import { ModalContext } from '../components/modal-wishlist/ModalContext';
+import { ModalWishlist } from '../components/modal-wishlist/ModalWishlist';
 import '../css/pages/product_page.css';
 
 import AutumnImage from '../assets/home-sections/autumn-session-home.jpg';
@@ -8,6 +10,7 @@ import SummerImage from '../assets/season-images-product_page/example-summer-sea
 import WinterImage from '../assets/home-sections/winter-session-home.jpg';
 
 export const ProductsPage = () => {
+    const { activeModal, openModal} = useContext(ModalContext);
     const { id } = useParams();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -73,20 +76,18 @@ export const ProductsPage = () => {
         window.location.href = `/products/${productId}?variant_id=${variantId}`;
     };
 
+    const openWishlistModal = (menuState) => {
+        openModal(menuState); // Abre el modal con el estado que corresponda
+    };
+
     const handleAddToWishlist = async (productId, variantId) => {
         const token = localStorage.getItem('authToken');
-
+    
         if (!token) {
-            setErrorMessage('Por favor, inicia sesión para añadir productos a la wishlist.');
+            openWishlistModal('modalNeed_toLogin'); // Abre el modal que pide login
             return;
         }
-
-        if (!productId || !variantId) {
-            console.error('Falta productId o variantId:', { productId, variantId });
-            setErrorMessage('No se pudo añadir a la wishlist debido a un problema con los datos del producto.');
-            return;
-        }
-
+    
         try {
             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
                 method: 'POST',
@@ -99,22 +100,24 @@ export const ProductsPage = () => {
                     variant_id: variantId,
                 }),
             });
-
+    
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Error al añadir a la wishlist');
             }
-
-            const data = await response.json();
-            console.log('Producto añadido a la wishlist:', data);
+    
+            openWishlistModal('modalAdded_toWishlist'); // Modal de éxito
         } catch (error) {
             console.error('Error al añadir a la wishlist:', error);
             setErrorMessage('Ocurrió un error al añadir el producto a la wishlist.');
         }
     };
+    
 
     if (loading) return <div className="loading">Cargando productos...</div>;
     if (error) return <div className="error">Error al cargar productos: {error}</div>;
+
+    
 
     return (
         <>
@@ -167,6 +170,7 @@ export const ProductsPage = () => {
                             <p>No se encontraron productos.</p>
                         )}
                     </div>
+                    {activeModal && <ModalWishlist />}
                 </div>
             </section>
         </>

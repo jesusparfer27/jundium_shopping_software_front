@@ -64,12 +64,25 @@ export const HomePage = () => {
     };
 
     useEffect(() => {
+        const totalItems = categoriesData.length;
         const interval = setInterval(() => {
-            setOffset((prevOffset) => (prevOffset >= 100 ? 0 : prevOffset + 100 / categoriesData.length));
+            setOffset((prevOffset) => {
+                const newOffset = prevOffset + 100 / totalItems;
+    
+                // Reinicia el offset al comienzo si llega al final
+                if (newOffset >= 100) {
+                    setTimeout(() => setOffset(0), 0); // Reinicio instantáneo al principio
+                    return 0;
+                }
+    
+                return newOffset;
+            });
         }, 3000);
-
+    
         return () => clearInterval(interval);
-    }, []);
+    }, [categoriesData.length]);
+    
+    
 
     useEffect(() => {
         const handleScroll = () => {
@@ -183,23 +196,28 @@ export const HomePage = () => {
                     <p>Descubre nuestros productos destacados</p>
                 </div>
                 <div className="rightCarouselContainer">
-                    <div className="carousel" style={{ transform: `translateX(-${offset}%)` }}>
-                        {categoriesData.map((category) => (
-                            <NavLink
-                                to={`/products?type=${encodeURIComponent(category.type)}&gender=${encodeURIComponent(category.gender)}`}
-                                key={category.id}
-                                className="carouselItem"
-                            >
-                                <img
-                                    src={category.image}
-                                    alt={category.name}
-                                    className="carouselImage"
-                                    loading="lazy"
-                                />
-                                <p>{category.name}</p>
-                            </NavLink>
-                        ))}
-                    </div>
+                <div className="carousel" style={{ transform: `translateX(-${offset}%)` }}>
+    {[
+        categoriesData[categoriesData.length - 1], // Duplicar el último al inicio
+        ...categoriesData,
+        categoriesData[0] // Duplicar el primero al final
+    ].map((category, index) => (
+        <NavLink
+            to={`/products?type=${encodeURIComponent(category.type)}&gender=${encodeURIComponent(category.gender)}`}
+            key={index}
+            className="carouselItem"
+        >
+            <img
+                src={category.image}
+                alt={category.name}
+                className="carouselImage"
+                loading="lazy"
+            />
+            <p>{category.name}</p>
+        </NavLink>
+    ))}
+</div>
+
                 </div>
             </section>
 
