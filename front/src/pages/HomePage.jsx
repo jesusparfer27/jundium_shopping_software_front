@@ -42,11 +42,12 @@ export const HomePage = () => {
     ];
 
     const seasonsData = [
-        { id: 1, name: "Verano", image: SummerSeason, endpoint: "/seasons/summer" },
-        { id: 2, name: "Primavera", image: SpringSeason, endpoint: "/seasons/spring" },
-        { id: 3, name: "Invierno", image: WinterSeason, endpoint: "/seasons/winter" },
+        { id: 1, name: "Verano 2024", image: SummerSeason, endpoint: "/products?collection=Verano%202024" },
+        { id: 2, name: "Primavera 2024", image: SpringSeason, endpoint: "/products?collection=Primavera%202024" },
+        { id: 3, name: "Invierno 2024", image: WinterSeason, endpoint: "/products?collection=Invierno%202024" },
     ];
-
+    
+    
     useEffect(() => {
         // Set the number of images to load initially
         setImagesToLoad(categoriesData.length + seasonsData.length);
