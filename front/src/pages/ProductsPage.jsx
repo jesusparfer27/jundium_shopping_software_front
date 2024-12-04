@@ -14,7 +14,7 @@ export const ProductsPage = () => {
     const [error, setError] = useState(null);
     const [errorMessage, setErrorMessage] = useState("");
 
-    const { VITE_API_BACKEND, VITE_PRODUCTS_ENDPOINT, VITE_IMAGES_BASE_URL } = import.meta.env;
+    const { VITE_API_BACKEND, VITE_PRODUCTS_ENDPOINT, VITE_BACKEND_ENDPOINT, VITE_IMAGES_BASE_URL } = import.meta.env;
 
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
@@ -30,7 +30,7 @@ export const ProductsPage = () => {
         setError(null);
 
         try {
-            const response = await fetch(`${VITE_API_BACKEND}${VITE_PRODUCTS_ENDPOINT}`);
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}${VITE_PRODUCTS_ENDPOINT}`);
             if (!response.ok) throw new Error('Error al cargar los productos');
             const data = await response.json();
 
