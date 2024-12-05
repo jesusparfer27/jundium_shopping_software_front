@@ -11,7 +11,7 @@ export const ShowingProductPage = () => {
     const [selectedSize, setSelectedSize] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
-    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_PRODUCTS_ENDPOINT, VITE_BACKEND_ENDPOINT } = import.meta.env;
+    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_PRODUCTS_ENDPOINT, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
 
     const toggleAccordion = () => setAccordionOpen(!accordionOpen);
 
@@ -162,7 +162,7 @@ export const ShowingProductPage = () => {
                         {otherImages.map((image, index) => (
                             <img
                                 key={index}
-                                src={`${VITE_IMAGES_BASE_URL}${image}`}
+                                src={`${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${image}`}
                                 alt={`${product.name} - ${selectedVariant.color.colorName}`}
                                 className="otherProductImage"
                                 onError={(e) => (e.target.src = 'ruta/a/imagen/por/defecto.jpg')}

@@ -8,7 +8,7 @@ import '../../css/components/header/cart.css';
 const CartContainer = () => {
     const { activeMenu, closeMenu } = useContext(HeaderContext);
     const navigate = useNavigate();
-    const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT, VITE_IMAGES_BASE_URL } = import.meta.env;
+    const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT, VITE_IMAGES_BASE_URL, VITE_IMAGE } = import.meta.env;
     const { user } = useUser();
     const [cartItems, setCartItems] = useState([]);
 
@@ -121,7 +121,7 @@ const CartContainer = () => {
 
                                 const selectedVariant = variants.find(variant => variant.variant_id === variant_id);
                                 const imageUrl = selectedVariant?.image ? selectedVariant.image[0] : null;
-                                const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${imageUrl}` : null;
+                                const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null;
 
                                 return (
                                     <div key={item._id} className="cartItem">

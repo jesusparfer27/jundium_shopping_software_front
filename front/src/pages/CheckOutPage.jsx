@@ -9,7 +9,7 @@ export const CheckOutPage = () => {
     const [total, setTotal] = useState({ price: 0, verySpenses: 0, endingPrice: 0 });
     const [expandedSections, setExpandedSections] = useState({});
     const { user } = useUser();
-    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT } = import.meta.env;
+    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
     const { activeMenu, openMenu } = useContext(HeaderContext);
 
     const removeItem = (product_id) => {
@@ -152,7 +152,7 @@ export const CheckOutPage = () => {
 
                         const selectedVariant = variants.find(variant => variant.variant_id === variant_id);
                         const imageUrl = selectedVariant?.image ? selectedVariant.image[0] : null;
-                        const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${imageUrl}` : null;
+                        const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null;
 
                         return (
                             <div key={item._id} className="cart-item">

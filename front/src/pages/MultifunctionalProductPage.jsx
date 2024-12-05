@@ -7,7 +7,7 @@ export const MultifunctionalProductPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT } = import.meta.env;
+    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
 
     useEffect(() => {
         const fetchLikedProducts = async () => {
@@ -112,7 +112,7 @@ export const MultifunctionalProductPage = () => {
 
                         // Debug: Verificar qué imagen estamos obteniendo
                         console.log('Image URL:', imageUrl);
-                        const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${imageUrl}` : null;
+                        const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null;
                         console.log('Full Image URL:', fullImageUrl); // Log de la URL completa de la imagen
 
                         return (

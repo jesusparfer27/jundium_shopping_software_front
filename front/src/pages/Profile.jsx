@@ -13,7 +13,7 @@ export const Profile = () => {
     const navigate = useNavigate();
     const { user, setUser, loading, error, fetchUserDetails } = useUser();
     const [isUserLoaded, setIsUserLoaded] = useState(false);
-    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT } = import.meta.env;
+    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
     const [isDirty, setIsDirty] = useState(false);
     const [saveStatus, setSaveStatus] = useState(null);
 
@@ -446,7 +446,7 @@ export const Profile = () => {
                                     const variants = product_id?.variants || [];
                                     const selectedVariant = variants.find(variant => variant.variant_id === variant_id);
                                     const imageUrl = selectedVariant?.image ? selectedVariant.image[0] : null;
-                                    const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${imageUrl}` : null;
+                                    const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null;
 
                                     return (
                                         <div key={item._id} className="wishlist-item">
