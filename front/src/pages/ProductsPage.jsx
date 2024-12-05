@@ -17,7 +17,7 @@ export const ProductsPage = () => {
     const [error, setError] = useState(null); 
     const [errorMessage, setErrorMessage] = useState("");
 
-    const { VITE_API_BACKEND, VITE_PRODUCTS_ENDPOINT, VITE_BACKEND_ENDPOINT, VITE_IMAGES_BASE_URL } = import.meta.env;
+    const { VITE_API_BACKEND, VITE_PRODUCTS_ENDPOINT, VITE_BACKEND_ENDPOINT, VITE_IMAGES_BASE_URL, VITE_IMAGE } = import.meta.env;
 
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
@@ -143,7 +143,7 @@ export const ProductsPage = () => {
                                         >
                                             <img
                                                 src={product.selectedVariant.image
-                                                    ? `${VITE_IMAGES_BASE_URL}${product.selectedVariant.image.find(img => img.endsWith('.jpg') || img.endsWith('.png')) || product.selectedVariant.image[0]}`
+                                                    ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${product.selectedVariant.image.find(img => img.endsWith('.jpg') || img.endsWith('.png')) || product.selectedVariant.image[0]}`
                                                     : "ruta/a/imagen/por/defecto.jpg"}
                                                 alt={product.name || 'Producto sin nombre'}
                                                 className="productImage"
