@@ -14,7 +14,7 @@ export const ProductsPage = () => {
     const { id } = useParams();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState(null); 
     const [errorMessage, setErrorMessage] = useState("");
 
     const { VITE_API_BACKEND, VITE_PRODUCTS_ENDPOINT, VITE_BACKEND_ENDPOINT, VITE_IMAGES_BASE_URL } = import.meta.env;
