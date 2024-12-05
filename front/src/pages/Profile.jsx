@@ -187,7 +187,7 @@ export const Profile = () => {
     const handleSaveChanges = async () => {
         const token = localStorage.getItem('authToken');
         if (!token || loading || !isDirty) return;
-
+ 
         console.log("Guardando cambios con los siguientes datos del usuario:", user);
 
         try {
