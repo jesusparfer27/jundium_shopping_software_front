@@ -143,7 +143,7 @@ export const ProductsPage = () => {
                                         >
                                             <img
                                                 src={product.selectedVariant.image
-                                                    ? `${VITE_IMAGES_BASE_URL}${product.selectedVariant.image.find(img => img.endsWith('.jpg') || img.endsWith('.png')) || product.selectedVariant.image[0]}`
+                                                    ? `${VITE_IMAGES_BASE_URL}/${product.selectedVariant.image.find(img => img.endsWith('.jpg') || img.endsWith('.png')) || product.selectedVariant.image[0]}`
                                                     : "ruta/a/imagen/por/defecto.jpg"}
                                                 alt={product.name || 'Producto sin nombre'}
                                                 className="productImage"
