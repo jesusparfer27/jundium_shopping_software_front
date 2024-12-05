@@ -84,7 +84,7 @@ export const ProductsPage = () => {
         const token = localStorage.getItem('authToken');
     
         if (!token) {
-            openWishlistModal('modalNeed_toLogin'); // Abre el modal que pide login
+            openWishlistModal('modalNeed_toLogin'); // Abre el modal que pide login 
             return;
         }
     
