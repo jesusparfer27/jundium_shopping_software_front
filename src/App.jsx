@@ -9,7 +9,7 @@ import { useContext } from "react";
 import { HeaderContext } from "./context/HeaderContext";
 import { ScrollToTop } from "./lib/ScrollToTop";  // Importa el componente ScrollToTop
  
-function App() {
+function App() { 
     return (
         <HeaderProvider>
                 <Header />
