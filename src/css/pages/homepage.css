@@ -10,7 +10,6 @@ body,
 .myCustomClass {
     text-decoration: none;
     color: black;
-
 }
 
 .pHome {
@@ -264,6 +263,8 @@ body,
     text-align: center;
     color: black;
     text-decoration: none;
+    overflow: hidden; /* Asegura que nada salga del contenedor */
+    position: relative;
 }
 
 /* Sección de video sticky */
@@ -282,6 +283,32 @@ body,
     z-index: 2;  /* Valor más alto para que se superponga por encima de otros elementos */
 }
 
+.miniLogo_modalContainer {
+    display: flex;
+    justify-content: center;
+    padding-top: .5rem;
+}
+
+.carousel_textContainer_Home {
+    position: absolute; /* Para superponerlo encima de la imagen */
+    bottom: 4%; /* Ajusta según donde quieras posicionar el texto */
+    left: 20%;
+    transform: translateX(-50%); /* Centra horizontalmente */
+    z-index: 2; /* Debe ser mayor que la imagen */
+    color: white;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.carousel_textContainer_homeText {
+    margin: 0;
+    font-weight: bold;
+    z-index: 3; /* Debe estar al frente */
+    font-size: 22px;
+    width: 100%;
+}
+
 
 /* Estilo de imagen del carrusel */
 .carouselImage {
@@ -289,6 +316,9 @@ body,
     height: 100%;
     object-fit: cover;
     border-radius: 8px;
+    display: block;
+    position: relative; /* Asegura que la imagen esté en el fondo */
+    z-index: 1; /* Asegura que la imagen esté detrás del texto */;
 }
 
 /* Animación para el carrusel */

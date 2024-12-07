@@ -22,9 +22,17 @@
     visibility: hidden;
 }
 
+.sectionContent p{
+
+}
+
 .ModalWishlist.active {
     opacity: 1;
     visibility: visible;
+}
+
+.containerButton_Wishlist {
+    padding-bottom: 1rem;
 }
 
 

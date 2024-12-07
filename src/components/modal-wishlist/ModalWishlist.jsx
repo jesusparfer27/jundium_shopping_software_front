@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { ModalContext } from '../../components/modal-wishlist/ModalContext';
 import './modal_wishlist.css';
+import MiniLogoTransparentBackground from '../../assets/mini-logos/mini-logo-transparent-background.png'
 
 export const ModalWishlist = () => {
     const { activeModal, closeModal } = useContext(ModalContext);
@@ -13,14 +14,24 @@ export const ModalWishlist = () => {
     const renderContent = () => {
         if (activeModal === 'modalNeed_toLogin') {
             return (
-                <div className="sectionContent">
-                    <p>Por favor, <NavLink to="/login">inicia sesión</NavLink> para añadir productos a tu wishlist.</p>
+                <div className="modalWishlist_containerFather">
+                    <div className="miniLogo_modalContainer">
+                        <img src={MiniLogoTransparentBackground} className="miniLogo_transparentLogo"></img>
+                    </div>
+                    <div className="sectionContent">
+                        <p>Por favor, <NavLink to="/login">inicia sesión</NavLink> para añadir productos a tu wishlist.</p>
+                    </div>
                 </div>
             );
         } else if (activeModal === 'modalAdded_toWishlist') {
             return (
-                <div className="sectionContent">
-                    <p>Producto añadido a tu wishlist con éxito.</p>
+                <div className="modalWishlist_containerFather">
+                    <div className="miniLogo_modalContainer">
+                        <img src={MiniLogoTransparentBackground} className="miniLogo_transparentLogo"></img>
+                    </div>
+                    <div className="sectionContent">
+                        <p>Producto añadido a tu wishlist con éxito.</p>
+                    </div>
                 </div>
             );
         }

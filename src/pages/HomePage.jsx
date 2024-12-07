@@ -223,9 +223,9 @@ export const HomePage = () => {
                                     className="carouselImage"
                                     loading="lazy"
                                 />
-                                <div className="carousel_textContainer_Home">
-                                    <p>{category.name}</p>
-                                </div>
+                                    <div className="carousel_textContainer_Home">
+                                        <p className='carousel_textContainer_homeText'>{category.name}</p>
+                                    </div>
                             </NavLink>
                         ))}
                     </div>
