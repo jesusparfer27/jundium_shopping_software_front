@@ -75,9 +75,10 @@
     border-radius: 5px;
 }
 
-/* Estilo para los labels */
-.inputField label {
-    font-weight: bold;
+.imageContainer_home {
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 /* Estilo para el enlace de recuperar contraseña */
@@ -153,4 +154,43 @@
 
 .registerButton {
     width: 70%
+}
+
+.passwordContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.inputLogin_Header {
+    width: 100%;
+    padding-right: 3rem; /* Espacio para el botón */
+    padding-left: 1rem;
+    box-sizing: border-box;
+}
+
+.togglePassword {
+    position: absolute;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: #999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.togglePassword:focus {
+    outline: none;
+}
+
+.material-symbols-outlined {
+    font-size: 1.5rem;
+    color: #666;
+}
+
+.togglePassword:hover .material-symbols-outlined {
+    color: #000;
 }

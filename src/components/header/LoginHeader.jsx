@@ -11,6 +11,7 @@ const LoginContainer = () => {
     // Estado para los inputs de email y contraseña
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false); // Estado para mostrar u ocultar la contraseña
 
     const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
 
@@ -18,15 +19,15 @@ const LoginContainer = () => {
         navigate('/email-validation'); // Redirige a /email-validation
         closeMenu(); // Cierra el menú
     };
-    
+
     const handleLogin = async (event) => {
         event.preventDefault();
-        
+
         if (!email || !password) {
             alert('Por favor, completa todos los campos.');
             return;
         }
-    
+
         try {
             const url = `${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/login`;
             const response = await fetch(url, {
@@ -34,9 +35,9 @@ const LoginContainer = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
             });
-    
+
             const data = await response.json();
-    
+
             if (response.ok) {
                 localStorage.setItem('authToken', data.token); // Asegúrate de usar el nombre correcto aquí
                 navigate('/profile');
@@ -59,9 +60,9 @@ const LoginContainer = () => {
             <div className="logIn">
                 <div className='logInHeader'>
                     <h2 className='logInH2'>Iniciar Sesión</h2>
-                    <button className="closeContainerLogin" onClick={closeMenu}><span className="material-symbols-outlined">
-                close
-            </span></button>
+                    <button className="closeContainerLogin" onClick={closeMenu}>
+                        <span className="material-symbols-outlined">close</span>
+                    </button>
                 </div>
 
                 <div className="mandatoryFields">
@@ -70,30 +71,53 @@ const LoginContainer = () => {
                 <div className="additionalText">
                     <p>Accede a tu usuario</p>
                 </div>
-                <div className="inputField">
-                    <label htmlFor="email">Email</label>
-                    <input
-                        type="text"
-                        id="email"
-                        value={email} // Estado para el valor del input
-                        onChange={(e) => setEmail(e.target.value)} // Actualiza el estado
-                        className='inputLogin_Header'
-                    />
-                </div>
-                <div className="inputField">
-                    <label htmlFor="password">Contraseña</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password} // Estado para el valor del input
-                        onChange={(e) => setPassword(e.target.value)} // Actualiza el estado
-                        className='inputLogin_Header'
-                    />
-                    <a href="/recuperar-contraseña" className="forgotPassword">Recuperar contraseña</a>
-                </div>
-                <div className="submitButton">
-                    <button className='buttonSubmitLogIn' type="submit" onClick={handleLogin}>Iniciar Sesión</button>
-                </div>
+
+                {/* Usa un formulario */}
+                <form className="inputField" onSubmit={handleLogin}>
+                    <div className="inputField">
+                        <label htmlFor="email">Email</label>
+                        <input
+                            type="text"
+                            id="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className='inputLogin_Header'
+                            onCopy={(e) => {
+                                e.preventDefault(); // Evita la acción predeterminada
+                                navigator.clipboard.writeText(e.target.value); // Copia solo el valor del input
+                            }}
+                        />
+                    </div>
+                    <div className="inputField">
+                        <label htmlFor="password">Contraseña</label>
+                        <div className="passwordContainer">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className='inputLogin_Header'
+                                onCopy={(e) => {
+                                    e.preventDefault();
+                                    navigator.clipboard.writeText(e.target.value);
+                                }}
+                            />
+                            <button
+                                type="button"
+                                className="togglePassword"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                <span className="material-symbols-outlined">
+                                    {showPassword ? "visibility_off" : "visibility"}
+                                </span>
+                            </button>
+                        </div>
+                        <a href="/recuperar-contraseña" className="forgotPassword">Recuperar contraseña</a>
+                    </div>
+                    <div className="submitButton">
+                        <button className='buttonSubmitLogIn' type="submit">Iniciar Sesión</button>
+                    </div>
+                </form>
             </div>
 
             {/* Segundo div: SignIn */}

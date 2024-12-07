@@ -8,6 +8,11 @@
   padding-bottom: 1.3rem;
 }
 
+.password_signIn label{
+  padding-bottom: .4rem;
+  width: 80%;
+}
+
 .error-message {
   color: red;
   font-size: 0.9rem;
@@ -48,6 +53,36 @@
   align-content: center;
 }
 
+.passwordContainerSignIn {
+  position: relative; /* Permite que los hijos se posicionen respecto a este contenedor */
+  width: 90%;
+}
+
+.password-validation {
+  width: 100%;
+  padding-right: 3rem; /* Deja espacio para el botón */
+}
+
+.togglePassword {
+  position: absolute;
+  right: 1rem; /* Ajusta la posición del botón respecto al borde derecho del contenedor */
+  top: 50%; /* Centra verticalmente */
+  transform: translateY(-50%); /* Ajusta el centro real */
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.togglePassword:hover {
+  color: #000; /* Cambia el color al pasar el mouse */
+}
+
+.togglePassword:hover {
+  color: #000; /* Cambia el color al pasar el mouse */
+}
+
 .input-password,
 .campos {
   display: flex;
@@ -57,17 +92,18 @@
 
 .input-password {
   background-color: white;
-  margin-top: 0.5rem;
   padding-bottom: 1.5rem;
   padding-top: 1.5rem;
 }
 
-.input-field {
-  width: 90%; /* Ajustar el ancho a 90% para todos los campos */
-  margin-top: 0.5rem; /* Margen entre el label y el input/select */
+.inputSignUp_Header {
+  width: 100%; /* Ajustar el ancho a 90% para todos los campos */
+  
   justify-content: center; /* Centrar contenido en el input/select */
-  padding: 0.5rem; /* Añadir un poco de padding para mejorar la apariencia */
+  padding: 0.7rem 1rem; /* Padding interno para la separación */
+  box-sizing: border-box; /* Incluye el padding en el tamaño total */
 }
+
 
 .password-validation {
   width: 90%;
@@ -75,9 +111,9 @@
 }
 
 .input-password label {
-
   align-self: self-end;
-  width: 95.5%;
+  width: 95%;
+  padding-bottom: .5rem;
 }
 
 .campos {
@@ -101,8 +137,6 @@
 .campo input,
 .campo select {
   width: 90%; /* El input y select miden el 90% */
-  margin-top: 0.5rem; /* Margen entre el label y el input/select */
-  margin-bottom: 0.5rem;
   justify-content: center; /* Centrar contenido en el input/select */
 }
 

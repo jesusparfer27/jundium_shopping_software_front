@@ -18,6 +18,11 @@ body,
     text-decoration: none;
 }
 
+.imageContainer_home {
+    position: relative;
+    overflow: hidden;
+}
+
 /* Estilos para cuando el enlace está activo */
 .myCustomActiveClass {
     text-decoration: none;
@@ -58,9 +63,8 @@ body,
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(2, auto);
-    width: 80%;
+    width: 90%;
     min-height: 800px;
-    gap: 2rem;
     padding-top: 2rem;
     justify-content: center;
     padding-bottom: 2rem;
@@ -138,9 +142,10 @@ body,
 
 /* Estilo para la imagen de los productos */
 .itemImage {
-    width: 20vw;
-    height: 445px;
-    
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.3s ease-in-out;
 }
 
 /* Contenedor del carrusel en la página principal */

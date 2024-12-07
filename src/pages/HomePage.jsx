@@ -6,7 +6,7 @@ import '../css/pages/homepage.css';
 // HOME-SECTIONS
 import SeasonVideo from '../assets/home-sections/home-video-season.mp4';
 import AutumnImage from '../assets/home-sections/autumn-session-home.jpg';
-import winterImage from '../assets/home-sections/winter-session-home.jpg'; 
+import winterImage from '../assets/home-sections/winter-session-home.jpg';
 
 // HOME-ARTICLES
 import WomanBags from '../assets/different-articles/example-bags-woman-home.jpg';
@@ -46,8 +46,8 @@ export const HomePage = () => {
         { id: 2, name: "Primavera 2024", image: SpringSeason, endpoint: "/products?collection=Primavera%202024" },
         { id: 3, name: "Invierno 2024", image: WinterSeason, endpoint: "/products?collection=Invierno%202024" },
     ];
-    
-    
+
+
     useEffect(() => {
         // Set the number of images to load initially
         setImagesToLoad(categoriesData.length + seasonsData.length);
@@ -68,21 +68,21 @@ export const HomePage = () => {
         const interval = setInterval(() => {
             setOffset((prevOffset) => {
                 const newOffset = prevOffset + 100 / totalItems;
-    
+
                 // Reinicia el offset al comienzo si llega al final
                 if (newOffset >= 100) {
                     setTimeout(() => setOffset(0), 0); // Reinicio instantáneo al principio
                     return 0;
                 }
-    
+
                 return newOffset;
             });
         }, 3000);
-    
+
         return () => clearInterval(interval);
     }, [categoriesData.length]);
-    
-    
+
+
 
     useEffect(() => {
         const handleScroll = () => {
@@ -105,7 +105,7 @@ export const HomePage = () => {
                 key={category.id}
                 className={({ isActive }) => (isActive ? 'myCustomActiveClass' : 'myCustomClass')}
             >
-                <div className="imageContainer">
+                <div className="imageContainer_home">
                     <img
                         src={category.image}
                         alt={category.name}
@@ -113,13 +113,14 @@ export const HomePage = () => {
                         className="itemImage"
                         loading="lazy"
                     />
-                </div>
-                <div className="itemDescription">
-                    <p className='pHome'>{category.name}</p>
+                    <div className="overlay">
+                        <p className="overlayText">{category.name}</p>
+                    </div>
                 </div>
             </NavLink>
         ))
     );
+    
 
     const renderSeasons = (data) => (
         data.map((season) => (
@@ -196,27 +197,27 @@ export const HomePage = () => {
                     <p>Descubre nuestros productos destacados</p>
                 </div>
                 <div className="rightCarouselContainer">
-                <div className="carousel" style={{ transform: `translateX(-${offset}%)` }}>
-    {[
-        categoriesData[categoriesData.length - 1], // Duplicar el último al inicio
-        ...categoriesData,
-        categoriesData[0] // Duplicar el primero al final
-    ].map((category, index) => (
-        <NavLink
-            to={`/products?type=${encodeURIComponent(category.type)}&gender=${encodeURIComponent(category.gender)}`}
-            key={index}
-            className="carouselItem"
-        >
-            <img
-                src={category.image}
-                alt={category.name}
-                className="carouselImage"
-                loading="lazy"
-            />
-            <p>{category.name}</p>
-        </NavLink>
-    ))}
-</div>
+                    <div className="carousel" style={{ transform: `translateX(-${offset}%)` }}>
+                        {[
+                            categoriesData[categoriesData.length - 1], // Duplicar el último al inicio
+                            ...categoriesData,
+                            categoriesData[0] // Duplicar el primero al final
+                        ].map((category, index) => (
+                            <NavLink
+                                to={`/products?type=${encodeURIComponent(category.type)}&gender=${encodeURIComponent(category.gender)}`}
+                                key={index}
+                                className="carouselItem"
+                            >
+                                <img
+                                    src={category.image}
+                                    alt={category.name}
+                                    className="carouselImage"
+                                    loading="lazy"
+                                />
+                                <p>{category.name}</p>
+                            </NavLink>
+                        ))}
+                    </div>
 
                 </div>
             </section>

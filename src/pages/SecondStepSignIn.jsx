@@ -7,6 +7,9 @@ export const SecondStepSignIn = () => {
 
   const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Para confirmar contraseña
+
   const [formData, setFormData] = useState({
     password: '',
     confirmPassword: '',
@@ -38,7 +41,7 @@ export const SecondStepSignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password, confirmPassword, gender, first_name, last_name, aceptar } = formData;
-  
+
 
     if (!email) {
       setError('El correo electrónico no está definido. Vuelve al paso anterior.');
@@ -49,19 +52,19 @@ export const SecondStepSignIn = () => {
       setError('Por favor, completa todos los campos y acepta la política de privacidad.');
       return;
     }
-  
+
     // Verificar si la contraseña es suficientemente fuerte
     if (password.length < 8) {
       setError('La contraseña debe tener al menos 8 caracteres.');
       return;
     }
-  
+
     // Verificar si las contraseñas coinciden
     if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden.');
       return;
     }
-  
+
     try {
       // Almacenar datos en la base de datos (o enviarlos al backend)
       const userData = { email: formData.email, password, gender, first_name, last_name };
@@ -70,25 +73,25 @@ export const SecondStepSignIn = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
       });
-  
+
       if (!registerResponse.ok) {
         throw new Error('Error al registrar al usuario.');
       }
-  
+
       // Realizar inicio de sesión automático
       const loginResponse = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email, password }),
       });
-  
+
       if (!loginResponse.ok) {
         throw new Error('Error al iniciar sesión automáticamente.');
       }
-  
+
       const loginData = await loginResponse.json();
       localStorage.setItem('authToken', loginData.token); // Almacena el token en localStorage
-  
+
       // Redirigir al perfil
       navigate('/profile');
     } catch (error) {
@@ -96,7 +99,7 @@ export const SecondStepSignIn = () => {
       setError('Hubo un problema al completar el registro. Intenta nuevamente.');
     }
   };
-  
+
 
 
   const accordionData = [
@@ -114,25 +117,59 @@ export const SecondStepSignIn = () => {
           <div className="progreso">
             <p>Proceso del registro (2/3)</p>
           </div>
-          <div className="input-password">
-            <label htmlFor="password">Contraseña</label>
-            <input
-              className='password-validation input-field'
-              type="password"
-              id="password"
-              value={formData.password}
-              onChange={handleChange}
-            />
-            <label htmlFor="confirmPassword">Confirmar Contraseña</label>
-            <input
-              className='password-validation input-field'
-              type="password"
-              id="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-            />
-            {error && <p className="error-message">{error}</p>} {/* Muestra el mensaje de error */}
-          </div>
+          <form onSubmit={handleSubmit} className="signUpForm">
+            <div className="inputField">
+              <div className="input-password">
+                <label  className='password_signIn' htmlFor="password">Contraseña</label>
+                <div className="passwordContainerSignIn">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="inputSignUp_Header"
+                    placeholder="Introduce tu contraseña"
+                  />
+                  <button
+                    type="button"
+                    className="togglePassword"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    <span className="material-symbols-outlined">
+                      {showPassword ? "visibility_off" : "visibility"}
+                    </span>
+                  </button>
+                </div>
+
+
+                <div className="inputField">
+                  <div className="input-password">
+                    <label className='password_signIn' htmlFor="confirmPassword">Confirmar Contraseña</label>
+                    <div className="passwordContainerSignIn">
+                      <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        id="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        className="inputSignUp_Header"
+                        placeholder="Repite tu contraseña"
+                      />
+                      <button
+                        type="button"
+                        className="togglePassword"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      >
+                        <span className="material-symbols-outlined">
+                          {showConfirmPassword ? "visibility_off" : "visibility"}
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+
         </div>
         <div className="informacion-adicional">
           <div className="progreso-info">
