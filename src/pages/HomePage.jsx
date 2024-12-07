@@ -121,7 +121,7 @@ export const HomePage = () => {
             </NavLink>
         ))
     );
-    
+
 
     const renderSeasons = (data) => (
         data.map((season) => (
@@ -196,14 +196,14 @@ export const HomePage = () => {
             <section className="carruselHome">
                 <div className="leftVideoContainer">
                     {/* <p>Descubre nuestros productos destacados</p> */}
-                    <video 
-                    className='videoCarousel'
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    onError={() => console.error('Error al cargar el video')}
-                    src={VideoDiscounts}></video>
+                    <video
+                        className='videoCarousel'
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        onError={() => console.error('Error al cargar el video')}
+                        src={VideoDiscounts}></video>
                 </div>
                 <div className="rightCarouselContainer">
                     <div className="carousel" style={{ transform: `translateX(-${offset}%)` }}>
@@ -223,7 +223,9 @@ export const HomePage = () => {
                                     className="carouselImage"
                                     loading="lazy"
                                 />
-                                <p>{category.name}</p>
+                                <div className="carousel_textContainer_Home">
+                                    <p>{category.name}</p>
+                                </div>
                             </NavLink>
                         ))}
                     </div>

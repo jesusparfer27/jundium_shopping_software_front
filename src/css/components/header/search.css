@@ -31,6 +31,22 @@
     padding-left: 1rem;
 }
 
+.z-index_nameSearch {
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    width: 20%;
+}
+
+.containerZ-index_Search {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    width: 90%;
+    position: absolute;
+    height: 40%;
+}
+
 /* Estilos para el componente HeaderSearch */
 .searchContainer {
     position: fixed;
@@ -233,9 +249,8 @@
 
 /* Estilos para el grid de productos */
 .productGridHeader {
-    width: 50%;
+    width: 70%;
     border-left: 1px solid black;
-    padding-bottom: 2rem;
 }
 
 .productGridHeader h3 {
@@ -247,10 +262,8 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* Repartir el espacio equitativamente en dos columnas */
     grid-template-rows: repeat(2, 1fr); 
-    gap: 1rem;
-    width: 80%; /* Reducir el ancho para centrar mejor el contenedor */
+    width: 100%; /* Reducir el ancho para centrar mejor el contenedor */
     margin: 0 auto; /* Centrar el contenedor en su padre */
-    
     align-items: center; /* Centrar elementos en el eje vertical */
 }
 
@@ -262,25 +275,27 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    gap: 0.5rem; /* Ajustar el espacio entre la imagen y el texto */
-    padding: 1rem;
     width: 100%;
 }
 
 
 /* Estilo para la imagen */
 .productItemHeader img {
-    width: 55%; /* La imagen ocupa un 80% del ancho disponible */
-    height: auto;
+    width: 100%; /* La imagen ocupa un 80% del ancho disponible */
+    height: 250px;
     object-fit: cover;
-    border-radius: 0.5rem;
+}
+
+.productGridHeader .gridContainer .productItemHeader:last-child .containerZ-index_Search .z-index_nameSearch {
+    color: black;
 }
 
 /* Estilo para el texto */
 .productItemHeader p {
-    width: 100%;
+    width: 78%;
     text-align: center;
     margin: 0;
+    padding-bottom: .5rem;
 }
 
 .productItem {
@@ -291,7 +306,7 @@
     width: 100%;
     height: auto;
     border-radius: 0.5rem;
-    margin-bottom: 0.5rem;
+
 }
 
 .closeButtonHeader {

@@ -7,8 +7,8 @@ import '../../css/components/header/menu.css';
 // IMAGENES DE HEADERMENU
 import ManSectionHeader from '../../assets/header-sections/example-menu-header-man-section.jpg';
 import WomanSectionHeader from '../../assets/header-sections/example-menu-header-woman-section.jpg';
-import CollectionsSectionHeader from '../../assets/header-sections/example-menu-home-collections.jpg';
-import DiscountSectionHeader from '../../assets/header-sections/example-menu-header-man-section.jpg'; // Imagen repetida para descuentos
+import CollectionsSectionHeader from '../../assets/season-images-product_page/example-spring-season.jpg';
+import DiscountSectionHeader from '../../assets/season-images-product_page/example-summer-season.jpg'; // Imagen repetida para descuentos
 
 const HeaderMenu = () => {
     const { activeMenu, closeMenu, setMenuOpen } = useContext(HeaderContext);

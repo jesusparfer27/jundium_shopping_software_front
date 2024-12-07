@@ -7,8 +7,8 @@ import '../../css/components/header/search.css';
 
 import ManSectionHeader from '../../assets/header-sections/example-menu-header-man-section.jpg';
 import WomanSectionHeader from '../../assets/header-sections/example-menu-header-woman-section.jpg';
-import CollectionsSectionHeader from '../../assets/header-sections/example-menu-home-collections.jpg';
-import DiscountSectionHeader from '../../assets/header-sections/example-menu-header-man-section.jpg';
+import CollectionsSectionHeader from '../../assets/season-images-product_page/example-summer-season.jpg';
+import DiscountSectionHeader from '../../assets/season-images-product_page/example-spring-season.jpg';
 
 const categoriesData = [
     { id: 1, name: "Otoño collection", image: ManSectionHeader, collection: "Otoño 2024", type: "Autumn" },
@@ -168,7 +168,6 @@ const HeaderSearch = () => {
                     </div>
 
                     <div className="productGridHeader">
-                        <h3>Productos Destacados</h3>
                         <div className="gridContainer">
                             {categoriesData.map((category) => (
                                 <NavLink
@@ -182,7 +181,9 @@ const HeaderSearch = () => {
                                         alt={category.name}
                                         className="searchHeader_Image"
                                     />
-                                    <p>{category.name}</p>
+                                    <div className="containerZ-index_Search">
+                                        <p className='z-index_nameSearch'>{category.name}</p>
+                                    </div>
                                 </NavLink>
                             ))}
                         </div>
