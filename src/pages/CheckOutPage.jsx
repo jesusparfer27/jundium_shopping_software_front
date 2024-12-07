@@ -1,16 +1,35 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../css/pages/checkoutpage.css';
 import { Modal } from '../components/checkout/ComponentCheckOut';
 import { HeaderContext } from '../context/HeaderContext';
 import { useUser } from '../hooks/useUser';
+import imageLogoBlackBackground from '../assets/mini-logos/mini-logo-black-background.png'
 
 export const CheckOutPage = () => {
     const [cartItems, setCartItems] = useState([]);
     const [total, setTotal] = useState({ price: 0, verySpenses: 0, endingPrice: 0 });
     const [expandedSections, setExpandedSections] = useState({});
     const { user } = useUser();
+    const navigate = useNavigate(); // Hook para redirección
     const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
     const { activeMenu, openMenu } = useContext(HeaderContext);
+
+    useEffect(() => {
+        if (user === null || user === undefined) {
+            // Redirige solo si estamos seguros de que no hay un usuario loggeado
+            navigate('/errorPage');
+            return;
+        }
+    
+        const fromCart = localStorage.getItem('authToken');
+        if (!fromCart) {
+            navigate('/errorPage');
+            return;
+        }
+    
+        // No elimines el token aquí a menos que sea estrictamente necesario
+    }, [user, navigate]);
 
     const removeItem = (product_id) => {
         setCartItems(cartItems.filter(item => item.product_id !== product_id));
@@ -131,7 +150,7 @@ export const CheckOutPage = () => {
         <section className="checkoutSection">
             <div className="left-column">
                 <div className="infoAboutChanges">
-                    <div className="black-box"></div>
+                    <img src={imageLogoBlackBackground} className="black-box"></img>
                     <div className="white-box">Texto neutro</div>
                 </div>
 

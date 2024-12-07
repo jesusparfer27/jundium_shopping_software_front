@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
 import '../css/pages/multifunctional_product_page.css';
 import { useNavigate } from 'react-router-dom';
+import ErrorImage from '../assets/error-image/error-image.jpg'; // Ajusta el path según la ubicación de tu imagen
 
 export const MultifunctionalProductPage = () => {
     const [likedProducts, setLikedProducts] = useState([]);
@@ -10,9 +12,14 @@ export const MultifunctionalProductPage = () => {
     const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
 
     useEffect(() => {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            setLoading(false);
+            return; // Usuario no loggeado
+        }
+
         const fetchLikedProducts = async () => {
             try {
-                const token = localStorage.getItem('authToken');
                 const headers = {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
@@ -24,7 +31,6 @@ export const MultifunctionalProductPage = () => {
                 }
 
                 const data = await response.json();
-                console.log('Data received from wishlist API:', data); // Log de la respuesta
                 if (data && data.items && Array.isArray(data.items)) {
                     setLikedProducts(data.items);
                 } else {
@@ -56,7 +62,7 @@ export const MultifunctionalProductPage = () => {
 
         try {
             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist/${productId}/${variantId}`, {
-                method: 'DELETE',  // Usamos DELETE para eliminar
+                method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
@@ -73,24 +79,41 @@ export const MultifunctionalProductPage = () => {
             }
 
             const data = await response.json();
-            console.log('Producto eliminado de la wishlist:', data);
-
-            // Actualizamos el estado local para eliminar el producto de la wishlist
             setLikedProducts((prevProducts) => prevProducts.filter(item => item.variant_id !== variantId));
         } catch (error) {
-            console.error('Error al eliminar de la wishlist:', error);
             setError('Ocurrió un error al eliminar el producto de la wishlist.');
         }
     };
 
     const addToCart = (productId, variantId) => {
-        // Navega a la ruta con los parámetros del producto y variante
         navigate(`/products/${productId}?variant_id=${variantId}`);
     };
-    
 
     if (loading) {
         return <div>Cargando productos...</div>;
+    }
+
+    if (!localStorage.getItem('authToken')) {
+        return (
+            <>
+                <section>
+                    <div className="container_errorPage">
+                        <div className="container_errorImage">
+                            <img className='errorImage_Left' src={ErrorImage} alt="Error" />
+                        </div>
+                        <div className="container_errorRedirection">
+                            <div className="block_errorRedirection">
+                                <h1 className='errorText_errorPage'>Para entrar a esta sección debes de estar loggeado</h1>
+                                <h1 className='errorText_errorPage'>Empieza ahora y guarda los articulos que más te gusten</h1>
+                                <div className="button_errorContainer">
+                                    <NavLink to="/" className='buttonError'>Ir a inicio</NavLink>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </>
+        );
     }
 
     if (error) {
@@ -99,21 +122,16 @@ export const MultifunctionalProductPage = () => {
 
     return (
         <section className="wishlistSection">
-            <h2 className="wishlistTitle">Wish List</h2>
-            <div className="wishlistContainer">
+            <h2 className="wishlistTitle"></h2>
+            <div className={likedProducts.length > 0 ? "wishlistContainer" : "wishlistContainerEmpty"}>
                 {likedProducts.length > 0 ? (
                     likedProducts.map(item => {
                         const { product_id, variant_id } = item;
                         const { name, base_price, variants } = product_id;
 
-                        // Buscar la variante correspondiente al variant_id
-                        const variant = variants?.find(v => v.variant_id === variant_id); // Buscar variante por variant_id
-                        const imageUrl = variant?.image?.[0]; // Acceder a la primera imagen de la variante
-
-                        // Debug: Verificar qué imagen estamos obteniendo
-                        console.log('Image URL:', imageUrl);
+                        const variant = variants?.find(v => v.variant_id === variant_id);
+                        const imageUrl = variant?.image?.[0];
                         const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null;
-                        console.log('Full Image URL:', fullImageUrl); // Log de la URL completa de la imagen
 
                         return (
                             <div key={variant_id} className="wishlistItem">
@@ -153,9 +171,23 @@ export const MultifunctionalProductPage = () => {
                         );
                     })
                 ) : (
-                    <div>No tienes productos en tu wishlist.</div>
+                    <section className='noWishlist'>
+                    <div className="container_errorPage">
+                        <div className="container_errorImage">
+                            <img className='errorImage_Left' src={ErrorImage} alt="Error" />
+                        </div>
+                        <div className="container_errorRedirection">
+                            <div className="block_errorRedirection">
+                                <h1 className='errorText_errorPage'>Aun no tienes artículos en tu lista de deseos</h1>
+                                <h1 className='errorText_errorPage'>Empieza ahora y guarda los articulos que más te gusten</h1>
+                                <div className="button_errorContainer">
+                                    <NavLink to="/" className='buttonError'>Ir a inicio</NavLink>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
                 )}
-
             </div>
         </section>
     );

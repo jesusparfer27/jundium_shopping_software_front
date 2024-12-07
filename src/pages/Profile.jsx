@@ -241,11 +241,11 @@ export const Profile = () => {
                     <div className="input-group">
                         <div className="inputProfile_Container">
                             <div className="inputProfileContainer_Container">
-                                <div className="input-field">
+                                <div className="input-field_profile">
                                     <label>Género</label>
                                     <select
                                         name="gender"
-                                        className='selectOption'
+                                        className='inputProfile'
                                         value={user?.gender || ''}
                                         onChange={handleUserInfoChange}
                                     >
@@ -255,29 +255,31 @@ export const Profile = () => {
                                         <option value="Otro">Otro</option>
                                     </select>
                                 </div>
-                                <div className="input-field">
+                                <div className="input-field_profile">
                                     <label>Nombre</label>
                                     <input
                                         type="text"
                                         name="first_name"
+                                        className='inputProfile'
                                         value={user?.first_name || ''}
                                         onChange={handleUserInfoChange}
                                     />
                                 </div>
-                                <div className="input-field">
+                                <div className="input-field_profile">
                                     <label>Apellido</label>
                                     <input
                                         type="text"
                                         name="last_name"
+                                        className='inputProfile'
                                         value={user?.last_name || ''}
                                         onChange={handleUserInfoChange}
                                     />
                                 </div>
-                                <div className="input-field">
+                                <div className="input-field_profile">
                                     <label>País</label>
                                     <select
                                         name="country"
-                                        className='selectOption'
+                                        className='inputProfile'
                                         value={user?.country || ''}
                                         onChange={handleUserInfoChange}
                                     >
@@ -287,11 +289,12 @@ export const Profile = () => {
                                         <option value="Otro">Otro</option>
                                     </select>
                                 </div>
-                                <div className="input-field">
+                                <div className="input-field_profile">
                                     <label>Numero de teléfono</label>
                                     <input
                                         type="text"
                                         name="phone_number"
+                                        className='inputProfile'
                                         value={user?.phone_number || ''}
                                         onChange={handleUserInfoChange}
                                     />

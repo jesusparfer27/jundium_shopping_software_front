@@ -118,12 +118,16 @@
     text-align: end;
     margin-bottom: 1rem;
     border-top: 1px solid black;
-    padding-top: 1.3rem;
+    padding-top: 1rem;
     padding-right: 3rem;
 }
 
-.input-group .input-field {
+.input-group .input-field_profile {
     margin-bottom: 1rem;
+}
+
+.input-field_profile label {
+    display: block; /* Asegura que las etiquetas estén en su propia línea */
 }
 
 .inputProfile_Container {
@@ -144,15 +148,16 @@
     align-items: center;
 }
 
-.input-field {
+.input-field_profile {
     display: flex;
     flex-direction: column;
     padding-top: .5rem;
     padding-bottom: .5rem;
     gap: .8rem;
+    width: 90%;
 }
 
-.input-field input {
+.input-field_profile input {
     width: 100%;
 }
 
@@ -201,6 +206,28 @@ select {
 .accordion-content {
     display: none;
     margin-top: 0.5rem;
+}
+
+.inputProfile,
+.accordion-content input {
+    padding: 0.75rem; /* Espaciado interno para separar texto del borde */
+    border: 1px solid #ccc; /* Borde para definir el contorno */
+    border-radius: 4px; /* Bordes redondeados */
+    box-sizing: border-box; /* Asegura que el padding no exceda el ancho definido */
+    font-size: 1rem; /* Ajusta el tamaño de fuente */
+}
+
+.inputProfile::placeholder,
+.accordion-content input::placeholder {
+    color: #888; /* Color del texto de placeholder */
+    font-style: italic; /* Estilo opcional para placeholders */
+    padding-left: 0.5rem; /* Espaciado entre el borde izquierdo y el texto */
+}
+
+.accordion-content input:focus {
+    border-color: #007BFF; /* Cambia color del borde en foco */
+    outline: none; /* Remueve el contorno azul por defecto */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Sombra para mejor visibilidad */
 }
 
 .accordion-content.active {

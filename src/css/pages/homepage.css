@@ -218,7 +218,8 @@ body,
 
 .videoCarousel {
     height: 650px;
-    width: 550px;
+    width: 530px;
+    border-radius: 10px;
 }
 
 /* Estilo para el contenedor de texto a la izquierda */
