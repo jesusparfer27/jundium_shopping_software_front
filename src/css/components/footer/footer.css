@@ -9,6 +9,14 @@ footer.footer-light {
     color: #333;
 }
 
+footer.footer-light .linksSections a:hover {
+    color: #000000; /* Más oscuro en modo claro */
+}
+
+footer.footer-dark .linksSections a:hover {
+    color: #bbb; /* Más claro en modo oscuro */
+}
+
 footer.footer-dark {
     background-color: #000; /* Color oscuro */
     color: #fff; /* Texto blanco */
@@ -22,6 +30,8 @@ footer.footer-dark .footerSection strong {
 footer.footer-dark .input_subscribeNewsletter {
     background-color: black;
     border: 1px solid white;
+    color: white;
+
     margin: 0;
 }
 
@@ -31,11 +41,18 @@ footer.footer-dark .input_subscribeNewsletter::placeholder {
     font-size: 18px;
 }
 
-footer.footer-dark .input_subscribeNewsletter.active {
+footer.footer-dark {
     background-color: black;
     color: white;
     padding-top: 1rem;
     padding-bottom: 1rem;
+    font-size: 18px;
+}
+
+.input_subscribeNewsletter.active {
+    background-color: transparent;
+    color: black;
+    padding: 10px 15px; /* Igual que el estado inactivo */
     font-size: 18px;
 }
 
@@ -139,24 +156,26 @@ footer.footer-dark .socialLinks a {
 .subscriptionInputContainer button {
     background-color: transparent;
     color: black;
-    border: 1px solid white;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
-    font-size: 0.9em;
+    font-size: 16px;
+    width: 30%;
     border: 1px solid black;
 }
 
 .input_subscribeNewsletter {
     background-color: transparent;
-    border: 1px solid black;
+    padding: 15px; /* Padding interno para separar el texto del borde */
+    font-size: 18px;
     margin: 0;
+    border: 1px solid black;
+    border-radius: 4px; /* Opcional, para esquinas redondeadas */
 }
 
 .input_subscribeNewsletter::placeholder {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
     font-size: 18px;
+    color: #aaa; /* Opcional, para un placeholder más claro */
 }
 
 .input_subscribeNewsletter.active {

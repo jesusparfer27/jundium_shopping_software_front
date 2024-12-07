@@ -7,6 +7,7 @@ import '../css/pages/homepage.css';
 import SeasonVideo from '../assets/home-sections/home-video-season.mp4';
 import AutumnImage from '../assets/home-sections/autumn-session-home.jpg';
 import winterImage from '../assets/home-sections/winter-session-home.jpg';
+import VideoDiscounts from '../assets/home-sections/video-discounts.mp4'
 
 // HOME-ARTICLES
 import WomanBags from '../assets/different-articles/example-bags-woman-home.jpg';
@@ -113,8 +114,8 @@ export const HomePage = () => {
                         className="itemImage"
                         loading="lazy"
                     />
-                    <div className="overlay">
-                        <p className="overlayText">{category.name}</p>
+                    <div className="overlay_newCollections">
+                        <p className="overlayText_newCollections">{category.name}</p>
                     </div>
                 </div>
             </NavLink>
@@ -193,8 +194,16 @@ export const HomePage = () => {
             </section>
 
             <section className="carruselHome">
-                <div className="leftTextContainer">
-                    <p>Descubre nuestros productos destacados</p>
+                <div className="leftVideoContainer">
+                    {/* <p>Descubre nuestros productos destacados</p> */}
+                    <video 
+                    className='videoCarousel'
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    onError={() => console.error('Error al cargar el video')}
+                    src={VideoDiscounts}></video>
                 </div>
                 <div className="rightCarouselContainer">
                     <div className="carousel" style={{ transform: `translateX(-${offset}%)` }}>
