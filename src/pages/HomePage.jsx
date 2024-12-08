@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import '../css/pages/homepage.css';
 
@@ -8,6 +8,8 @@ import SeasonVideo from '../assets/home-sections/home-video-season.mp4';
 import AutumnImage from '../assets/home-sections/autumn-session-home.jpg';
 import winterImage from '../assets/home-sections/winter-session-home.jpg';
 import VideoDiscounts from '../assets/home-sections/video-discounts.mp4'
+
+import VideoGif from '../assets/video-gif-home/video-gif.gif'
 
 // HOME-ARTICLES
 import WomanBags from '../assets/different-articles/example-bags-woman-home.jpg';
@@ -30,6 +32,8 @@ export const HomePage = () => {
     const [imagesLoaded, setImagesLoaded] = useState(false);
     const [imagesToLoad, setImagesToLoad] = useState(0);
     const [imagesLoadedCount, setImagesLoadedCount] = useState(0);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const carouselRef = useRef(null);
 
     const categoriesData = [
         { id: 1, name: "Bolsos de Mujer", image: WomanBags, type: "bolso", gender: "mujer" },
@@ -64,24 +68,35 @@ export const HomePage = () => {
         });
     };
 
-    useEffect(() => {
-        const totalItems = categoriesData.length;
-        const interval = setInterval(() => {
-            setOffset((prevOffset) => {
-                const newOffset = prevOffset + 100 / totalItems;
+    // Duplicar los datos para el efecto de loop
+    // Duplicar los datos para el efecto de loop
+    const extendedData = Array(2).fill([...categoriesData]).flat();
 
-                // Reinicia el offset al comienzo si llega al final
-                if (newOffset >= 100) {
-                    setTimeout(() => setOffset(0), 0); // Reinicio instantáneo al principio
+    useEffect(() => {
+        const totalItems = extendedData.length / 2; // La mitad de extendedData es el conjunto real.
+        const interval = setInterval(() => {
+            setCurrentIndex((prevIndex) => {
+                const newIndex = prevIndex + 1;
+
+                if (newIndex >= totalItems) {
+                    // Reinicia el índice sin transición visible
+                    if (carouselRef.current) {
+                        carouselRef.current.style.transition = 'none'; // Desactiva la transición momentáneamente
+                    }
+                    setCurrentIndex(0); // Reinicia al primer elemento
                     return 0;
                 }
 
-                return newOffset;
-            });
-        }, 3000);
+                if (carouselRef.current) {
+                    carouselRef.current.style.transition = 'transform 1s ease'; // Transición más lenta
+                }
 
-        return () => clearInterval(interval);
-    }, [categoriesData.length]);
+                return newIndex;
+            });
+        }, 4000); // Intervalo ajustado a 4 segundos
+
+        return () => clearInterval(interval); // Limpieza al desmontar
+    }, [extendedData.length]);
 
 
 
@@ -185,8 +200,14 @@ export const HomePage = () => {
                                 Tu navegador no soporta la reproducción de videos.
                             </video>
                             <div className="textOverlay">
-                                <h2>Explora lo nuevo de la temporada</h2>
-                                <p>Descubre las últimas colecciones que hemos preparado para ti.</p>
+                                <div className="textOverlay">
+                                    <img
+                                        src={VideoGif}
+                                        alt="GIF animado"
+                                        className="gifElement"
+                                        style={{ animation: 'none', height: '100%', width: 'auto' }}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </NavLink>
@@ -206,12 +227,8 @@ export const HomePage = () => {
                         src={VideoDiscounts}></video>
                 </div>
                 <div className="rightCarouselContainer">
-                    <div className="carousel" style={{ transform: `translateX(-${offset}%)` }}>
-                        {[
-                            categoriesData[categoriesData.length - 1], // Duplicar el último al inicio
-                            ...categoriesData,
-                            categoriesData[0] // Duplicar el primero al final
-                        ].map((category, index) => (
+                    <div className="carousel" ref={carouselRef} style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
+                        {extendedData.map((category, index) => (
                             <NavLink
                                 to={`/products?type=${encodeURIComponent(category.type)}&gender=${encodeURIComponent(category.gender)}`}
                                 key={index}
@@ -223,9 +240,9 @@ export const HomePage = () => {
                                     className="carouselImage"
                                     loading="lazy"
                                 />
-                                    <div className="carousel_textContainer_Home">
-                                        <p className='carousel_textContainer_homeText'>{category.name}</p>
-                                    </div>
+                                <div className="carousel_textContainer_Home">
+                                    <p className='carousel_textContainer_homeText'>{category.name}</p>
+                                </div>
                             </NavLink>
                         ))}
                     </div>

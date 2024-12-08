@@ -88,7 +88,7 @@ const LoginContainer = () => {
                             }}
                         />
                     </div>
-                    <div className="inputField">
+                    <div className="inputField_password">
                         <label htmlFor="password">Contraseña</label>
                         <div className="passwordContainer">
                             <input
