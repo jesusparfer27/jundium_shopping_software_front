@@ -104,22 +104,21 @@ const CartContainer = () => {
                         <div className="cartTitle">
                             <p>Mi Carrito</p>
                             <button className="closeContainerCart" onClick={closeMenu}><span className="material-symbols-outlined">
-                close
-            </span></button>
+                                close
+                            </span></button>
                         </div>
                     </div>
 
                     <div className={`cartItems ${cartItems.length >= 3 ? 'scrollableCartItems' : ''}`}>
-                        <div className="cartItems">
+                        <div className={`cartItems ${cartItems.length >= 3 ? 'scrollableCartItems' : ''}`}>
                             {cartItems.map(item => {
                                 const { product_id, variant_id, quantity } = item;
 
-                                // Asegúrate de que `product_id` existe antes de intentar acceder a sus propiedades
                                 const name = product_id?.name || "Producto sin nombre";
-                                const basePrice = product_id?.base_price || 0;
                                 const variants = product_id?.variants || [];
 
                                 const selectedVariant = variants.find(variant => variant.variant_id === variant_id);
+                                const variantPrice = selectedVariant?.price || 0;
                                 const imageUrl = selectedVariant?.image ? selectedVariant.image[0] : null;
                                 const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null;
 
@@ -133,44 +132,34 @@ const CartContainer = () => {
                                             )}
                                         </div>
                                         <div className="cartItemContent">
-                                            <p className='textCard_Header'>{name}</p>
-                                            <p className='textCard_Header'>${basePrice.toFixed(2)}</p>
-                                            <p className='textCard_Header'>Cantidad: {quantity || 1}</p>
+                                            <p className="textCard_Header">{name}</p>
+                                            <p className="textCard_Header">${variantPrice.toFixed(2)}</p>
+                                            <p className="textCard_Header">Cantidad: {quantity || 1}</p>
+                                            <p className="textCard_Header">Color: {selectedVariant.color?.colorName || 'No especificado'}</p>
 
-                                            {selectedVariant && (
-                                                <p className='textCard_Header'>Color: {selectedVariant.color.colorName}</p>
-                                            )}
-
-
-                        
-                           
-                            <div className="submit-buttonProfile Cart">
-                                            {/* Asegúrate de que `product_id` y `variant_id` existen antes de llamar a `handleRemoveItem` */}
-                                            <button onClick={() => {
-                                                if (product_id?._id && variant_id) {
-                                                    handleRemoveItem(product_id._id, variant_id);
-                                                } else {
-                                                    console.error('Faltan el ID del producto o de la variante:', item);
-                                                }
-                                            }}>Eliminar</button>
-                                             </div>
+                                            <div className="submit-buttonProfile Cart">
+                                                <button onClick={() => {
+                                                    if (product_id?._id && variant_id) {
+                                                        handleRemoveItem(product_id._id, variant_id);
+                                                    } else {
+                                                        console.error('Faltan el ID del producto o de la variante:', item);
+                                                    }
+                                                }}>Eliminar</button>
+                                            </div>
                                         </div>
                                     </div>
                                 );
                             })}
-
                         </div>
-
-
-
                     </div>
 
                     <div className="cartSummary">
                         <p>Mi Selección</p>
                         <p>Total: ${cartItems.reduce((acc, item) => {
-                            const basePrice = item.product_id?.base_price || 0; // Accede a base_price de product_id
+                            const selectedVariant = item.product_id?.variants.find(variant => variant.variant_id === item.variant_id);
+                            const variantPrice = selectedVariant?.price || 0;
                             const quantity = item.quantity || 1; // Accede a la cantidad en item
-                            return acc + (basePrice * quantity);
+                            return acc + (variantPrice * quantity);
                         }, 0).toFixed(2)}</p>
                     </div>
 

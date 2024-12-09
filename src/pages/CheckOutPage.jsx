@@ -21,13 +21,13 @@ export const CheckOutPage = () => {
             navigate('/errorPage');
             return;
         }
-    
+
         const fromCart = localStorage.getItem('authToken');
         if (!fromCart) {
             navigate('/errorPage');
             return;
         }
-    
+
         // No elimines el token aquí a menos que sea estrictamente necesario
     }, [user, navigate]);
 
@@ -35,14 +35,17 @@ export const CheckOutPage = () => {
         setCartItems(cartItems.filter(item => item.product_id !== product_id));
     };
 
-    const handleQuantityChange = (product_id, newQuantity) => {
-        setCartItems(prevCartItems =>
-            prevCartItems.map(item =>
-                item.product_id === product_id
-                    ? { ...item, quantity: newQuantity }
-                    : item
-            )
+    const handleQuantityChange = (product_id, variant_id, newQuantity) => {
+        const updatedCartItems = cartItems.map(item =>
+            item.product_id._id === product_id && item.variant_id === variant_id
+                ? { ...item, quantity: newQuantity }
+                : item
         );
+        console.log('Cambiando cantidad para el producto: ', { product_id, variant_id });
+        console.log('Cantidad actualizada: ', newQuantity);
+        console.log('Carrito después de actualizar cantidad: ', updatedCartItems);
+    
+        setCartItems(updatedCartItems);
     };
 
     const fetchCartItems = useCallback(async () => {
@@ -84,17 +87,28 @@ export const CheckOutPage = () => {
 
     const calculateTotalPrice = useCallback(() => {
         const totalPrice = cartItems.reduce((sum, item) => {
-            const basePrice = item.product_id?.base_price || 0; // Accede a base_price en product_id
-            const quantity = item.quantity || 1; // Obtiene la cantidad en item
-            return sum + (basePrice * quantity); // Multiplica el precio base por la cantidad y suma
+            // Validar si las propiedades existen antes de ejecutar la lógica
+            if (
+                item?.product_id?.variants &&
+                Array.isArray(item.product_id.variants)
+            ) {
+                const selectedVariant = item.product_id.variants.find(
+                    variant => variant.variant_id === item.variant_id
+                );
+                const basePrice = selectedVariant?.price || 0;
+                const quantity = item.quantity || 1;
+                return sum + (basePrice * quantity);
+            }
+            return sum; // Si no existen propiedades necesarias, ignorar el cálculo
         }, 0);
 
         setTotal(prevTotal => ({
             ...prevTotal,
             price: totalPrice,
-            endingPrice: totalPrice + prevTotal.verySpenses, // Suma los gastos adicionales al precio total
+            endingPrice: totalPrice + prevTotal.verySpenses,
         }));
     }, [cartItems]);
+
 
     const addToWishlist = async (productId, variantId) => {
         const token = localStorage.getItem('authToken');
@@ -166,12 +180,26 @@ export const CheckOutPage = () => {
                         const { variant_id, product_id, quantity } = item;
 
                         const name = product_id?.name || "Producto sin nombre";
-                        const basePrice = product_id?.base_price || 0;
                         const variants = product_id?.variants || [];
 
-                        const selectedVariant = variants.find(variant => variant.variant_id === variant_id);
+                        // Declarar selectedVariant primero
+                        const selectedVariant = variants.find(
+                            variant => variant.variant_id === item.variant_id
+                        );
                         const imageUrl = selectedVariant?.image ? selectedVariant.image[0] : null;
                         const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null;
+
+                        const adjustQuantity = (operation, product_id, variant_id, quantity) => {
+                            let newQuantity = quantity;
+
+                            if (operation === 'increment') {
+                                newQuantity += 1;
+                            } else if (operation === 'decrement' && quantity > 1) {
+                                newQuantity -= 1;
+                            }
+
+                            handleQuantityChange(product_id, variant_id, newQuantity);
+                        };
 
                         return (
                             <div key={item._id} className="cart-item">
@@ -186,25 +214,41 @@ export const CheckOutPage = () => {
                                     </div>
                                     <div className="upperInformation">
                                         {selectedVariant && (
-                                            <p>Color: {selectedVariant.color.colorName}</p>
+                                            <p>Color: {selectedVariant.color?.colorName}</p>
                                         )}
                                         <div className="color-size">
                                             <div className='divCosts'>Género:</div>
                                             <div className='divCosts'>{product_id?.gender || "Género no disponible"}</div>
                                         </div>
                                     </div>
+
+
                                     <div className="quantity-price">
                                         <div className='divCosts'>
-                                            <select
-                                                value={quantity}
-                                                onChange={(e) => handleQuantityChange(product_id, parseInt(e.target.value))}
-                                            >
-                                                {[...Array(50)].map((_, i) => (
-                                                    <option key={i} value={i + 1}>{i + 1}</option>
-                                                ))}
-                                            </select>
+                                            {selectedVariant && selectedVariant?.price
+                                                ? `Precio: $${selectedVariant.price}`
+                                                : "Precio no disponible"
+                                            }
                                         </div>
-                                        <div className='divCosts'>{(basePrice * quantity).toFixed(2)} €</div>
+                                        {/* Cantidad con los botones */}
+                                        <div className="quantity-container">
+                                            <div className="quantity-header">Cantidad:</div>
+                                            <div className="quantity-controls">
+                                                <button
+                                                    className="quantity-button"
+                                                    onClick={() => adjustQuantity('decrement', item.product_id._id, item.variant_id, item.quantity)}
+                                                >
+                                                    <span className="material-symbols-outlined">remove</span>
+                                                </button>
+                                                <div className="quantity-number">{item.quantity}</div>
+                                                <button
+                                                    className="quantity-button"
+                                                    onClick={() => adjustQuantity('increment', item.product_id._id, item.variant_id, item.quantity)}
+                                                >
+                                                    <span className="material-symbols-outlined">add</span>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div className="action-buttons">

@@ -86,7 +86,7 @@ export const Product = () => {
                 size: [],
                 file: [],
                 material: '',
-                base_price: '',
+                price: '',
                 discount: 0,
                 image: [],
                 is_main: false,

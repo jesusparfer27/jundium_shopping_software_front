@@ -56,7 +56,19 @@ export const MultifunctionalModal = () => {
                     </div>
                 </div>
             );
+        } else if (activeModal === 'modalSelectSize') {
+            return (
+                <div className="multifunctionalModal_containerFather">
+                    <div className="miniLogo_modalContainer">
+                        <img src={MiniLogoTransparentBackground} className="miniLogo_transparentLogo" alt="Mini Logo" />
+                    </div>
+                    <div className="sectionContent">
+                        <p>Por favor, elige una talla antes de añadir el producto al carrito.</p>
+                    </div>
+                </div>
+            );
         }
+        
         return null;
     };
 

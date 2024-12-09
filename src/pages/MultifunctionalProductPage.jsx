@@ -126,7 +126,7 @@ export const MultifunctionalProductPage = () => {
                 {likedProducts.length > 0 ? (
                     likedProducts.map(item => {
                         const { product_id, variant_id } = item;
-                        const { name, base_price, variants } = product_id;
+                        const { name, price, variants } = product_id;
 
                         const variant = variants?.find(v => v.variant_id === variant_id);
                         const imageUrl = variant?.image?.[0];
@@ -154,7 +154,7 @@ export const MultifunctionalProductPage = () => {
                                 <div className="productInfoRow">
                                     <div className="productInfoColumn">
                                         <div className="productName">{name}</div>
-                                        <div className="productPrice">${base_price}</div>
+                                        <div className="productPrice">${variant?.price ?? 'N/A'}</div>
                                     </div>
                                     <div className="addToCartButtonContainer">
                                         <button className="addToCartButton" onClick={() => addToCart(product_id._id, variant_id)}>

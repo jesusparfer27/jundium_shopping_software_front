@@ -31,41 +31,39 @@
         const fetchProducts = async () => {
             setLoading(true);
             setError(null);
-
+        
             try {
                 const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}${VITE_PRODUCTS_ENDPOINT}`);
                 if (!response.ok) throw new Error('Error al cargar los productos');
                 const data = await response.json();
-
+        
                 // Filtra productos por tipo, género, colección
                 const filteredProducts = data.filter(product => {
-                    // Solo filtra por género si se especifica uno
                     const genderMatch = !genderParam || product.gender === genderParam;
-
-                    // Filtra por tipo, colección y búsqueda de nombre
                     const typeMatch = !typeParam || product.type === typeParam;
                     const collectionMatch = !collectionParam || product.collection === collectionParam;
                     const nameMatch = !searchTerm || product.name.toLowerCase().includes(searchTerm.toLowerCase());
-
+        
                     return genderMatch && typeMatch && collectionMatch && nameMatch;
                 });
-
+        
                 // Desglosa todas las variantes de productos filtrados
                 const productsWithVariants = filteredProducts.flatMap(product =>
                     product.variants.map(variant => ({
                         ...product,
-                        selectedVariant: variant // Agrega cada variante como un producto único en el array
+                        selectedVariant: variant, // Variante seleccionada
+                        price: variant.price || product.base_price, // Usa el precio de la variante o el base_price como fallback
+                        discount: variant.discount || product.discount, // Usa el descuento de la variante o el del producto
                     }))
                 );
-
+        
                 setProducts(productsWithVariants);
             } catch (err) {
                 setError(err.message);
             } finally {
                 setLoading(false);
             }
-        };
-
+        };        
 
         useEffect(() => {
             fetchProducts();
@@ -200,7 +198,7 @@
 
                                         <div className='containerInfo_productPage'>
                                             <h4 className='h4Products'>{product.name || 'Nombre no disponible'}</h4>
-                                            <p className='pProducts'>${(product.base_price - product.discount).toFixed(2) || 'Precio no disponible'}</p>
+                                            <p className='pProducts'>${(product.price - product.discount).toFixed(2) || 'Precio no disponible'}</p>
                                         </div>
                                     </div>
                                 ))

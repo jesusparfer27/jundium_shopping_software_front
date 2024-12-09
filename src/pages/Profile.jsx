@@ -444,7 +444,7 @@ export const Profile = () => {
                             <div className="wishlist-list">
                                 {wishlistItems.slice(0, 2).map((item) => {  // Limita a 2 productos
                                     const { product_id, variant_id } = item;
-                                    const { name, base_price } = product_id || {};
+                                    const { name, price } = product_id || {};
 
                                     const variants = product_id?.variants || [];
                                     const selectedVariant = variants.find(variant => variant.variant_id === variant_id);
@@ -459,7 +459,7 @@ export const Profile = () => {
                                                 <p>Imagen no disponible</p>
                                             )}
                                             <p>Artículo: {name}</p>
-                                            <p>Precio: ${base_price}</p>
+                                            <p>Precio: ${price}</p>
                                         </div>
                                     );
                                 })}

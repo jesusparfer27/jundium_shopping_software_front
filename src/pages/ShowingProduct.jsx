@@ -21,7 +21,7 @@ export const ShowingProductPage = () => {
     const handleColorChange = (e) => {
         const selectedColor = e.target.value;
         const variant = product?.variants.find(variant => variant.color.colorName === selectedColor);
-        
+
         if (variant) {
             setSelectedVariant(variant);
             setSelectedSize("");
@@ -66,20 +66,25 @@ export const ShowingProductPage = () => {
             openModal('modalNeed_toLogin');
             return;
         }
-    
+
+        if (!selectedSize) {
+            openModal('modalSelectSize'); // Abrir el modal si no se selecciona una talla
+            return;
+        }
+
         const userId = getUserIdFromToken(token);
         if (!userId) {
             setErrorMessage('Error al extraer información del usuario.');
             return;
         }
-    
+
         const productId = product?.id;
         const variantId = selectedVariant?.variant_id;
         if (!productId || !variantId) {
             setErrorMessage('Selecciona un color y tamaño antes de añadir al carrito.');
             return;
         }
-    
+
         try {
             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/cart`, {
                 method: 'POST',
@@ -94,12 +99,12 @@ export const ShowingProductPage = () => {
                     quantity: 1,
                 }),
             });
-    
+
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Error al añadir al carrito');
             }
-    
+
             const data = await response.json();
             console.log('Producto añadido al carrito:', data);
             openModal('modalAdded_toCart');
@@ -186,7 +191,7 @@ export const ShowingProductPage = () => {
                         <p className="paraphHidden_Accordion">
                             {selectedVariant ? selectedVariant.material : product.description}
                         </p>
-                        <p>Precio: {selectedVariant ? selectedVariant.price : product.base_price}</p>
+                        <p>Precio: ${selectedVariant?.price || product.base_price}</p>
 
                         <button onClick={toggleAccordion} className="accordion">
                             {accordionOpen ? 'Ocultar materiales' : 'Mostrar materiales'}
@@ -206,15 +211,20 @@ export const ShowingProductPage = () => {
                             onChange={handleSizeChange}
                         >
                             <option value="">Seleccionar Talla</option>
-                            {[...new Set(product.variants.flatMap(variant => variant.sizes.map(sizeObj => sizeObj.size)))].map((size, index) => (
-                                <option key={index} value={size} className="option_Size">
-                                    {size}
+                            {selectedVariant?.sizes.map((sizeObj, index) => (
+                                <option key={index} value={sizeObj.size} className="option_Size">
+                                    {sizeObj.size}
                                 </option>
                             ))}
                         </select>
 
                         <label htmlFor="color" className="label_Color">Color:</label>
-                        <select id="color" className="select_Color" onChange={handleColorChange}>
+                        <select
+                            id="color"
+                            className="select_Color"
+                            value={selectedVariant ? selectedVariant.color.colorName : ""}
+                            onChange={handleColorChange}
+                        >
                             <option value="">Seleccionar Color</option>
                             {product.variants.map((variant, index) => (
                                 <option key={index} value={variant.color.colorName} className="option_Color">

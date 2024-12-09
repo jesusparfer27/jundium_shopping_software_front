@@ -19,7 +19,7 @@ export const Variant = () => {
         size: [''],
         file: [],
         material: '',
-        base_price: '',
+        price: '',
         discount: 0,
         image: [],
         is_main: false,
@@ -129,7 +129,7 @@ export const Variant = () => {
                     size: [],
                     file: [],
                     material: '',
-                    base_price: '',
+                    price: '',
                     discount: 0,
                     image: [],
                     is_main: false,
@@ -152,7 +152,7 @@ export const Variant = () => {
             return false;
         }
         for (const variant of variants) {
-            if (!variant.name || !variant.base_price) {
+            if (!variant.name || !variant.price) {
                 console.error("Faltan datos de una variante.");
                 return false;
             }
@@ -291,7 +291,7 @@ export const Variant = () => {
                 color: { colorName: '', hexCode: '' },
                 size: [],
                 material: '',
-                base_price: '',
+                price: '',
                 discount: 0,
                 image: [],
                 is_main: false,
@@ -306,7 +306,7 @@ export const Variant = () => {
             color: { colorName: '', hexCode: '' },
             size: [],
             material: '',
-            base_price: '',
+            price: '',
             discount: 0,
             image: [],
             is_main: false,
@@ -343,7 +343,7 @@ export const Variant = () => {
                 color: { colorName: '', hexCode: '' },
                 size: [],
                 material: '',
-                base_price: '',
+                price: '',
                 discount: 0,
                 image: [],
                 is_main: false,
@@ -495,8 +495,8 @@ export const Variant = () => {
                                                 <label htmlFor="price">Precio:</label>
                                                 <input
                                                     type="number"
-                                                    id="base_price"
-                                                    value={variants[index]?.base_price || ''}
+                                                    id="price"
+                                                    value={variants[index]?.price || ''}
                                                     onChange={(e) => handleVariantChange(e, index)}
                                                 />
                                             </div>
