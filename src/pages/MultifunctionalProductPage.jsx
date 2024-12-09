@@ -103,7 +103,7 @@ export const MultifunctionalProductPage = () => {
                         </div>
                         <div className="container_errorRedirection">
                             <div className="block_errorRedirection">
-                                <h1 className='errorText_errorPage'>Para entrar a esta sección debes de estar loggeado</h1>
+                                <h1 className='errorText_errorPage'>Para entrar a esta sección debes de iniciar sesión</h1>
                                 <h1 className='errorText_errorPage'>Empieza ahora y guarda los articulos que más te gusten</h1>
                                 <div className="button_errorContainer">
                                     <NavLink to="/" className='buttonError'>Ir a inicio</NavLink>
@@ -122,7 +122,6 @@ export const MultifunctionalProductPage = () => {
 
     return (
         <section className="wishlistSection">
-            <h2 className="wishlistTitle"></h2>
             <div className={likedProducts.length > 0 ? "wishlistContainer" : "wishlistContainerEmpty"}>
                 {likedProducts.length > 0 ? (
                     likedProducts.map(item => {

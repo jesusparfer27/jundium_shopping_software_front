@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { ModalContext } from '../../components/modal-wishlist/ModalContext';
-import './modal_wishlist.css';
+import { ModalContext } from './ModalContext';
+import './multifunctional_wishlist.css';
 import MiniLogoTransparentBackground from '../../assets/mini-logos/mini-logo-transparent-background.png'
 
-export const ModalWishlist = () => {
+export const MultifunctionalModal = () => {
     const { activeModal, closeModal } = useContext(ModalContext);
     const [fadeOut, setFadeOut] = useState(false);
     const [timerActive, setTimerActive] = useState(true); // Controla si el temporizador está activo
@@ -14,7 +14,7 @@ export const ModalWishlist = () => {
     const renderContent = () => {
         if (activeModal === 'modalNeed_toLogin') {
             return (
-                <div className="modalWishlist_containerFather">
+                <div className="multifunctionalModal_containerFather">
                     <div className="miniLogo_modalContainer">
                         <img src={MiniLogoTransparentBackground} className="miniLogo_transparentLogo"></img>
                     </div>
@@ -25,7 +25,7 @@ export const ModalWishlist = () => {
             );
         } else if (activeModal === 'modalAdded_toWishlist') {
             return (
-                <div className="modalWishlist_containerFather">
+                <div className="multifunctionalModal_containerFather">
                     <div className="miniLogo_modalContainer">
                         <img src={MiniLogoTransparentBackground} className="miniLogo_transparentLogo"></img>
                     </div>
@@ -34,12 +34,34 @@ export const ModalWishlist = () => {
                     </div>
                 </div>
             );
+        }  else if (activeModal === 'modalAlready_inWishlist') {
+            return (
+                <div className="multifunctionalModal_containerFather">
+                    <div className="miniLogo_modalContainer">
+                        <img src={MiniLogoTransparentBackground} className="miniLogo_transparentLogo" alt="Mini Logo" />
+                    </div>
+                    <div className="sectionContent">
+                        <p>Este producto ya se encuentra en tu wishlist.</p>
+                    </div>
+                </div>
+            );
+        } else if (activeModal === 'modalAdded_toCart') {
+            return (
+                <div className="multifunctionalModal_containerFather">
+                    <div className="miniLogo_modalContainer">
+                        <img src={MiniLogoTransparentBackground} className="miniLogo_transparentLogo" alt="Mini Logo"></img>
+                    </div>
+                    <div className="sectionContent">
+                        <p>Producto añadido al carrito con éxito.</p>
+                    </div>
+                </div>
+            );
         }
         return null;
     };
 
     useEffect(() => {
-        if (activeModal !== 'ModalWishlist') {
+        if (activeModal !== 'multifunctionalModal') {
             setFadeOut(false); // Resetea el fadeOut cuando el modal se activa
             setTimerActive(true); // Reactiva el temporizador cuando el modal se activa
 
@@ -83,7 +105,7 @@ export const ModalWishlist = () => {
     };
 
     return (
-        <div className={`ModalWishlist ${activeModal ? 'active slideInVertical' : ''}${fadeOut ? 'fadeOut' : ''}`}
+        <div className={`multifunctionalModal ${activeModal ? 'active slideInVertical' : ''}${fadeOut ? 'fadeOut' : ''}`}
             onMouseEnter={handleMouseEnter}  // Detecta cuando el mouse entra
             onMouseLeave={handleMouseLeave}  // Detecta cuando el mouse sale
         >

@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
+import { ModalContext } from '../components/modal-wishlist/ModalContext';
+import { MultifunctionalModal } from '../components/modal-wishlist/MultifunctionalModal';
 import '../css/pages/showing_product_page.css';
 
 export const ShowingProductPage = () => {
@@ -10,6 +12,7 @@ export const ShowingProductPage = () => {
     const [selectedVariant, setSelectedVariant] = useState(null);
     const [selectedSize, setSelectedSize] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const { activeModal, openModal } = useContext(ModalContext);
 
     const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_PRODUCTS_ENDPOINT, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
 
@@ -33,7 +36,7 @@ export const ShowingProductPage = () => {
 
         if (selectedVariant) {
             const variant = product.variants.find(variant =>
-                variant.size.includes(selectedSize) &&
+                variant.sizes.some(sizeObj => sizeObj.size === selectedSize) &&
                 variant.color.colorName === selectedVariant.color.colorName
             );
             if (variant) {
@@ -60,22 +63,23 @@ export const ShowingProductPage = () => {
         const token = localStorage.getItem('authToken');
         if (!token) {
             setErrorMessage('Por favor, inicia sesión para añadir productos al carrito.');
+            openModal('modalNeed_toLogin');
             return;
         }
-
+    
         const userId = getUserIdFromToken(token);
         if (!userId) {
             setErrorMessage('Error al extraer información del usuario.');
             return;
         }
-
+    
         const productId = product?.id;
         const variantId = selectedVariant?.variant_id;
         if (!productId || !variantId) {
             setErrorMessage('Selecciona un color y tamaño antes de añadir al carrito.');
             return;
         }
-
+    
         try {
             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/cart`, {
                 method: 'POST',
@@ -90,14 +94,15 @@ export const ShowingProductPage = () => {
                     quantity: 1,
                 }),
             });
-
+    
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Error al añadir al carrito');
             }
-
+    
             const data = await response.json();
             console.log('Producto añadido al carrito:', data);
+            openModal('modalAdded_toCart');
         } catch (error) {
             console.error('Error al añadir al carrito:', error);
             setErrorMessage('Ocurrió un error al añadir el producto al carrito.');
@@ -124,11 +129,9 @@ export const ShowingProductPage = () => {
                 }));
                 setProduct(productData);
 
-                // Obtener `variant_id` de la URL
                 const params = new URLSearchParams(location.search);
                 const variantIdFromUrl = params.get("variant_id");
 
-                // Buscar la variante por `variant_id` y establecerla como `selectedVariant`
                 if (variantIdFromUrl) {
                     const variant = productData.variants.find(v => v.variant_id === variantIdFromUrl);
                     if (variant) {
@@ -137,7 +140,7 @@ export const ShowingProductPage = () => {
                         console.warn("No se encontró una variante con el ID especificado.");
                     }
                 } else {
-                    setSelectedVariant(productData.variants[0]); // Fallback a la primera variante si no hay `variant_id` en la URL
+                    setSelectedVariant(productData.variants[0]);
                 }
             }
         } catch (error) {
@@ -155,7 +158,6 @@ export const ShowingProductPage = () => {
 
     return (
         <section className="productSection">
-            {errorMessage && <div className="error-message">{errorMessage}</div>}
             <div className="imageContainer">
                 {selectedVariant && selectedVariant.image.length > 0 ? (
                     <div className="productImage_ShowingPage">
@@ -204,7 +206,7 @@ export const ShowingProductPage = () => {
                             onChange={handleSizeChange}
                         >
                             <option value="">Seleccionar Talla</option>
-                            {[...new Set(product.variants.flatMap(variant => variant.size))].map((size, index) => (
+                            {[...new Set(product.variants.flatMap(variant => variant.sizes.map(sizeObj => sizeObj.size)))].map((size, index) => (
                                 <option key={index} value={size} className="option_Size">
                                     {size}
                                 </option>
@@ -224,6 +226,7 @@ export const ShowingProductPage = () => {
                         <button className="addToCart" onClick={handleAddToCart}>Añadir al carrito</button>
                     </div>
                 </div>
+                {activeModal && <MultifunctionalModal />}
             </div>
         </section>
     );

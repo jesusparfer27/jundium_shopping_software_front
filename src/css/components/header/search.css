@@ -36,6 +36,8 @@
     font-weight: bold;
     font-size: 18px;
     width: 20%;
+    display: flex;
+    padding-left: 1.5rem;
 }
 
 .containerZ-index_Search {
