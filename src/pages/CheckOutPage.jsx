@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import '../css/pages/checkoutpage.css';
 import { Modal } from '../components/checkout/ComponentCheckOut';
 import { HeaderContext } from '../context/HeaderContext';
+import { ModalContext } from '../components/modal-wishlist/ModalContext'
+import { MultifunctionalModal } from '../components/modal-wishlist/MultifunctionalModal'
 import { useUser } from '../hooks/useUser';
 import imageLogoBlackBackground from '../assets/mini-logos/mini-logo-black-background.png'
 
@@ -11,6 +13,7 @@ export const CheckOutPage = () => {
     const [total, setTotal] = useState({ price: 0, verySpenses: 0, endingPrice: 0 });
     const [expandedSections, setExpandedSections] = useState({});
     const { user } = useUser();
+    const { activeModal, openModal} = useContext(ModalContext);
     const navigate = useNavigate(); // Hook para redirección
     const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
     const { activeMenu, openMenu } = useContext(HeaderContext);
@@ -44,7 +47,7 @@ export const CheckOutPage = () => {
         console.log('Cambiando cantidad para el producto: ', { product_id, variant_id });
         console.log('Cantidad actualizada: ', newQuantity);
         console.log('Carrito después de actualizar cantidad: ', updatedCartItems);
-    
+
         setCartItems(updatedCartItems);
     };
 
@@ -71,6 +74,8 @@ export const CheckOutPage = () => {
             }
 
             const data = await response.json();
+            console.log("Carrito obtenido desde el servidor:", data.items);
+
             if (Array.isArray(data.items)) {
                 setCartItems(data.items);
             } else {
@@ -83,7 +88,13 @@ export const CheckOutPage = () => {
 
     useEffect(() => {
         fetchCartItems();
-    }, [fetchCartItems]);
+    }, [fetchCartItems]); // Cada vez que se llame `fetchCartItems`, se actualizará el carrito.
+
+    useEffect(() => {
+        // Cada vez que cartItems cambie, calculamos el total
+        calculateTotalPrice();
+    }, [cartItems]); // Esto ejecuta `calculateTotalPrice` al cambiar `cartItems`
+
 
     const calculateTotalPrice = useCallback(() => {
         const totalPrice = cartItems.reduce((sum, item) => {
@@ -110,47 +121,78 @@ export const CheckOutPage = () => {
     }, [cartItems]);
 
 
-    const addToWishlist = async (productId, variantId) => {
+    const openWishlistModal = (menuState) => {
+        console.log("Abriendo modal con estado:", menuState); // Debug
+        openModal(menuState); // Abre el modal con el estado que corresponda
+    };
+
+    const handleAddToWishlist = async (productId, variantId) => {
         const token = localStorage.getItem('authToken');
-
-        // Ahora accedemos correctamente al userId del usuario autenticado
-        const userId = user?._id;  // Usamos user._id aquí
-
-        console.log("user", user)
-        console.log("userId", userId)
-
-        if (!userId || !productId || !variantId) {
-            console.error('user_id, product_id y variant_id son requeridos.');
-            return;
-        }
-
+        
         if (!token) {
-            console.error('No se encontró el token de autenticación.');
+            openWishlistModal('modalNeed_toLogin');
             return;
         }
-
+    
         try {
+            // Comprueba si el producto ya está en la wishlist
+            const wishlistResponse = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+    
+            if (!wishlistResponse.ok) throw new Error('Error al obtener la wishlist.');
+    
+            const wishlist = await wishlistResponse.json();
+            console.log("Wishlist recibida:", wishlist);
+
+            const wishlistItems = Array.isArray(wishlist) ? wishlist : wishlist.items;
+            if (!wishlistItems || !Array.isArray(wishlistItems)) {
+                console.error("Formato inesperado para wishlistItems:", wishlistItems);
+                return;
+            }
+
+            if (Array.isArray(wishlistItems)) {
+                const alreadyInWishlist = wishlistItems.some(item =>
+                    item.product_id._id === productId && item.variant_id === variantId
+                );
+    
+                if (alreadyInWishlist) {
+                    console.log("El producto ya está en la wishlist.");
+                    openWishlistModal('modalAlready_inWishlist');
+                    return;
+                } else {
+                    openWishlistModal('modalAdded_toWishlist');
+                }
+            } else {
+                console.error("La respuesta de la wishlist no contiene un array válido:", wishlist);
+                throw new Error("Formato inesperado de la respuesta de la wishlist.");
+            }
+    
+            // Si el producto no está en la wishlist, procede a agregarlo
             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
+                    'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({ user_id: userId, product_id: productId, variant_id: variantId }),
+                body: JSON.stringify({
+                    product_id: productId,
+                    variant_id: variantId,
+                }),
             });
-
+    
             if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Error al agregar a la wishlist:', errorText);
-                throw new Error('No se pudo agregar el producto a la wishlist');
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Error al añadir a la wishlist');
             }
-
-            const data = await response.json();
-            console.log('Producto agregado a la wishlist:', data);
-            alert('Producto añadido a tu lista de deseos');
+    
+            openWishlistModal('modalAdded_toWishlist');
         } catch (error) {
-            console.error('Error al añadir el producto a la wishlist:', error);
-            alert('Hubo un error al añadir a tu lista de deseos');
+            console.error('Error al procesar la solicitud de wishlist:', error);
+            setErrorMessage('Ocurrió un error inesperado.');
         }
     };
 
@@ -169,7 +211,7 @@ export const CheckOutPage = () => {
                 </div>
 
                 <div className="cartPrev">
-                    <div>Mi selección: ({cartItems.length})</div>
+                    <div>Mi selección: ({cartItems.reduce((sum, item) => sum + item.quantity, 0)})</div>
                     <div>
                         <button className="view-cart-button" onClick={handleOpenSectionModal}>Ver carrito</button>
                     </div>
@@ -209,28 +251,54 @@ export const CheckOutPage = () => {
                                     <p>Imagen no disponible</p>
                                 )}
                                 <div className="infoProductCheckOut">
-                                    <div className="product-header">
-                                        <div className='divCosts'>{product_id?.name || "Nombre no disponible"}</div>
-                                    </div>
-                                    <div className="upperInformation">
-                                        {selectedVariant && (
-                                            <p>Color: {selectedVariant.color?.colorName}</p>
-                                        )}
-                                        <div className="color-size">
-                                            <div className='divCosts'>Género:</div>
-                                            <div className='divCosts'>{product_id?.gender || "Género no disponible"}</div>
+                                    <div className="productHeader_checkout">
+                                        <div className="product-header">
+                                            <div className='divCosts'>{product_id?.name || "Nombre no disponible"}</div>
+                                        </div>
+                                        <div className="upperInformation">
+                                            {selectedVariant && selectedVariant.color && (
+                                                <div className="color-container">
+                                                    <span className="color-label">Color:</span>
+                                                    <span className="color-value">{selectedVariant.color.colorName}</span>
+                                                </div>
+                                            )}
+                                            <div className="gender-container">
+                                                <div className="divGender">Género:</div>
+                                                    <div className="divGender">{product_id?.gender || "Género no disponible"}</div>
+                                            </div>
                                         </div>
                                     </div>
 
 
                                     <div className="quantity-price">
-                                        <div className='divCosts'>
-                                            {selectedVariant && selectedVariant?.price
-                                                ? `Precio: $${selectedVariant.price}`
-                                                : "Precio no disponible"
-                                            }
+                                        <div className="divCosts">
+                                            {selectedVariant && selectedVariant?.price ? (
+                                                <div className='groupCheckout_price'>
+                                                    <p>Precio:</p>
+                                                    <p>${selectedVariant.price}</p>
+                                                </div>
+                                            ) : (
+                                                <p>Precio no disponible</p>
+                                            )}
                                         </div>
                                         {/* Cantidad con los botones */}
+                                    </div>
+
+
+                                    <div className="quantity-price">
+                                        <div className="divCosts">
+                                            {selectedVariant?.sizes && selectedVariant.sizes.length > 0 ? (
+                                                <div className="sizeContainer_checkout">
+                                                    <span className="size-label">Talla:</span>
+                                                    <span className="size-value">{selectedVariant.sizes[0].size}</span>
+                                                </div>
+                                            ) : (
+                                                <span className="size-unavailable">Talla no disponible</span>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="quantity-price">
                                         <div className="quantity-container">
                                             <div className="quantity-header">Cantidad:</div>
                                             <div className="quantity-controls">
@@ -254,7 +322,7 @@ export const CheckOutPage = () => {
                                     <div className="action-buttons">
                                         <button
                                             className="favorites-button"
-                                            onClick={() => addToWishlist(product_id, variant_id)}
+                                            onClick={() => handleAddToWishlist(product_id, variant_id)}
                                         >
                                             Añadir a favoritos
                                         </button>
@@ -319,6 +387,7 @@ export const CheckOutPage = () => {
 
             </div>
             {activeMenu.startsWith('modalInfo_CheckOut') && <Modal />}
+            {activeModal && <MultifunctionalModal/>}
         </section>
     );
 };

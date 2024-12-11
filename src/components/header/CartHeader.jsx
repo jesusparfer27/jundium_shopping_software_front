@@ -112,15 +112,17 @@ const CartContainer = () => {
                     <div className={`cartItems ${cartItems.length >= 3 ? 'scrollableCartItems' : ''}`}>
                         <div className={`cartItems ${cartItems.length >= 3 ? 'scrollableCartItems' : ''}`}>
                             {cartItems.map(item => {
-                                const { product_id, variant_id, quantity } = item;
+                                const { product_id, variant_id, quantity, size, colorName } = item;
 
                                 const name = product_id?.name || "Producto sin nombre";
                                 const variants = product_id?.variants || [];
-
                                 const selectedVariant = variants.find(variant => variant.variant_id === variant_id);
                                 const variantPrice = selectedVariant?.price || 0;
                                 const imageUrl = selectedVariant?.image ? selectedVariant.image[0] : null;
                                 const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null;
+
+                                // Log para capturar el tamaño recibido directamente desde el item
+                                console.log(`Tamaño recibido para el carrito: ${size}`);
 
                                 return (
                                     <div key={item._id} className="cartItem">
@@ -134,8 +136,9 @@ const CartContainer = () => {
                                         <div className="cartItemContent">
                                             <p className="textCard_Header">{name}</p>
                                             <p className="textCard_Header">${variantPrice.toFixed(2)}</p>
-                                            <p className="textCard_Header">Cantidad: {quantity || 1}</p>
-                                            <p className="textCard_Header">Color: {selectedVariant.color?.colorName || 'No especificado'}</p>
+                                            {/* <p className="textCard_Header">Cantidad: {quantity || 1}</p> */}
+                                            <p className="textCard_Header">{colorName || 'No especificado'}</p>
+                                            <p className="textCard_Header">size: {size || 'No especificado'}</p>
 
                                             <div className="submit-buttonProfile Cart">
                                                 <button onClick={() => {
@@ -150,6 +153,7 @@ const CartContainer = () => {
                                     </div>
                                 );
                             })}
+
                         </div>
                     </div>
 

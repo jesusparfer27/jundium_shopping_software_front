@@ -54,6 +54,10 @@
     padding-left: 1rem;
 }
 
+.quantity-button {
+    background-color: transparent;
+}
+
 .cartPrev {
     width: 80%;
     background-color: transparent;
@@ -63,8 +67,20 @@
     padding-bottom: 1.5rem;
 }
 
+
+.sizeContainer_checkout {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
 .cartPrev div {
     font-size: 24px;
+}
+
+.divCosts {
+    display: flex;
+    width: 100%;
 }
 
 .view-cart-button {
@@ -101,6 +117,10 @@
     border: 1px solid #ddd;
 }
 
+.productHeader_checkout {
+
+}
+
 .infoProductCheckOut {
     width: 100%;
     height: auto;
@@ -128,15 +148,19 @@
     gap: 1rem; /* Añadido para espacio entre color y talla */
     padding-bottom: 16rem;
     padding-left: 1.5rem;
+    padding-top: 1rem;
     padding-right: 1.5rem;
 }
 
-.renderContent {
-
+.color-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
 }
 
-.color-size {
+.gender-container {
     display: flex;
+    width: 100%;
     justify-content: space-between;
 }
 
@@ -147,42 +171,55 @@
     padding-left: 1.5rem;
 }
 
+.quantity-containerFather {
+    display: flex;
+    justify-content: center;
+}
+
 .quantity-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 10px 0;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    width: 100%;
   }
   
   .quantity-header {
-    font-weight: bold;
     margin-right: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
   }
   
   .quantity-controls {
     display: flex;
     align-items: center;
+    justify-content: center;
   }
   
   .quantity-button {
-    padding: 5px 10px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    background-color: #FFF;
     cursor: pointer;
     transition: background-color 0.2s ease;
+    border: NONE;
   }
   
   .quantity-button:hover {
-    background-color: #e0e0e0;
+    transform: scale 1s;
   }
   
   .quantity-number {
     padding: 0 10px;
     font-size: 16px;
-    font-weight: bold;
   }
   
+  .groupCheckout_price {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
 
 .action-buttons {
     display: flex;

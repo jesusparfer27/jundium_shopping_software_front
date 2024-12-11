@@ -20,13 +20,19 @@ export const ShowingProductPage = () => {
 
     const handleColorChange = (e) => {
         const selectedColor = e.target.value;
-        const variant = product?.variants.find(variant => variant.color.colorName === selectedColor);
-
+        
+        // Encuentra la variante basada en el color seleccionado
+        const variant = product?.variants.find(variant =>
+            variant?.color?.colorName === selectedColor
+        );
+        
         if (variant) {
-            setSelectedVariant(variant);
-            setSelectedSize("");
+            console.log("Color seleccionado:", variant.color.colorName); // Log color cambiado
+            setSelectedVariant(variant); // Actualiza la variante seleccionada
+            setSelectedSize(""); // Reinicia el tamaño seleccionado si cambia el color
         } else {
-            console.warn(`No se encontró variante para el color: ${selectedColor}`);
+            console.warn("No se encontró el color con el nombre:", selectedColor);
+            setSelectedVariant(null);
         }
     };
 
@@ -36,11 +42,12 @@ export const ShowingProductPage = () => {
 
         if (selectedVariant) {
             const variant = product.variants.find(variant =>
-                variant.sizes.some(sizeObj => sizeObj.size === selectedSize) &&
+                variant.sizes.size == selectedVariant.sizes.size,
                 variant.color.colorName === selectedVariant.color.colorName
             );
             if (variant) {
                 setSelectedVariant(variant);
+                console.log(`Tamaño seleccionado: ${selectedSize}`); // Log del tamaño seleccionado
             } else {
                 console.warn(`Tamaño no disponible para el color seleccionado y la talla ${selectedSize}`);
             }
@@ -68,7 +75,7 @@ export const ShowingProductPage = () => {
         }
 
         if (!selectedSize) {
-            openModal('modalSelectSize'); // Abrir el modal si no se selecciona una talla
+            openModal('modalSelectSize');
             return;
         }
 
@@ -80,10 +87,25 @@ export const ShowingProductPage = () => {
 
         const productId = product?.id;
         const variantId = selectedVariant?.variant_id;
-        if (!productId || !variantId) {
-            setErrorMessage('Selecciona un color y tamaño antes de añadir al carrito.');
+        const colorName = selectedVariant?.color?.colorName;
+
+        if (!productId || !variantId || !colorName) {
+            setErrorMessage('Por favor selecciona un color, tamaño y variante válidos antes de añadir al carrito.');
+            console.error({
+                productId,
+                variantId,
+                colorName,
+                selectedSize,
+            });
             return;
         }
+
+        console.log("Producto seleccionado para añadir al carrito:", {
+            productId,
+            variantId,
+            colorName: colorName,
+            size: selectedSize,
+        });
 
         try {
             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/cart`, {
@@ -96,6 +118,8 @@ export const ShowingProductPage = () => {
                     user_id: userId,
                     product_id: productId,
                     variant_id: variantId,
+                    colorName: colorName,
+                    size: selectedSize,
                     quantity: 1,
                 }),
             });
@@ -113,6 +137,7 @@ export const ShowingProductPage = () => {
             setErrorMessage('Ocurrió un error al añadir el producto al carrito.');
         }
     };
+
 
     useEffect(() => {
         if (id) {
@@ -141,11 +166,17 @@ export const ShowingProductPage = () => {
                     const variant = productData.variants.find(v => v.variant_id === variantIdFromUrl);
                     if (variant) {
                         setSelectedVariant(variant);
+                        console.log("Variante inicial seleccionada:", variant.color.colorName); // Log variante inicial
                     } else {
                         console.warn("No se encontró una variante con el ID especificado.");
                     }
                 } else {
-                    setSelectedVariant(productData.variants[0]);
+                    const defaultVariant = productData.variants[0];
+                    setSelectedVariant(defaultVariant);
+                    if (defaultVariant) {
+                        console.log("Variante inicial seleccionada:", defaultVariant.color.colorName); // Log variante inicial
+                    }
+
                 }
             }
         } catch (error) {
@@ -222,12 +253,16 @@ export const ShowingProductPage = () => {
                         <select
                             id="color"
                             className="select_Color"
-                            value={selectedVariant ? selectedVariant.color.colorName : ""}
+                            value={selectedVariant?.color?.colorName || ""}
                             onChange={handleColorChange}
                         >
                             <option value="">Seleccionar Color</option>
-                            {product.variants.map((variant, index) => (
-                                <option key={index} value={variant.color.colorName} className="option_Color">
+                            {product?.variants?.map((variant, index) => (
+                                <option
+                                    key={index}
+                                    value={variant.color.colorName}
+                                    className="option_Color"
+                                >
                                     {variant.color.colorName}
                                 </option>
                             ))}
