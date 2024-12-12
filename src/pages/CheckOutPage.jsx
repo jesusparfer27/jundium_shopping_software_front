@@ -13,10 +13,12 @@ export const CheckOutPage = () => {
     const [total, setTotal] = useState({ price: 0, verySpenses: 0, endingPrice: 0 });
     const [expandedSections, setExpandedSections] = useState({});
     const { user } = useUser();
-    const { activeModal, openModal} = useContext(ModalContext);
+    const { activeModal, openModal } = useContext(ModalContext);
     const navigate = useNavigate(); // Hook para redirección
     const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
     const { activeMenu, openMenu } = useContext(HeaderContext);
+    const [errorMessage, setErrorMessage] = useState('');
+
 
     useEffect(() => {
         if (user === null || user === undefined) {
@@ -128,50 +130,60 @@ export const CheckOutPage = () => {
 
     const handleAddToWishlist = async (productId, variantId) => {
         const token = localStorage.getItem('authToken');
-        
+    
         if (!token) {
             openWishlistModal('modalNeed_toLogin');
             return;
         }
     
+        console.log(`Intentando añadir a la wishlist el producto con variantId: ${variantId}`);
+    
         try {
-            // Comprueba si el producto ya está en la wishlist
+            // Verifica si la wishlist existe
             const wishlistResponse = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
                 method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
+                headers: { Authorization: `Bearer ${token}` },
             });
     
-            if (!wishlistResponse.ok) throw new Error('Error al obtener la wishlist.');
+            if (wishlistResponse.status === 404) {
+                // Si no existe la wishlist, crea una nueva
+                await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({}),
+                });
+            }
     
-            const wishlist = await wishlistResponse.json();
-            console.log("Wishlist recibida:", wishlist);
-
-            const wishlistItems = Array.isArray(wishlist) ? wishlist : wishlist.items;
-            if (!wishlistItems || !Array.isArray(wishlistItems)) {
-                console.error("Formato inesperado para wishlistItems:", wishlistItems);
+            const wishlistData = await wishlistResponse.json();
+    
+            // Verificar si el formato de la wishlist es correcto
+            const wishlistItems = Array.isArray(wishlistData.items) ? wishlistData.items : [];
+            if (!Array.isArray(wishlistData.items)) {
+                console.error('Error: La wishlist no contiene un array válido de ítems.', wishlistData);
+                throw new Error('Formato de wishlist inválido.');
+            }
+    
+            // Comprobar si el producto ya está en la wishlist
+            const alreadyInWishlist = wishlistItems.some(item => {
+                const itemProductId = String(item.product_id).trim();
+                const itemVariantId = String(item.variant_id).trim();
+    
+                return (
+                    itemProductId === String(productId).trim() &&
+                    itemVariantId === String(variantId).trim()
+                );
+            });
+    
+            if (alreadyInWishlist) {
+                console.log(`El producto con variantId ${variantId} ya está en la wishlist.`);
+                openWishlistModal('modalAlready_inWishlist');
                 return;
             }
-
-            if (Array.isArray(wishlistItems)) {
-                const alreadyInWishlist = wishlistItems.some(item =>
-                    item.product_id._id === productId && item.variant_id === variantId
-                );
     
-                if (alreadyInWishlist) {
-                    console.log("El producto ya está en la wishlist.");
-                    openWishlistModal('modalAlready_inWishlist');
-                    return;
-                } else {
-                    openWishlistModal('modalAdded_toWishlist');
-                }
-            } else {
-                console.error("La respuesta de la wishlist no contiene un array válido:", wishlist);
-                throw new Error("Formato inesperado de la respuesta de la wishlist.");
-            }
-    
-            // Si el producto no está en la wishlist, procede a agregarlo
+            // Si el producto no está en la wishlist, añadirlo
             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
                 method: 'POST',
                 headers: {
@@ -189,18 +201,18 @@ export const CheckOutPage = () => {
                 throw new Error(errorData.message || 'Error al añadir a la wishlist');
             }
     
+            console.log(`Producto con variantId ${variantId} añadido correctamente a la wishlist.`);
             openWishlistModal('modalAdded_toWishlist');
         } catch (error) {
-            console.error('Error al procesar la solicitud de wishlist:', error);
-            setErrorMessage('Ocurrió un error inesperado.');
+            console.error('Error al procesar la solicitud de wishlist:', error.message);
+            setErrorMessage('Ocurrió un error inesperado. Por favor, inténtalo de nuevo.');
         }
     };
-
+    
 
     const handleOpenSectionModal = (sectionId) => {
         openMenu(`modalInfo_CheckOut_${sectionId}`);
     };
-
 
     return (
         <section className="checkoutSection">
@@ -264,7 +276,7 @@ export const CheckOutPage = () => {
                                             )}
                                             <div className="gender-container">
                                                 <div className="divGender">Género:</div>
-                                                    <div className="divGender">{product_id?.gender || "Género no disponible"}</div>
+                                                <div className="divGender">{product_id?.gender || "Género no disponible"}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -387,7 +399,7 @@ export const CheckOutPage = () => {
 
             </div>
             {activeMenu.startsWith('modalInfo_CheckOut') && <Modal />}
-            {activeModal && <MultifunctionalModal/>}
+            {activeModal && <MultifunctionalModal />}
         </section>
     );
 };

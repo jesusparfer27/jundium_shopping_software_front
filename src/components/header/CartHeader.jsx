@@ -56,7 +56,7 @@ const CartContainer = () => {
             console.error('Faltan el ID del producto o de la variante');
             return;
         }
-
+    
         try {
             const token = localStorage.getItem('authToken');
             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/cart/${productId}/${variantId}`, {
@@ -65,25 +65,30 @@ const CartContainer = () => {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ action: 'decrease' }),
+                body: JSON.stringify({ action: 'decrease' }), // Indicamos que estamos disminuyendo cantidad
             });
-
+    
             if (!response.ok) {
-                const errorResponse = await response.json(); // Obtener la respuesta de error
+                const errorResponse = await response.json();
                 throw new Error(`Error al actualizar el producto en el carrito: ${errorResponse.message || response.statusText}`);
             }
-
-            // Actualiza el estado eliminando el item localmente
+    
+            // Actualiza el estado reduciendo la cantidad o eliminando el ítem
             setCartItems((prevItems) =>
-                prevItems.filter(item => !(item.product_id._id === productId && item.variant_id === variantId))
+                prevItems.map((item) => {
+                    if (item.product_id._id === productId && item.variant_id === variantId) {
+                        if (item.quantity > 1) {
+                            return { ...item, quantity: item.quantity - 1 }; // Reducir la cantidad
+                        }
+                        return null; // Eliminar completamente si cantidad llega a 0
+                    }
+                    return item; // Mantener los demás ítems
+                }).filter(Boolean) // Filtrar ítems nulos
             );
-
         } catch (error) {
             console.error('Error al actualizar el producto en el carrito:', error);
         }
     };
-
-
 
     console.log('Productos actualmente en el carrito:', cartItems);
 
@@ -136,7 +141,7 @@ const CartContainer = () => {
                                         <div className="cartItemContent">
                                             <p className="textCard_Header">{name}</p>
                                             <p className="textCard_Header">${variantPrice.toFixed(2)}</p>
-                                            {/* <p className="textCard_Header">Cantidad: {quantity || 1}</p> */}
+                                            <p className="textCard_Header">Cantidad: {quantity || 1}</p>
                                             <p className="textCard_Header">{colorName || 'No especificado'}</p>
                                             <p className="textCard_Header">size: {size || 'No especificado'}</p>
 

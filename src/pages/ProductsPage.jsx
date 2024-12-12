@@ -10,11 +10,11 @@
     import WinterImage from '../assets/home-sections/winter-session-home.jpg';
 
     export const ProductsPage = () => {
-        const { activeModal, openModal} = useContext(ModalContext);
+        const { activeModal, openModal } = useContext(ModalContext);
         const { id } = useParams();
         const [products, setProducts] = useState([]);
         const [loading, setLoading] = useState(true);
-        const [error, setError] = useState(null); 
+        const [error, setError] = useState(null);
         const [errorMessage, setErrorMessage] = useState("");
 
         const { VITE_API_BACKEND, VITE_PRODUCTS_ENDPOINT, VITE_BACKEND_ENDPOINT, VITE_IMAGES_BASE_URL, VITE_IMAGE } = import.meta.env;
@@ -31,22 +31,22 @@
         const fetchProducts = async () => {
             setLoading(true);
             setError(null);
-        
+
             try {
                 const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}${VITE_PRODUCTS_ENDPOINT}`);
                 if (!response.ok) throw new Error('Error al cargar los productos');
                 const data = await response.json();
-        
+
                 // Filtra productos por tipo, género, colección
                 const filteredProducts = data.filter(product => {
                     const genderMatch = !genderParam || product.gender === genderParam;
                     const typeMatch = !typeParam || product.type === typeParam;
                     const collectionMatch = !collectionParam || product.collection === collectionParam;
                     const nameMatch = !searchTerm || product.name.toLowerCase().includes(searchTerm.toLowerCase());
-        
+
                     return genderMatch && typeMatch && collectionMatch && nameMatch;
                 });
-        
+
                 // Desglosa todas las variantes de productos filtrados
                 const productsWithVariants = filteredProducts.flatMap(product =>
                     product.variants.map(variant => ({
@@ -56,14 +56,14 @@
                         discount: variant.discount || product.discount, // Usa el descuento de la variante o el del producto
                     }))
                 );
-        
+
                 setProducts(productsWithVariants);
             } catch (err) {
                 setError(err.message);
             } finally {
                 setLoading(false);
             }
-        };        
+        };
 
         useEffect(() => {
             fetchProducts();
@@ -75,85 +75,102 @@
         };
 
         const openWishlistModal = (menuState) => {
-            console.log("Abriendo modal con estado:", menuState); // Debug
+            console.log(`Abriendo modal: ${menuState}`); // Debug
             openModal(menuState); // Abre el modal con el estado que corresponda
         };
 
         const handleAddToWishlist = async (productId, variantId) => {
             const token = localStorage.getItem('authToken');
-            
+        
             if (!token) {
                 openWishlistModal('modalNeed_toLogin');
                 return;
             }
         
+            console.log(`Intentando añadir a la wishlist el producto con variantId: ${variantId}`);
+        
             try {
-                // Comprueba si el producto ya está en la wishlist
+                // Verifica si la wishlist existe
                 const wishlistResponse = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
                     method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
+                    headers: { Authorization: `Bearer ${token}` },
                 });
         
-                if (!wishlistResponse.ok) throw new Error('Error al obtener la wishlist.');
+                if (!wishlistResponse.ok && wishlistResponse.status === 404) {
+                    // Crear una nueva wishlist si no existe
+                    const createWishlistResponse = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${token}`,
+                        },
+                        body: JSON.stringify({}),
+                    });
         
-                const wishlist = await wishlistResponse.json();
-                console.log("Wishlist recibida:", wishlist);
-
-                const wishlistItems = Array.isArray(wishlist) ? wishlist : wishlist.items;
-                if (!wishlistItems || !Array.isArray(wishlistItems)) {
-                    console.error("Formato inesperado para wishlistItems:", wishlistItems);
+                    if (!createWishlistResponse.ok) {
+                        throw new Error('Error al crear la wishlist.');
+                    }
+                }
+        
+                const wishlistData = await wishlistResponse.json();
+                const wishlistItems = Array.isArray(wishlistData?.items) ? wishlistData.items : [];
+                
+                // Validación de formato
+                if (!Array.isArray(wishlistItems)) {
+                    console.error('Error: La wishlist no contiene un array válido de ítems.', wishlistData);
+                    openWishlistModal('modalError');
                     return;
                 }
-
-                if (Array.isArray(wishlistItems)) {
-                    const alreadyInWishlist = wishlistItems.some(item =>
-                        item.product_id._id === productId && item.variant_id === variantId
-                    );
         
-                    if (alreadyInWishlist) {
-                        console.log("El producto ya está en la wishlist.");
-                        openWishlistModal('modalAlready_inWishlist');
-                        return;
-                    } else {
-                        openWishlistModal('modalAdded_toWishlist');
-                    }
-                } else {
-                    console.error("La respuesta de la wishlist no contiene un array válido:", wishlist);
-                    throw new Error("Formato inesperado de la respuesta de la wishlist.");
+                // Comprobar si el producto ya está en la wishlist
+                const alreadyInWishlist = wishlistItems.some(item => {
+                    const itemProductId = String(item.product_id).trim();
+                    const itemVariantId = String(item.variant_id).trim();
+                
+                    return (
+                        itemProductId === String(productId).trim() &&
+                        itemVariantId === String(variantId).trim()
+                    );
+                });
+        
+                if (alreadyInWishlist) {
+                    console.log('Abriendo modalAlready_inWishlist');
+                    openWishlistModal('modalAlready_inWishlist');
+                    return;
                 }
         
-                // Si el producto no está en la wishlist, procede a agregarlo
-                const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
+                // Añadir el producto a la wishlist
+                const addResponse = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
+                        Authorization: `Bearer ${token}`,
                     },
-                    body: JSON.stringify({
-                        product_id: productId,
-                        variant_id: variantId,
-                    }),
+                    body: JSON.stringify({ product_id: productId, variant_id: variantId }),
                 });
         
-                if (!response.ok) {
-                    const errorData = await response.json();
+                if (!addResponse.ok) {
+                    const errorData = await addResponse.json();
                     throw new Error(errorData.message || 'Error al añadir a la wishlist');
                 }
         
+                console.log(`Producto con variantId ${variantId} añadido correctamente a la wishlist.`);
                 openWishlistModal('modalAdded_toWishlist');
             } catch (error) {
-                console.error('Error al procesar la solicitud de wishlist:', error);
-                setErrorMessage('Ocurrió un error inesperado.');
+                console.error('Error al procesar la solicitud de wishlist:', error.message);
+                if (error.message.includes('ya está en la wishlist')) {
+                    openWishlistModal('modalAlready_inWishlist');
+                } else {
+                    openWishlistModal('modalError');
+                }
             }
         };
         
 
+
         if (loading) return <div className="loading">Cargando productos...</div>;
         if (error) return <div className="error">Error al cargar productos: {error}</div>;
 
-        
 
         return (
             <>

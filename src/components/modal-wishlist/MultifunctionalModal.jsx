@@ -38,10 +38,10 @@ export const MultifunctionalModal = () => {
             return (
                 <div className="multifunctionalModal_containerFather">
                     <div className="miniLogo_modalContainer">
-                        <img src={MiniLogoTransparentBackground} className="miniLogo_transparentLogo" alt="Mini Logo" />
+                        <img src={MiniLogoTransparentBackground} className="miniLogo_transparentLogo"></img>
                     </div>
                     <div className="sectionContent">
-                        <p>Este producto ya se encuentra en tu wishlist.</p>
+                        <p>Este producto ya está en tu wishlist.</p>
                     </div>
                 </div>
             );

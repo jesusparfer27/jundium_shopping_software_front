@@ -73,22 +73,22 @@ export const ShowingProductPage = () => {
             openModal('modalNeed_toLogin');
             return;
         }
-
-        if (!selectedSize) {
+    
+        if (!selectedSize || !selectedVariant) {
             openModal('modalSelectSize');
             return;
         }
-
+    
         const userId = getUserIdFromToken(token);
         if (!userId) {
             setErrorMessage('Error al extraer información del usuario.');
             return;
         }
-
+    
         const productId = product?.id;
         const variantId = selectedVariant?.variant_id;
         const colorName = selectedVariant?.color?.colorName;
-
+    
         if (!productId || !variantId || !colorName) {
             setErrorMessage('Por favor selecciona un color, tamaño y variante válidos antes de añadir al carrito.');
             console.error({
@@ -99,14 +99,8 @@ export const ShowingProductPage = () => {
             });
             return;
         }
-
-        console.log("Producto seleccionado para añadir al carrito:", {
-            productId,
-            variantId,
-            colorName: colorName,
-            size: selectedSize,
-        });
-
+    
+        // Incluye talla y color en la solicitud al carrito
         try {
             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/cart`, {
                 method: 'POST',
@@ -123,12 +117,12 @@ export const ShowingProductPage = () => {
                     quantity: 1,
                 }),
             });
-
+    
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Error al añadir al carrito');
             }
-
+    
             const data = await response.json();
             console.log('Producto añadido al carrito:', data);
             openModal('modalAdded_toCart');
@@ -137,7 +131,6 @@ export const ShowingProductPage = () => {
             setErrorMessage('Ocurrió un error al añadir el producto al carrito.');
         }
     };
-
 
     useEffect(() => {
         if (id) {
