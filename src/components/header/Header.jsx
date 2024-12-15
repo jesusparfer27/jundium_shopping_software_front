@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { HeaderContext } from '../../context/HeaderContext';
-import '../../css/components/header/header.css';
 import HeaderMenu from './MenuHeader';
 import LoginContainer from './LoginHeader';
 import CartContainer from './CartHeader';
@@ -9,6 +8,8 @@ import ContactContainer from './ContactHeader';
 import HeaderSearch from './SearchHeader';
 import LogoBlackLetters from '../../assets/logos/jundium_black_letters.png'
 import { FilterProducts } from './FilterProducts';
+import '../../css/components/header/header.css';
+
 
 const Header = () => {
     const { activeMenu, openMenu } = useContext(HeaderContext);
@@ -31,7 +32,7 @@ const Header = () => {
         if (isNewsVisible) {
             const interval = setInterval(() => {
                 setActiveNewsIndex((prevIndex) => (prevIndex + 1) % news.length);
-            }, 3000); // Cambiar cada 3 segundos
+            }, 3000);
             return () => clearInterval(interval);
         }
     }, [isNewsVisible]);

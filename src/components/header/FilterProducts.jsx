@@ -14,7 +14,7 @@ export const FilterProducts = () => {
 
     const [filters, setFilters] = useState({
         size: [],
-        color: [], // Filtro de color
+        color: [],
         collection: [],
         priceRange: [0, 100],
         type: [],
@@ -23,7 +23,7 @@ export const FilterProducts = () => {
 
     const [openAccordions, setOpenAccordions] = useState({
         size: false,
-        color: false, // Acordeón de color
+        color: false,
         collection: false,
         price: false,
         type: false,
@@ -69,7 +69,7 @@ export const FilterProducts = () => {
         try {
             const queryParams = new URLSearchParams();
             if (filters.size.length) queryParams.append('size', filters.size.join(','));
-            if (filters.color.length) queryParams.append('color', filters.color.join(',')); // Filtro de color
+            if (filters.color.length) queryParams.append('color', filters.color.join(','));
             if (filters.collection.length) queryParams.append('collection', filters.collection.join(','));
             if (filters.type.length) queryParams.append('type', filters.type.join(','));
             if (filters.gender.length) queryParams.append('gender', filters.gender.join(','));
@@ -118,7 +118,7 @@ export const FilterProducts = () => {
     const handleSubmit = () => {
         const queryParams = new URLSearchParams();
         if (filters.size.length) queryParams.append('size', filters.size.join(','));
-        if (filters.color.length) queryParams.append('color', filters.color.join(',')); // Filtro de color
+        if (filters.color.length) queryParams.append('color', filters.color.join(','));
         if (filters.collection.length) queryParams.append('collection', filters.collection.join(','));
         if (filters.type.length) queryParams.append('type', filters.type.join(','));
         if (filters.gender.length) queryParams.append('gender', filters.gender.join(','));

@@ -4,25 +4,43 @@ import '../css/pages/checkoutpage.css';
 import { Modal } from '../components/checkout/ComponentCheckOut';
 import { HeaderContext } from '../context/HeaderContext';
 import { ModalContext } from '../components/modal-wishlist/ModalContext'
+import { CartContext } from '../context/CartContext';
 import { MultifunctionalModal } from '../components/modal-wishlist/MultifunctionalModal'
 import { useUser } from '../hooks/useUser';
 import imageLogoBlackBackground from '../assets/mini-logos/mini-logo-black-background.png'
 
 export const CheckOutPage = () => {
-    const [cartItems, setCartItems] = useState([]);
-    const [total, setTotal] = useState({ price: 0, verySpenses: 0, endingPrice: 0 });
     const [expandedSections, setExpandedSections] = useState({});
     const { user } = useUser();
     const { activeModal, openModal } = useContext(ModalContext);
-    const navigate = useNavigate(); // Hook para redirección
+    const navigate = useNavigate();
     const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
     const { activeMenu, openMenu } = useContext(HeaderContext);
-    const [errorMessage, setErrorMessage] = useState('');
+
+    const { 
+        loading,
+        setErrorMessage,
+        errorMessage,
+        handleAddToCart,
+        selectedSize,
+        fetchCartItems,
+        setSelectedSize,
+        selectedVariant,
+        setSelectedVariant,
+        total,
+        setTotal,
+        setLoading,
+        cartItems,
+        handleQuantityChange,
+        setCartItems,
+        removeFromCart,
+        product,
+        setProduct
+     } = useContext(CartContext);
 
 
     useEffect(() => {
         if (user === null || user === undefined) {
-            // Redirige solo si estamos seguros de que no hay un usuario loggeado
             navigate('/errorPage');
             return;
         }
@@ -33,183 +51,8 @@ export const CheckOutPage = () => {
             return;
         }
 
-        // No elimines el token aquí a menos que sea estrictamente necesario
     }, [user, navigate]);
-
-    const removeItem = (product_id) => {
-        setCartItems(cartItems.filter(item => item.product_id !== product_id));
-    };
-
-    const handleQuantityChange = (product_id, variant_id, newQuantity) => {
-        const updatedCartItems = cartItems.map(item =>
-            item.product_id._id === product_id && item.variant_id === variant_id
-                ? { ...item, quantity: newQuantity }
-                : item
-        );
-        console.log('Cambiando cantidad para el producto: ', { product_id, variant_id });
-        console.log('Cantidad actualizada: ', newQuantity);
-        console.log('Carrito después de actualizar cantidad: ', updatedCartItems);
-
-        setCartItems(updatedCartItems);
-    };
-
-    const fetchCartItems = useCallback(async () => {
-        if (!user) return;
-        const token = localStorage.getItem('authToken');
-
-        if (!token) {
-            console.error('No se encontró el token de autenticación.');
-            return;
-        }
-
-        try {
-            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/cart`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Error en la respuesta del servidor:', errorText);
-                throw new Error('Error al obtener los artículos del carrito');
-            }
-
-            const data = await response.json();
-            console.log("Carrito obtenido desde el servidor:", data.items);
-
-            if (Array.isArray(data.items)) {
-                setCartItems(data.items);
-            } else {
-                console.error('La respuesta del carrito no contiene un arreglo de artículos:', data);
-            }
-        } catch (error) {
-            console.error('Error al obtener el carrito:', error);
-        }
-    }, [user, VITE_API_BACKEND, VITE_BACKEND_ENDPOINT]);
-
-    useEffect(() => {
-        fetchCartItems();
-    }, [fetchCartItems]); // Cada vez que se llame `fetchCartItems`, se actualizará el carrito.
-
-    useEffect(() => {
-        // Cada vez que cartItems cambie, calculamos el total
-        calculateTotalPrice();
-    }, [cartItems]); // Esto ejecuta `calculateTotalPrice` al cambiar `cartItems`
-
-
-    const calculateTotalPrice = useCallback(() => {
-        const totalPrice = cartItems.reduce((sum, item) => {
-            // Validar si las propiedades existen antes de ejecutar la lógica
-            if (
-                item?.product_id?.variants &&
-                Array.isArray(item.product_id.variants)
-            ) {
-                const selectedVariant = item.product_id.variants.find(
-                    variant => variant.variant_id === item.variant_id
-                );
-                const basePrice = selectedVariant?.price || 0;
-                const quantity = item.quantity || 1;
-                return sum + (basePrice * quantity);
-            }
-            return sum; // Si no existen propiedades necesarias, ignorar el cálculo
-        }, 0);
-
-        setTotal(prevTotal => ({
-            ...prevTotal,
-            price: totalPrice,
-            endingPrice: totalPrice + prevTotal.verySpenses,
-        }));
-    }, [cartItems]);
-
-
-    const openWishlistModal = (menuState) => {
-        console.log("Abriendo modal con estado:", menuState); // Debug
-        openModal(menuState); // Abre el modal con el estado que corresponda
-    };
-
-    const handleAddToWishlist = async (productId, variantId) => {
-        const token = localStorage.getItem('authToken');
     
-        if (!token) {
-            openWishlistModal('modalNeed_toLogin');
-            return;
-        }
-    
-        console.log(`Intentando añadir a la wishlist el producto con variantId: ${variantId}`);
-    
-        try {
-            // Verifica si la wishlist existe
-            const wishlistResponse = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
-                method: 'GET',
-                headers: { Authorization: `Bearer ${token}` },
-            });
-    
-            if (wishlistResponse.status === 404) {
-                // Si no existe la wishlist, crea una nueva
-                await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({}),
-                });
-            }
-    
-            const wishlistData = await wishlistResponse.json();
-    
-            // Verificar si el formato de la wishlist es correcto
-            const wishlistItems = Array.isArray(wishlistData.items) ? wishlistData.items : [];
-            if (!Array.isArray(wishlistData.items)) {
-                console.error('Error: La wishlist no contiene un array válido de ítems.', wishlistData);
-                throw new Error('Formato de wishlist inválido.');
-            }
-    
-            // Comprobar si el producto ya está en la wishlist
-            const alreadyInWishlist = wishlistItems.some(item => {
-                const itemProductId = String(item.product_id).trim();
-                const itemVariantId = String(item.variant_id).trim();
-    
-                return (
-                    itemProductId === String(productId).trim() &&
-                    itemVariantId === String(variantId).trim()
-                );
-            });
-    
-            if (alreadyInWishlist) {
-                console.log(`El producto con variantId ${variantId} ya está en la wishlist.`);
-                openWishlistModal('modalAlready_inWishlist');
-                return;
-            }
-    
-            // Si el producto no está en la wishlist, añadirlo
-            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    product_id: productId,
-                    variant_id: variantId,
-                }),
-            });
-    
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al añadir a la wishlist');
-            }
-    
-            console.log(`Producto con variantId ${variantId} añadido correctamente a la wishlist.`);
-            openWishlistModal('modalAdded_toWishlist');
-        } catch (error) {
-            console.error('Error al procesar la solicitud de wishlist:', error.message);
-            setErrorMessage('Ocurrió un error inesperado. Por favor, inténtalo de nuevo.');
-        }
-    };
-    
-
     const handleOpenSectionModal = (sectionId) => {
         openMenu(`modalInfo_CheckOut_${sectionId}`);
     };
@@ -236,7 +79,6 @@ export const CheckOutPage = () => {
                         const name = product_id?.name || "Producto sin nombre";
                         const variants = product_id?.variants || [];
 
-                        // Declarar selectedVariant primero
                         const selectedVariant = variants.find(
                             variant => variant.variant_id === item.variant_id
                         );
@@ -281,7 +123,6 @@ export const CheckOutPage = () => {
                                         </div>
                                     </div>
 
-
                                     <div className="quantity-price">
                                         <div className="divCosts">
                                             {selectedVariant && selectedVariant?.price ? (
@@ -293,7 +134,6 @@ export const CheckOutPage = () => {
                                                 <p>Precio no disponible</p>
                                             )}
                                         </div>
-                                        {/* Cantidad con los botones */}
                                     </div>
 
 
@@ -338,7 +178,7 @@ export const CheckOutPage = () => {
                                         >
                                             Añadir a favoritos
                                         </button>
-                                        <button className="remove-button" onClick={() => removeItem(product_id)}>Eliminar del carrito</button>
+                                        <button className="remove-button" onClick={() => removeFromCart(product_id)}>Eliminar del carrito</button>
                                     </div>
                                 </div>
                             </div>
@@ -376,10 +216,10 @@ export const CheckOutPage = () => {
                     {['pedido', 'envio', 'devolucion', 'atencion'].map((section, index) => (
                         <div key={`${section}-${index}`} className="informationToggle">
                             <div className="groupInformation">
-                                <div className="iconAccordion">
-                                    {getSectionIcon(section)} {/* Ícono dinámico */}
+                                {/* <div className="iconAccordion">
+                                    {getSectionIcon(section)}
                                     <div className="accordion-CheckOut">{getSectionTitle(section)}</div>
-                                </div>
+                                </div> */}
                                 <div className="accordion-CheckOut">
                                     {expandedSections[section] && (
                                         <button className="button cartButton"></button>
@@ -405,63 +245,156 @@ export const CheckOutPage = () => {
 };
 
 
-const getSectionTitle = (section) => {
-    switch (section) {
-        case 'pedido': return 'Pedido';
-        case 'envio': return 'Envío';
-        case 'devolucion': return 'Devolución';
-        case 'atencion': return 'Atención al Cliente';
-        default: return 'Sección';
-    }
-};
 
-const getSectionContent = (section) => {
-    switch (section) {
-        case 'pedido': return 'Información sobre el pedido...';
-        case 'envio': return 'Detalles del envío...';
-        case 'devolucion': return 'Información sobre la política de devoluciones...';
-        case 'atencion': return 'Contacta con Atención al Cliente...';
-        default: return '';
-    }
-};
-
-const sections = [
-    { id: 'pedido', title: 'Pedido', icon: 'iconPedido' },
-    { id: 'envio', title: 'Envío', icon: 'iconEnvio' },
-    { id: 'devolucion', title: 'Devolución', icon: 'iconDevolucion' },
-    { id: 'atencion', title: 'Atención al Cliente', icon: 'iconAtencion' },
-];
-
-
-const getSectionIcon = (section) => {
-    switch (section) {
-        case 'pedido':
-            return (
-                <span className="material-symbols-outlined">
-                    shopping_bag
-                </span>
-            );
-        case 'envio':
-            return (
-                <span className="material-symbols-outlined">
-                    local_shipping
-                </span>
-            );
-        case 'devolucion':
-            return (
-                <span className="material-symbols-outlined">
-                    package_2
-                </span>
-            );
-        case 'atencion':
-            return (
-                <span className="material-symbols-outlined">
-                    help
-                </span>
-            );
-        default:
-            return null;
-    }
-};
 
 export default CheckOutPage;
+
+ // const removeItem = (product_id) => {
+    //     setCartItems(cartItems.filter(item => item.product_id !== product_id));
+    // };
+
+    // const handleAddToWishlist = async (productId, variantId) => {
+    //     const token = localStorage.getItem('authToken');
+    
+    //     if (!token) {
+    //         openWishlistModal('modalNeed_toLogin');
+    //         return;
+    //     }
+    
+    //     console.log(`Intentando añadir a la wishlist el producto con variantId: ${variantId}`);
+    
+    //     try {
+
+    //         const wishlistResponse = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
+    //             method: 'GET',
+    //             headers: { Authorization: `Bearer ${token}` },
+    //         });
+    
+    //         if (wishlistResponse.status === 404) {
+
+    //             await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                     Authorization: `Bearer ${token}`,
+    //                 },
+    //                 body: JSON.stringify({}),
+    //             });
+    //         }
+    
+    //         const wishlistData = await wishlistResponse.json();
+    
+    //         const wishlistItems = Array.isArray(wishlistData.items) ? wishlistData.items : [];
+    //         if (!Array.isArray(wishlistData.items)) {
+    //             console.error('Error: La wishlist no contiene un array válido de ítems.', wishlistData);
+    //             throw new Error('Formato de wishlist inválido.');
+    //         }
+    
+    //         const alreadyInWishlist = wishlistItems.some(item => {
+    //             const itemProductId = String(item.product_id).trim();
+    //             const itemVariantId = String(item.variant_id).trim();
+    
+    //             return (
+    //                 itemProductId === String(productId).trim() &&
+    //                 itemVariantId === String(variantId).trim()
+    //             );
+    //         });
+    
+    //         if (alreadyInWishlist) {
+    //             console.log(`El producto con variantId ${variantId} ya está en la wishlist.`);
+    //             openWishlistModal('modalAlready_inWishlist');
+    //             return;
+    //         }
+    
+    //         const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${token}`,
+    //             },
+    //             body: JSON.stringify({
+    //                 product_id: productId,
+    //                 variant_id: variantId,
+    //             }),
+    //         });
+    
+    //         if (!response.ok) {
+    //             const errorData = await response.json();
+    //             throw new Error(errorData.message || 'Error al añadir a la wishlist');
+    //         }
+    
+    //         console.log(`Producto con variantId ${variantId} añadido correctamente a la wishlist.`);
+    //         openWishlistModal('modalAdded_toWishlist');
+    //     } catch (error) {
+    //         console.error('Error al procesar la solicitud de wishlist:', error.message);
+    //         setErrorMessage('Ocurrió un error inesperado. Por favor, inténtalo de nuevo.');
+    //     }
+    // };
+
+    // const openWishlistModal = (menuState) => {
+    //     console.log("Abriendo modal con estado:", menuState);
+    //     openModal(menuState);
+    // };
+
+
+
+
+
+    // const getSectionTitle = (section) => {
+//     switch (section) {
+//         case 'pedido': return 'Pedido';
+//         case 'envio': return 'Envío';
+//         case 'devolucion': return 'Devolución';
+//         case 'atencion': return 'Atención al Cliente';
+//         default: return 'Sección';
+//     }
+// };
+
+// const getSectionContent = (section) => {
+//     switch (section) {
+//         case 'pedido': return 'Información sobre el pedido...';
+//         case 'envio': return 'Detalles del envío...';
+//         case 'devolucion': return 'Información sobre la política de devoluciones...';
+//         case 'atencion': return 'Contacta con Atención al Cliente...';
+//         default: return '';
+//     }
+// };
+
+// const sections = [
+//     { id: 'pedido', title: 'Pedido', icon: 'iconPedido' },
+//     { id: 'envio', title: 'Envío', icon: 'iconEnvio' },
+//     { id: 'devolucion', title: 'Devolución', icon: 'iconDevolucion' },
+//     { id: 'atencion', title: 'Atención al Cliente', icon: 'iconAtencion' },
+// ];
+
+
+// const getSectionIcon = (section) => {
+//     switch (section) {
+//         case 'pedido':
+//             return (
+//                 <span className="material-symbols-outlined">
+//                     shopping_bag
+//                 </span>
+//             );
+//         case 'envio':
+//             return (
+//                 <span className="material-symbols-outlined">
+//                     local_shipping
+//                 </span>
+//             );
+//         case 'devolucion':
+//             return (
+//                 <span className="material-symbols-outlined">
+//                     package_2
+//                 </span>
+//             );
+//         case 'atencion':
+//             return (
+//                 <span className="material-symbols-outlined">
+//                     help
+//                 </span>
+//             );
+//         default:
+//             return null;
+//     }
+// };

@@ -1,4 +1,3 @@
-// src/App.js
 import { Outlet } from "react-router-dom";
 import { HeaderProvider } from "./context/HeaderContext";
 import Header from "./components/header/Header";
@@ -7,7 +6,7 @@ import './css/app/app.css';
 import Footer from "./components/footer/Footer";
 import { useContext } from "react";
 import { HeaderContext } from "./context/HeaderContext";
-import { ScrollToTop } from "./lib/ScrollToTop";  // Importa el componente ScrollToTop
+import { ScrollToTop } from "./lib/ScrollToTop";
   
 function App() { 
     return (
@@ -19,22 +18,20 @@ function App() {
     );
 }
 
-// Componente separado para el contenido principal
 function MainContent() {
     const { overlayVisible, activeMenu, handleOverlayClick } = useContext(HeaderContext);
 
     return (
         <>
-            {/* Capa que cubre la aplicación */}
             {overlayVisible && (
                 <div
                     className={`overlay ${activeMenu ? 'active' : ''}`}
-                    onClick={handleOverlayClick} // Llama a handleOverlayClick aquí
+                    onClick={handleOverlayClick}
                 ></div>
             )}
 
             <div className="mainContent">
-                <ScrollToTop /> {/* Asegúrate de que ScrollToTop esté dentro de MainContent */}
+                <ScrollToTop />
                 <Outlet />
             </div>
         </>

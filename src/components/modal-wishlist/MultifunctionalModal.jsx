@@ -7,9 +7,9 @@ import MiniLogoTransparentBackground from '../../assets/mini-logos/mini-logo-tra
 export const MultifunctionalModal = () => {
     const { activeModal, closeModal } = useContext(ModalContext);
     const [fadeOut, setFadeOut] = useState(false);
-    const [timerActive, setTimerActive] = useState(true); // Controla si el temporizador está activo
-    const [mouseOver, setMouseOver] = useState(false);  // Nuevo estado para controlar el mouse sobre el contenedor
-    const [timerStartTime, setTimerStartTime] = useState(Date.now()); // Controla el tiempo de inicio del temporizador
+    const [timerActive, setTimerActive] = useState(true);
+    const [mouseOver, setMouseOver] = useState(false);
+    const [timerStartTime, setTimerStartTime] = useState(Date.now());
 
     const renderContent = () => {
         if (activeModal === 'modalNeed_toLogin') {
@@ -19,7 +19,7 @@ export const MultifunctionalModal = () => {
                         <img src={MiniLogoTransparentBackground} className="miniLogo_transparentLogo"></img>
                     </div>
                     <div className="sectionContent">
-                        <p>Por favor, <NavLink to="/login">inicia sesión</NavLink> para añadir productos a tu wishlist.</p>
+                        <p>Por favor, <NavLink to="/login">inicia sesión</NavLink> para añadir este producto.</p>
                     </div>
                 </div>
             );

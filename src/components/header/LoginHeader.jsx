@@ -8,16 +8,15 @@ const LoginContainer = () => {
     const loginContainerRef = useRef(null);
     const navigate = useNavigate();
 
-    // Estado para los inputs de email y contraseña
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false); // Estado para mostrar u ocultar la contraseña
+    const [showPassword, setShowPassword] = useState(false);
 
     const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
 
     const handleSignIn = () => {
-        navigate('/email-validation'); // Redirige a /email-validation
-        closeMenu(); // Cierra el menú
+        navigate('/email-validation');
+        closeMenu();
     };
 
     const handleLogin = async (event) => {
@@ -39,7 +38,7 @@ const LoginContainer = () => {
             const data = await response.json();
 
             if (response.ok) {
-                localStorage.setItem('authToken', data.token); // Asegúrate de usar el nombre correcto aquí
+                localStorage.setItem('authToken', data.token);
                 navigate('/profile');
                 closeMenu();
             } else {
@@ -83,8 +82,8 @@ const LoginContainer = () => {
                             onChange={(e) => setEmail(e.target.value)}
                             className='inputLogin_Header'
                             onCopy={(e) => {
-                                e.preventDefault(); // Evita la acción predeterminada
-                                navigator.clipboard.writeText(e.target.value); // Copia solo el valor del input
+                                e.preventDefault();
+                                navigator.clipboard.writeText(e.target.value);
                             }}
                         />
                     </div>

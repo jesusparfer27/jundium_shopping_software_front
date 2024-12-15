@@ -31,7 +31,7 @@ const HeaderSearch = () => {
     const handleSearch = async (e) => {
         const term = e.target.value;
         setSearchTerm(term);
-        setShowRecommendations(term.length > 0); // Muestra recomendaciones si hay algo escrito
+        setShowRecommendations(term.length > 0);
 
         if (term) {
             try {
@@ -81,9 +81,8 @@ const HeaderSearch = () => {
 
     };
 
-    // Nueva función reutilizable
     const handleLinkClick = () => {
-        openMenu(null); // Cierra el menú
+        openMenu(null);
     };
 
     const handleCloseSearch = () => {

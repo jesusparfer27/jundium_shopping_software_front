@@ -1,21 +1,27 @@
+import React from 'react';
 import { StrictMode } from 'react';
 import router from './lib/Routes.jsx';
 import { RouterProvider } from 'react-router-dom';
 import { createRoot } from 'react-dom/client';
-import React from 'react';
-import { UserProvider } from '../src/hooks/useUser.jsx'; // Asegúrate de usar la ruta correcta
+import { UserProvider } from '../src/hooks/useUser.jsx';
 import { ProductProvider } from './pages/admin_page/context/ProductContext.jsx';
+import { CartProvider } from './context/CartContext.jsx';
 import { ModalProvider } from './components/modal-wishlist/ModalContext.jsx';
+import { WishlistProvider } from './context/WishlistContext.jsx';
 import '../src/css/main/main.css';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <ModalProvider>
-      <ProductProvider>
-        <UserProvider> {/* Aquí se envuelve el RouterProvider con UserProvider */}
-          <RouterProvider router={router} />
-        </UserProvider>
-      </ProductProvider>
-    </ModalProvider>
+    <UserProvider>
+      <ModalProvider>
+        <WishlistProvider>
+          <CartProvider>
+            <ProductProvider>
+              <RouterProvider router={router} />
+            </ProductProvider>
+          </CartProvider>
+        </WishlistProvider>
+      </ModalProvider>
+    </UserProvider>
   </React.StrictMode>
 );

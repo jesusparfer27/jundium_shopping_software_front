@@ -1,43 +1,27 @@
-import React, { useContext, useEffect, useState, useCallback } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { HeaderContext } from '../../context/HeaderContext';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '../../hooks/useUser';
+import { CartContext } from '../../context/CartContext';
 import '../../css/components/header/cart.css';
-
 
 const CartContainer = () => {
     const { activeMenu, closeMenu } = useContext(HeaderContext);
     const navigate = useNavigate();
-    const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT, VITE_IMAGES_BASE_URL, VITE_IMAGE } = import.meta.env;
-    const { user } = useUser();
-    const [cartItems, setCartItems] = useState([]);
+    const { VITE_IMAGES_BASE_URL, VITE_IMAGE } = import.meta.env;
 
-    const fetchCartItems = useCallback(async () => {
-        if (!user) return;
-
-        try {
-            const token = localStorage.getItem('authToken');
-
-            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/cart`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            if (!response.ok) throw new Error('Error al obtener los artículos del carrito');
-
-            const data = await response.json();
-
-            // Asegúrate de que 'items' existe y es un arreglo
-            if (Array.isArray(data.items)) {
-                setCartItems(data.items);
-            } else {
-                console.error('La respuesta del carrito no contiene un arreglo de artículos:', data);
-            }
-        } catch (error) {
-            console.error('Error al obtener el carrito:', error);
-        }
-    }, [VITE_API_BACKEND, VITE_BACKEND_ENDPOINT, user]);
+    const { 
+        loading,
+        setErrorMessage,
+        errorMessage,
+        fetchCartItems,
+        setSelectedSize,
+        selectedVariant,
+        cartItems,
+        setCartItems,
+        removeFromCart,
+        product,
+        setProduct
+     } = useContext(CartContext);
 
     useEffect(() => {
         fetchCartItems();
@@ -45,49 +29,7 @@ const CartContainer = () => {
 
     const handleCheckout = () => {
         closeMenu()
-        // Redirige a la página de detalles de compra
         navigate('/check-out');
-    };
-
-
-
-    const handleRemoveItem = async (productId, variantId) => {
-        if (!productId || !variantId) {
-            console.error('Faltan el ID del producto o de la variante');
-            return;
-        }
-    
-        try {
-            const token = localStorage.getItem('authToken');
-            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/cart/${productId}/${variantId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ action: 'decrease' }), // Indicamos que estamos disminuyendo cantidad
-            });
-    
-            if (!response.ok) {
-                const errorResponse = await response.json();
-                throw new Error(`Error al actualizar el producto en el carrito: ${errorResponse.message || response.statusText}`);
-            }
-    
-            // Actualiza el estado reduciendo la cantidad o eliminando el ítem
-            setCartItems((prevItems) =>
-                prevItems.map((item) => {
-                    if (item.product_id._id === productId && item.variant_id === variantId) {
-                        if (item.quantity > 1) {
-                            return { ...item, quantity: item.quantity - 1 }; // Reducir la cantidad
-                        }
-                        return null; // Eliminar completamente si cantidad llega a 0
-                    }
-                    return item; // Mantener los demás ítems
-                }).filter(Boolean) // Filtrar ítems nulos
-            );
-        } catch (error) {
-            console.error('Error al actualizar el producto en el carrito:', error);
-        }
     };
 
     console.log('Productos actualmente en el carrito:', cartItems);
@@ -126,7 +68,6 @@ const CartContainer = () => {
                                 const imageUrl = selectedVariant?.image ? selectedVariant.image[0] : null;
                                 const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null;
 
-                                // Log para capturar el tamaño recibido directamente desde el item
                                 console.log(`Tamaño recibido para el carrito: ${size}`);
 
                                 return (
@@ -148,7 +89,7 @@ const CartContainer = () => {
                                             <div className="submit-buttonProfile Cart">
                                                 <button onClick={() => {
                                                     if (product_id?._id && variant_id) {
-                                                        handleRemoveItem(product_id._id, variant_id);
+                                                        removeFromCart(product_id._id, variant_id);
                                                     } else {
                                                         console.error('Faltan el ID del producto o de la variante:', item);
                                                     }
@@ -167,7 +108,7 @@ const CartContainer = () => {
                         <p>Total: ${cartItems.reduce((acc, item) => {
                             const selectedVariant = item.product_id?.variants.find(variant => variant.variant_id === item.variant_id);
                             const variantPrice = selectedVariant?.price || 0;
-                            const quantity = item.quantity || 1; // Accede a la cantidad en item
+                            const quantity = item.quantity || 1;
                             return acc + (variantPrice * quantity);
                         }, 0).toFixed(2)}</p>
                     </div>
@@ -182,3 +123,6 @@ const CartContainer = () => {
 };
 
 export default CartContainer;
+
+
+ 

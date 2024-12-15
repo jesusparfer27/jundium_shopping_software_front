@@ -1,5 +1,3 @@
-
-
 .multifunctionalModal {
     position: fixed;
     right: 0;
@@ -22,10 +20,6 @@
     visibility: hidden;
 }
 
-.sectionContent p{
-
-}
-
 .multifunctionalModal.active {
     opacity: 1;
     visibility: visible;
@@ -34,7 +28,6 @@
 .containerButton_Wishlist {
     padding-bottom: 1rem;
 }
-
 
 .acceptItem_wishlist {
     width: 100%;

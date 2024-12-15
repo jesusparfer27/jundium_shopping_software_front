@@ -1,4 +1,3 @@
-// src/components/ContactContainer.jsx
 import React, { useContext, useRef, useState } from 'react';
 import  { useUser } from '../../hooks/useUser'
 import { HeaderContext } from '../../context/HeaderContext';
@@ -42,8 +41,8 @@ const ContactContainer = () => {
                 },
                 body: JSON.stringify({
                     user_id: user,
-                    name: formData.name, // Ajustado a first_name
-                    email: formData.email,    // user_email en el schema
+                    name: formData.name,
+                    email: formData.email,
                     content: formData.content
                 })
             });
@@ -108,7 +107,7 @@ const ContactContainer = () => {
                             required
                         />
                         <textarea
-                        name="content" // Añade el atributo name
+                        name="content"
                         placeholder="Tu mensaje"
                         value={formData.content}
                         onChange={handleChange}

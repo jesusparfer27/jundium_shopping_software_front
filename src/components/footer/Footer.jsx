@@ -9,30 +9,25 @@ const Footer = () => {
     const location = useLocation();
     const isHomeOrWomenCollection = location.pathname === '/' || location.pathname === '/woman-collection';
     
-    // Estado para controlar la clase activa
     const [email, setEmail] = useState('');
-    const [message, setMessage] = useState(null); // Mensaje de error o éxito
+    const [message, setMessage] = useState(null);
     const [isInputActive, setIsInputActive] = useState(false);
     const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env
 
-    const { user } = useUser(); // Usa el hook useUser para obtener el usuario logueado
+    const { user } = useUser();
     const loggedUser = JSON.parse(localStorage.getItem('user')) || {};
     const loggedUserEmail = loggedUser.email || '';
     console.log('Usuario desde useUser:', user);
 
-
-    // Función para manejar el cambio en el input
     const handleInputChange = (e) => {
         const newValue = e.target.value;
         setEmail(newValue);
         setIsInputActive(newValue !== '');
-        setMessage(null); // Limpiar mensajes al cambiar el input
+        setMessage(null);
     };
 
-    // Manejar suscripción al boletín
-    // Manejar suscripción al boletín
 const handleSubscribe = async () => {
-    console.log("Función handleSubscribe llamada"); // Verifica si handleSubscribe se llama
+    console.log("Función handleSubscribe llamada");
     console.log(localStorage.getItem('user'));
 
     
@@ -45,8 +40,8 @@ const handleSubscribe = async () => {
         return;
     }
 
-    console.log("Email ingresado:", email); // Verifica el valor de email
-    console.log("Usuario logueado con correo:", user.email); // Verifica el correo del usuario logueado
+    console.log("Email ingresado:", email);
+    console.log("Usuario logueado con correo:", user.email);
 
     if (!loggedUser && !user) {
         setMessage(
@@ -57,8 +52,6 @@ const handleSubscribe = async () => {
         return;
       }
       
-
-    // Verificar si el correo coincide con el del usuario loggeado
     if (email !== loggedUserEmail) {
         setMessage(
             <span>
@@ -72,8 +65,8 @@ const handleSubscribe = async () => {
     try {
         const token = localStorage.getItem('authToken');
         
-        console.log("Usuario logueado detectado con token:", token); // Verifica el token
-        console.log("Correo enviado al parámetro:", email); // Verifica el correo que se enviará
+        console.log("Usuario logueado detectado con token:", token);
+        console.log("Correo enviado al parámetro:", email);
 
         const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/newsletter`, {
             method: 'POST',
