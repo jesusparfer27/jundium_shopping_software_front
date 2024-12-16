@@ -5,6 +5,7 @@ import { Modal } from '../components/checkout/ComponentCheckOut';
 import { HeaderContext } from '../context/HeaderContext';
 import { ModalContext } from '../components/modal-wishlist/ModalContext'
 import { CartContext } from '../context/CartContext';
+import { WishlistContext } from '../context/WishlistContext';
 import { MultifunctionalModal } from '../components/modal-wishlist/MultifunctionalModal'
 import { useUser } from '../hooks/useUser';
 import imageLogoBlackBackground from '../assets/mini-logos/mini-logo-black-background.png'
@@ -18,24 +19,14 @@ export const CheckOutPage = () => {
     const { activeMenu, openMenu } = useContext(HeaderContext);
 
     const { 
-        loading,
-        setErrorMessage,
-        errorMessage,
-        handleAddToCart,
-        selectedSize,
-        fetchCartItems,
-        setSelectedSize,
-        selectedVariant,
-        setSelectedVariant,
+        handleAddToWishlist,
+     } = useContext(WishlistContext);
+
+    const { 
         total,
-        setTotal,
-        setLoading,
         cartItems,
         handleQuantityChange,
-        setCartItems,
         removeFromCart,
-        product,
-        setProduct
      } = useContext(CartContext);
 
 
@@ -52,6 +43,7 @@ export const CheckOutPage = () => {
         }
 
     }, [user, navigate]);
+
     
     const handleOpenSectionModal = (sectionId) => {
         openMenu(`modalInfo_CheckOut_${sectionId}`);
@@ -178,7 +170,7 @@ export const CheckOutPage = () => {
                                         >
                                             Añadir a favoritos
                                         </button>
-                                        <button className="remove-button" onClick={() => removeFromCart(product_id)}>Eliminar del carrito</button>
+                                        <button className="remove-button" onClick={() => removeFromCart(product_id._id, variant_id)}>Eliminar del carrito</button>
                                     </div>
                                 </div>
                             </div>
@@ -216,10 +208,10 @@ export const CheckOutPage = () => {
                     {['pedido', 'envio', 'devolucion', 'atencion'].map((section, index) => (
                         <div key={`${section}-${index}`} className="informationToggle">
                             <div className="groupInformation">
-                                {/* <div className="iconAccordion">
+                                <div className="iconAccordion">
                                     {getSectionIcon(section)}
                                     <div className="accordion-CheckOut">{getSectionTitle(section)}</div>
-                                </div> */}
+                                </div>
                                 <div className="accordion-CheckOut">
                                     {expandedSections[section] && (
                                         <button className="button cartButton"></button>
@@ -245,156 +237,63 @@ export const CheckOutPage = () => {
 };
 
 
+const getSectionTitle = (section) => {
+    switch (section) {
+        case 'pedido': return 'Pedido';
+        case 'envio': return 'Envío';
+        case 'devolucion': return 'Devolución';
+        case 'atencion': return 'Atención al Cliente';
+        default: return 'Sección';
+    }
+};
 
+const getSectionContent = (section) => {
+    switch (section) {
+        case 'pedido': return 'Información sobre el pedido...';
+        case 'envio': return 'Detalles del envío...';
+        case 'devolucion': return 'Información sobre la política de devoluciones...';
+        case 'atencion': return 'Contacta con Atención al Cliente...';
+        default: return '';
+    }
+};
+
+const sections = [
+    { id: 'pedido', title: 'Pedido', icon: 'iconPedido' },
+    { id: 'envio', title: 'Envío', icon: 'iconEnvio' },
+    { id: 'devolucion', title: 'Devolución', icon: 'iconDevolucion' },
+    { id: 'atencion', title: 'Atención al Cliente', icon: 'iconAtencion' },
+];
+
+
+const getSectionIcon = (section) => {
+    switch (section) {
+        case 'pedido':
+            return (
+                <span className="material-symbols-outlined">
+                    shopping_bag
+                </span>
+            );
+        case 'envio':
+            return (
+                <span className="material-symbols-outlined">
+                    local_shipping
+                </span>
+            );
+        case 'devolucion':
+            return (
+                <span className="material-symbols-outlined">
+                    package_2
+                </span>
+            );
+        case 'atencion':
+            return (
+                <span className="material-symbols-outlined">
+                    help
+                </span>
+            );
+        default:
+            return null;
+    }
+};
 
 export default CheckOutPage;
-
- // const removeItem = (product_id) => {
-    //     setCartItems(cartItems.filter(item => item.product_id !== product_id));
-    // };
-
-    // const handleAddToWishlist = async (productId, variantId) => {
-    //     const token = localStorage.getItem('authToken');
-    
-    //     if (!token) {
-    //         openWishlistModal('modalNeed_toLogin');
-    //         return;
-    //     }
-    
-    //     console.log(`Intentando añadir a la wishlist el producto con variantId: ${variantId}`);
-    
-    //     try {
-
-    //         const wishlistResponse = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
-    //             method: 'GET',
-    //             headers: { Authorization: `Bearer ${token}` },
-    //         });
-    
-    //         if (wishlistResponse.status === 404) {
-
-    //             await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
-    //                 method: 'POST',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                     Authorization: `Bearer ${token}`,
-    //                 },
-    //                 body: JSON.stringify({}),
-    //             });
-    //         }
-    
-    //         const wishlistData = await wishlistResponse.json();
-    
-    //         const wishlistItems = Array.isArray(wishlistData.items) ? wishlistData.items : [];
-    //         if (!Array.isArray(wishlistData.items)) {
-    //             console.error('Error: La wishlist no contiene un array válido de ítems.', wishlistData);
-    //             throw new Error('Formato de wishlist inválido.');
-    //         }
-    
-    //         const alreadyInWishlist = wishlistItems.some(item => {
-    //             const itemProductId = String(item.product_id).trim();
-    //             const itemVariantId = String(item.variant_id).trim();
-    
-    //             return (
-    //                 itemProductId === String(productId).trim() &&
-    //                 itemVariantId === String(variantId).trim()
-    //             );
-    //         });
-    
-    //         if (alreadyInWishlist) {
-    //             console.log(`El producto con variantId ${variantId} ya está en la wishlist.`);
-    //             openWishlistModal('modalAlready_inWishlist');
-    //             return;
-    //         }
-    
-    //         const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 'Authorization': `Bearer ${token}`,
-    //             },
-    //             body: JSON.stringify({
-    //                 product_id: productId,
-    //                 variant_id: variantId,
-    //             }),
-    //         });
-    
-    //         if (!response.ok) {
-    //             const errorData = await response.json();
-    //             throw new Error(errorData.message || 'Error al añadir a la wishlist');
-    //         }
-    
-    //         console.log(`Producto con variantId ${variantId} añadido correctamente a la wishlist.`);
-    //         openWishlistModal('modalAdded_toWishlist');
-    //     } catch (error) {
-    //         console.error('Error al procesar la solicitud de wishlist:', error.message);
-    //         setErrorMessage('Ocurrió un error inesperado. Por favor, inténtalo de nuevo.');
-    //     }
-    // };
-
-    // const openWishlistModal = (menuState) => {
-    //     console.log("Abriendo modal con estado:", menuState);
-    //     openModal(menuState);
-    // };
-
-
-
-
-
-    // const getSectionTitle = (section) => {
-//     switch (section) {
-//         case 'pedido': return 'Pedido';
-//         case 'envio': return 'Envío';
-//         case 'devolucion': return 'Devolución';
-//         case 'atencion': return 'Atención al Cliente';
-//         default: return 'Sección';
-//     }
-// };
-
-// const getSectionContent = (section) => {
-//     switch (section) {
-//         case 'pedido': return 'Información sobre el pedido...';
-//         case 'envio': return 'Detalles del envío...';
-//         case 'devolucion': return 'Información sobre la política de devoluciones...';
-//         case 'atencion': return 'Contacta con Atención al Cliente...';
-//         default: return '';
-//     }
-// };
-
-// const sections = [
-//     { id: 'pedido', title: 'Pedido', icon: 'iconPedido' },
-//     { id: 'envio', title: 'Envío', icon: 'iconEnvio' },
-//     { id: 'devolucion', title: 'Devolución', icon: 'iconDevolucion' },
-//     { id: 'atencion', title: 'Atención al Cliente', icon: 'iconAtencion' },
-// ];
-
-
-// const getSectionIcon = (section) => {
-//     switch (section) {
-//         case 'pedido':
-//             return (
-//                 <span className="material-symbols-outlined">
-//                     shopping_bag
-//                 </span>
-//             );
-//         case 'envio':
-//             return (
-//                 <span className="material-symbols-outlined">
-//                     local_shipping
-//                 </span>
-//             );
-//         case 'devolucion':
-//             return (
-//                 <span className="material-symbols-outlined">
-//                     package_2
-//                 </span>
-//             );
-//         case 'atencion':
-//             return (
-//                 <span className="material-symbols-outlined">
-//                     help
-//                 </span>
-//             );
-//         default:
-//             return null;
-//     }
-// };

@@ -21,13 +21,9 @@
         const [errorMessage, setErrorMessage] = useState("");
 
         const { 
-            // loading,
-            // setErrorMessage,
-            // errorMessage,
             handleAddToWishlist,
             selectedVariant,
             setSelectedVariant,
-            // setLoading,
             product,
             setProduct
          } = useContext(WishlistContext);
@@ -83,7 +79,6 @@
         }, [searchTerm, typeParam, genderParam, collectionParam]);
 
         const handleVariantSelect = (productId, variantId) => {
-            // Redirige a la página de detalles del producto con el variant_id como parámetro
             window.location.href = `/products/${productId}?variant_id=${variantId}`;
         };
 
