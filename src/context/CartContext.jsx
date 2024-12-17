@@ -69,6 +69,33 @@
             }
         };
 
+        const calculateTotalPrice = useCallback(() => {
+            const totalPrice = cartItems.reduce((sum, item) => {
+
+                if (
+                    item?.product_id?.variants &&
+                    Array.isArray(item.product_id.variants)
+                ) {
+                    const selectedVariant = item.product_id.variants.find(
+                        variant => variant.variant_id === item.variant_id
+                    );
+                    const basePrice = selectedVariant?.price || 0;
+                    const quantity = item.quantity || 1;
+                    return sum + (basePrice * quantity);
+                }
+                return sum;
+            }, 0);
+
+            setTotal(prevTotal => ({
+                ...prevTotal,
+                price: totalPrice,
+                endingPrice: totalPrice + prevTotal.verySpenses,
+            }));
+        }, [cartItems]);
+
+        useEffect(() => {
+            calculateTotalPrice();
+        }, [cartItems]);
 
         const getUserIdFromToken = (token) => {
             try {
@@ -206,34 +233,6 @@
                 console.error('Error al actualizar el carrito:', error);
             }
         };
-
-        const calculateTotalPrice = useCallback(() => {
-            const totalPrice = cartItems.reduce((sum, item) => {
-
-                if (
-                    item?.product_id?.variants &&
-                    Array.isArray(item.product_id.variants)
-                ) {
-                    const selectedVariant = item.product_id.variants.find(
-                        variant => variant.variant_id === item.variant_id
-                    );
-                    const basePrice = selectedVariant?.price || 0;
-                    const quantity = item.quantity || 1;
-                    return sum + (basePrice * quantity);
-                }
-                return sum;
-            }, 0);
-
-            setTotal(prevTotal => ({
-                ...prevTotal,
-                price: totalPrice,
-                endingPrice: totalPrice + prevTotal.verySpenses,
-            }));
-        }, [cartItems]);
-
-        useEffect(() => {
-            calculateTotalPrice();
-        }, [cartItems]);
 
         const fetchCartItems = useCallback(async () => {
             if (!user) return;

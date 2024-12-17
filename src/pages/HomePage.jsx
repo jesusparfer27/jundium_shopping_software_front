@@ -35,6 +35,16 @@ export const HomePage = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const carouselRef = useRef(null);
 
+    const carouselTexts = [
+        "DESCUBRE NUESTRA COLECCIÓN DE INVIERNO 2024: ESTILO Y COMODIDAD EN CADA PRENDA.",
+        "PRIMAVERA EN TENDENCIA: RENUEVA TU GUARDARROPA CON COLORES VIBRANTES.",
+        "VERANO A LA MODA: ¡ENCUENTRA TU LOOK PERFECTO PARA EL CALOR!",
+        "ACCESORIOS IRRESISTIBLES: BOLSOS, ZAPATOS Y MÁS QUE COMPLEMENTAN TU OUTFIT.",
+        "EDICIONES LIMITADAS: ¡NO TE PIERDAS NUESTRAS PIEZAS MÁS EXCLUSIVAS!",
+        "ESTILO ATEMPORAL: MODA MASCULINA DISEÑADA PARA CADA OCASIÓN.",
+        "TU ESENCIA, TU ESTILO: ENCUENTRA LA MODA QUE TE DEFINE.",
+    ];
+
     const categoriesData = [
         { id: 1, name: "Bolsos de Mujer", image: WomanBags, type: "bolso", gender: "mujer" },
         { id: 2, name: "Bolsos de Hombre", image: ManBags, type: "bolso", gender: "hombre" },
@@ -54,7 +64,6 @@ export const HomePage = () => {
 
 
     useEffect(() => {
-        // Set the number of images to load initially
         setImagesToLoad(categoriesData.length + seasonsData.length);
     }, []);
 
@@ -68,36 +77,32 @@ export const HomePage = () => {
         });
     };
 
-    // Duplicar los datos para el efecto de loop
-    // Duplicar los datos para el efecto de loop
-    const extendedData = Array(2).fill([...categoriesData]).flat();
+
+    const extendedData = Array(20).fill([...categoriesData]).flat();
+    // const extendedDataCarousel = Array(8).fill([...carouselTexts]).flat();
 
     useEffect(() => {
-        const totalItems = extendedData.length / 2; // La mitad de extendedData es el conjunto real.
+        const totalItems = carouselTexts.length;
+
         const interval = setInterval(() => {
             setCurrentIndex((prevIndex) => {
-                const newIndex = prevIndex + 1;
-
-                if (newIndex >= totalItems) {
-                    // Reinicia el índice sin transición visible
+                if (prevIndex === totalItems) {
+                    // Reinicia el índice al inicio, sin transición
                     if (carouselRef.current) {
-                        carouselRef.current.style.transition = 'none'; // Desactiva la transición momentáneamente
+                        carouselRef.current.style.transition = "none";
+                        return 0;
                     }
-                    setCurrentIndex(0); // Reinicia al primer elemento
-                    return 0;
                 }
-
+                // Continua deslizando con transición
                 if (carouselRef.current) {
-                    carouselRef.current.style.transition = 'transform 1s ease'; // Transición más lenta
+                    carouselRef.current.style.transition = "transform 1s ease-in-out";
                 }
-
-                return newIndex;
+                return (prevIndex + 1) % totalItems;
             });
-        }, 4000); // Intervalo ajustado a 4 segundos
+        }, 3000);
 
-        return () => clearInterval(interval); // Limpieza al desmontar
-    }, [extendedData.length]);
-
+        return () => clearInterval(interval);
+    }, [carouselTexts.length]);
 
 
     useEffect(() => {
@@ -184,6 +189,22 @@ export const HomePage = () => {
                 </div>
             </section>
 
+            <section className="sectionBackground_newCollections">
+                <div className="carruselContainer_newCollections">
+                    <div
+                        className="carruselTrack"
+                        ref={carouselRef}
+                    >
+                        {/* Renderiza el contenido duplicado */}
+                        {[...carouselTexts, ...carouselTexts].map((text, index) => (
+                            <div className="carruselSlide" key={index}>
+                                <p className="carruselText">{text}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
             <section className="container_videoSession-2">
                 <div>
                     <NavLink to="/video" className="videoLink">
@@ -199,7 +220,7 @@ export const HomePage = () => {
                                 <source src={SeasonVideo} type="video/mp4" />
                                 Tu navegador no soporta la reproducción de videos.
                             </video>
-                            <div className="textOverlay">
+                            {/* <div className="textOverlay">
                                 <div className="textOverlay">
                                     <img
                                         src={VideoGif}
@@ -208,7 +229,7 @@ export const HomePage = () => {
                                         style={{ animation: 'none', height: '100%', width: 'auto' }}
                                     />
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </NavLink>
                 </div>
@@ -246,7 +267,6 @@ export const HomePage = () => {
                             </NavLink>
                         ))}
                     </div>
-
                 </div>
             </section>
 

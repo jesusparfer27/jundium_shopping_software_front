@@ -92,7 +92,7 @@ export const CheckOutPage = () => {
                         return (
                             <div key={item._id} className="cart-item">
                                 {fullImageUrl ? (
-                                    <img src={fullImageUrl} alt={name} />
+                                    <img className='imageCheckOut_product' src={fullImageUrl} alt={name} />
                                 ) : (
                                     <p>Imagen no disponible</p>
                                 )}

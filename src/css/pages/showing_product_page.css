@@ -1,6 +1,6 @@
 .productSection {
     display: flex;
-    border-bottom: 2px solid #000; /* Borde inferior para el div de producto */
+    border-bottom: 1px solid #dcdcdc; /* Borde inferior para el div de producto */
     padding-top: 6rem;
 }
 

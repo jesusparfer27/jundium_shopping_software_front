@@ -1,37 +1,34 @@
-/* Estilos generales para el footer */
 footer {
     font-family: Arial, sans-serif;
     color: #333;
 }
 
 footer.footer-light {
-    background-color: white; /* Color claro */
+    background-color: white;
     color: #333;
 }
 
 footer.footer-light .linksSections a:hover {
-    color: #000000; /* Más oscuro en modo claro */
+    color: #000000;
 }
 
 footer.footer-dark .linksSections a:hover {
-    color: #bbb; /* Más claro en modo oscuro */
+    color: #bbb;
 }
 
 footer.footer-dark {
-    background-color: #000; /* Color oscuro */
-    color: #fff; /* Texto blanco */
+    background-color: #000;
+    color: #fff;
 }
 
-/* Cambia el color de <strong> en el footer oscuro */
 footer.footer-dark .footerSection strong {
-    color: white; /* Color blanco en modo oscuro */
+    color: white;
 }
 
 footer.footer-dark .input_subscribeNewsletter {
     background-color: black;
-    border: 1px solid white;
+    border: 1px solid #dcdcdc;
     color: white;
-
     margin: 0;
 }
 
@@ -51,51 +48,45 @@ footer.footer-dark {
 .input_subscribeNewsletter.active {
     background-color: transparent;
     color: black;
-    padding: 10px 15px; /* Igual que el estado inactivo */
+    padding: 10px 15px;
     font-size: 18px;
 }
 
 footer.footer-dark .subscriptionInputContainer button {
-    border: 1px solid white;
+    border: 1px solid #dcdcdc;
     color: white;
 }
 
-/* Cambia el color de los enlaces de redes sociales */
 .socialLinks a {
-    text-decoration: none; /* Sin subrayado en los enlaces */
-    transition: color 0.3s; /* Transición suave para el color */
+    text-decoration: none;
+    transition: color 0.3s;
 }
 
-/* Estilos para el modo claro */
 footer.footer-light .socialLinks a {
-    color: black; /* Color negro en modo claro */
+    color: black;
 }
 
-/* Estilos para el modo oscuro */
 footer.footer-dark .socialLinks a {
-    color: white; /* Color blanco en modo oscuro */
+    color: #bbb;
 }
 
-/* Estilos para el contenedor de enlaces sociales */
 .socialLinks {
-    display: flex; /* Hacer que los enlaces se alineen en fila */
-    gap: 1rem; /* Espacio entre los enlaces */
+    display: flex;
+    gap: 1rem;
 }
 
-/* Estilos para la parte superior del footer */
 .footerSuperior {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     padding-top: 4.5rem;
     padding-bottom: 10.2rem;
-    border-top: 2px solid #dcdcdc;
-    border-bottom: 2px solid #dcdcdc;
+    border-top: 1px solid #dcdcdc;
+    border-bottom: 1px solid #dcdcdc;
     gap: 8.8rem;
     width: 100%;
 }
 
-/* Estilos para el contenedor de enlaces del footer */
 .footerLinksContainer {
     display: flex;
     flex-direction: row;
@@ -118,7 +109,7 @@ footer.footer-dark .socialLinks a {
 .footerSection strong {
     font-size: 1.2em;
     margin-bottom: 10px;
-    color: #333; /* Color por defecto */
+    color: #333;
 }
 
 .linksSections a {
@@ -134,7 +125,6 @@ footer.footer-dark .socialLinks a {
     color: white;
 }
 
-/* Estilos para la suscripción */
 .footerSubscriptionContainer {
     display: flex;
     flex-direction: column;
@@ -165,16 +155,16 @@ footer.footer-dark .socialLinks a {
 
 .input_subscribeNewsletter {
     background-color: transparent;
-    padding: 15px; /* Padding interno para separar el texto del borde */
+    padding: 15px;
     font-size: 18px;
     margin: 0;
     border: 1px solid black;
-    border-radius: 4px; /* Opcional, para esquinas redondeadas */
+    border-radius: 4px;
 }
 
 .input_subscribeNewsletter::placeholder {
     font-size: 18px;
-    color: #aaa; /* Opcional, para un placeholder más claro */
+    color: #aaa;
 }
 
 .input_subscribeNewsletter.active {
@@ -185,7 +175,6 @@ footer.footer-dark .socialLinks a {
     font-size: 18px;
 }
 
-/* Estilos para la fila inferior del footer */
 .footerInferior {
     display: flex;
     justify-content: space-between;

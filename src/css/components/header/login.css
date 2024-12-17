@@ -131,7 +131,7 @@
 
 /* Estilo para el pie de signIn */
 .signIn {
-    border-top: 1px solid black;
+    border-top: 1px solid #dcdcdc;
     padding-top: 2rem;
     width: 100%;
 }

@@ -442,7 +442,7 @@ export const Profile = () => {
                         </div>
                         {wishlistItems.length > 0 ? (
                             <div className="wishlist-list">
-                                {wishlistItems.slice(0, 2).map((item) => {  // Limita a 2 productos
+                                {wishlistItems.slice(0, 2).map((item) => {
                                     const { product_id, variant_id } = item;
                                     const { name, price } = product_id || {};
 
@@ -458,8 +458,8 @@ export const Profile = () => {
                                             ) : (
                                                 <p>Imagen no disponible</p>
                                             )}
-                                            <p>Artículo: {name}</p>
-                                            <p>Precio: ${price}</p>
+                                            <p>{name}</p>
+                                            <p>{selectedVariant?.price} $</p>
                                         </div>
                                     );
                                 })}

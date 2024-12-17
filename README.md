@@ -10,8 +10,7 @@ Currently, two official plugins are available:
 
 ## TAREAS MAÑANA
 
-- removeItem de mi cart sincronizado, si elimino uno y tengo dos desaparecen dos
-- arreglar tamaño para zapatillas
-- sincronizar los botones de aumento y decremento
+- removeItem de mi cart sincronizado, si elimino uno y tengo dos desaparecen dos (?)
 - limpiar comentarios css
+- ESPACIOS EN LOS INPUTS DE DE REGISTER
 

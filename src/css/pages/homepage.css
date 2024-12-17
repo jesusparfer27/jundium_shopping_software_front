@@ -6,7 +6,6 @@ body,
     box-sizing: border-box;
 }
 
-/* Quita los estilos por defecto del NavLink */
 .myCustomClass {
     text-decoration: none;
     color: black;
@@ -22,16 +21,14 @@ body,
     overflow: hidden;
 }
 
-/* Estilos para cuando el enlace está activo */
 .myCustomActiveClass {
     text-decoration: none;
     color: black;
 }
 
-/* Estilos para la imagen con desplazamiento */
 .scrollImage {
     margin-top: -30rem;
-    margin-bottom: -14rem;
+    margin-bottom: -9rem;
     height: 145vh;
     width: 100%;
     object-fit: cover;
@@ -39,13 +36,11 @@ body,
     z-index: -99;
 }
 
-/* Estilos generales para la sección de nuevos drops */
 .newCollections {
     text-align: center;
     z-index: 1;
     position: relative;
-    padding-top: 6rem;
-    padding-bottom: 6rem;
+    padding-top: 2rem;
 }
 
 .h1Style {
@@ -57,7 +52,10 @@ body,
     padding-bottom: 1.4rem;
 }
 
-/* Estilo para la cuadrícula de nuevos drops */
+.carruselContainer_newCollections {
+    background-color: white;
+}
+
 .newDropsHome {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -66,21 +64,20 @@ body,
     min-height: 800px;
     padding-top: 2rem;
     justify-content: center;
-    padding-bottom: 2rem;
     border-radius: 10px;
 }
 
 .overlay_newCollections {
     position: absolute;
-    top: 100%; /* Oculto inicialmente fuera de la vista */
+    top: 100%;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7); /* Fondo oscuro con transparencia */
+    background: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: top .5s ease-in-out; /* Transición para el slide-in */
+    transition: top .5s ease-in-out;
 }
 
 .overlayText_newCollections {
@@ -89,15 +86,14 @@ body,
     text-align: center;
     margin: 0;
     padding: 0 1rem;
-    /* padding-bottom: 1rem; */
 }
 
 .imageContainer_home:hover .overlay_newCollections {
-    top: 0; /* Desliza el overlay hacia arriba */
+    top: 0;
 }
 
 .imageContainer_home:hover .itemImage {
-    transform: scale(1.1); /* Zoom en la imagen */
+    transform: scale(1.1);
 }
 
 .newCollections_Container{
@@ -111,38 +107,32 @@ body,
     justify-content: center;
 }
 
-
-/* Estilos para el enlace de video */
 .videoLink {
     display: block;
-  
     text-align: center;
 }
 
-/* Estilos para la sección de video */
 .homeVideo {
     width: 100%;
     height: auto;
 }
 
-/* Estilos para container_videoSession-2 */
 .container_videoSession-2 {
     top: 0;
     width: 100%;
     height: 120vh;
     overflow: hidden;
     position: sticky;
-    z-index: 1; /* Asegúrate de que el z-index sea menor */
+    z-index: 1;
 }
 
-/* Sección posterior a container_videoSession-2 */
 .carruselHome,
 .container_image_autumn,
 .newCollections,
 .newDropsHome2,
 .newDropsHome {
-    z-index: 2; /* Valor más alto para superponer por encima de container_videoSession-2 */
-    position: relative; /* Asegura que el z-index sea aplicado correctamente */
+    z-index: 2;
+    position: relative;
     background-color: white;
 }
 
@@ -152,16 +142,14 @@ body,
     object-fit: cover;
 }
 
-
 .textOverlay {
     position: absolute;
-    bottom: 20%; /* Ajusta la posición según sea necesario */
+    bottom: 20%;
     left: 50%;
     transform: translateX(-50%);
     color: #fff;
 }
 
-/* Contenedor de video con posición fija */
 .videoWrapper {
     position: sticky;
     top: 0;
@@ -169,7 +157,6 @@ body,
     overflow: hidden;
 }
 
-/* Estilo para la imagen de los productos */
 .itemImage {
     width: 100%;
     height: auto;
@@ -177,12 +164,11 @@ body,
     transition: transform 0.3s ease-in-out;
 }
 
-/* Contenedor del carrusel en la página principal */
 .carruselHome {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
+    margin-bottom: -3rem;
 }
 
 .preloader {
@@ -194,7 +180,7 @@ body,
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #ffffff; /* Cambia el color de fondo si deseas */
+    background-color: #ffffff;
     z-index: 9999;
 }
 
@@ -221,7 +207,6 @@ body,
     border-radius: 10px;
 }
 
-/* Estilo para el contenedor de texto a la izquierda */
 .leftVideoContainer {
     width: 30%;
     display: flex;
@@ -234,7 +219,6 @@ body,
     font-size: 24px;
 }
 
-/* Estilo para el contenedor del carrusel a la derecha */
 .rightCarouselContainer {
     width: 65%;
     display: flex;
@@ -247,15 +231,13 @@ body,
     background-color: white;
 }
 
-/* Carrusel animado en bucle infinito */
 .carousel {
     display: flex;
     gap: 2rem;
-    animation: scroll 120s linear infinite;
+    animation: scroll 1280s linear infinite;
     position: relative;
 }
 
-/* Elemento individual del carrusel */
 .carouselItem {
     flex: 0 0 auto;
     width: 550px;
@@ -263,24 +245,22 @@ body,
     text-align: center;
     color: black;
     text-decoration: none;
-    overflow: hidden; /* Asegura que nada salga del contenedor */
+    overflow: hidden;
     position: relative;
 }
 
-/* Sección de video sticky */
 .container_image_autumn.stickyVideo {
-    top: 0;  /* Fija la parte superior */
-    width: 100%;  /* Ancho completo */
-    height: 120vh;  /* Altura ajustable según tus necesidades */
-    overflow: hidden;  /* Ocultar el desbordamiento */
-    position: sticky;  /* Hacer que se quede fijo al desplazarse */
-    z-index: 1;  /* Asegúrate de que el z-index sea menor */
+    top: 0;
+    width: 100%;
+    height: 120vh;
+    overflow: hidden;
+    position: sticky;
+    z-index: 1;
 }
 
-/* Asegúrate de que el último section tenga un z-index más alto */
 .newCollections.lastSection {
-    position: relative;  /* Asegúrate de que el z-index se aplique correctamente */
-    z-index: 2;  /* Valor más alto para que se superponga por encima de otros elementos */
+    position: relative;
+    z-index: 2;
 }
 
 .miniLogo_modalContainer {
@@ -290,11 +270,11 @@ body,
 }
 
 .carousel_textContainer_Home {
-    position: absolute; /* Para superponerlo encima de la imagen */
-    bottom: 4%; /* Ajusta según donde quieras posicionar el texto */
+    position: absolute;
+    bottom: 4%;
     left: 20%;
-    transform: translateX(-50%); /* Centra horizontalmente */
-    z-index: 2; /* Debe ser mayor que la imagen */
+    transform: translateX(-50%);
+    z-index: 2;
     color: white;
     width: 100%;
     display: flex;
@@ -304,24 +284,21 @@ body,
 .carousel_textContainer_homeText {
     margin: 0;
     font-weight: bold;
-    z-index: 3; /* Debe estar al frente */
+    z-index: 3;
     font-size: 22px;
     width: 100%;
 }
 
-
-/* Estilo de imagen del carrusel */
 .carouselImage {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 8px;
     display: block;
-    position: relative; /* Asegura que la imagen esté en el fondo */
-    z-index: 1; /* Asegura que la imagen esté detrás del texto */;
+    position: relative;
+    z-index: 1;
 }
 
-/* Animación para el carrusel */
 @keyframes scroll {
     0% {
         transform: translateX(0);
@@ -331,12 +308,10 @@ body,
     }
 }
 
-/* Detener la animación cuando se hace hover */
 .carousel:hover {
     animation-play-state: paused;
 }
 
-/* Duplica el contenido del carrusel para crear un efecto continuo */
 .carousel::after {
     content: '';
     display: flex;
@@ -349,7 +324,6 @@ body,
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
 }
 
-/* Contenedor para el scroll de video */
 .videoScrollContainer {
     height: 2000px;
     position: sticky;
@@ -357,7 +331,6 @@ body,
     top: 0;
 }
 
-/* Contenedor para los productos recientes */
 .containerProductsLast {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -365,7 +338,6 @@ body,
     justify-items: center;
 }
 
-/* Estilos para los productos */
 .product {
     width: 100%;
     height: auto;
@@ -376,7 +348,6 @@ body,
     background-color: transparent;
 }
 
-/* Simulación de imagen */
 .imageSimulator {
     width: 100%;
     height: 400px;
@@ -384,14 +355,12 @@ body,
     border-radius: 8px;
 }
 
-/* Estilo para los ítems de drops */
 .dropItem {
     justify-content: center;
     text-decoration: none;
     color: black;
 }
 
-/* Sección adicional para nuevos drops */
 .newDropsHome2 {
     display: flex;
     gap: 3rem;
@@ -407,9 +376,62 @@ body,
     justify-content: center;
 }
 
-/* Estilo para la imagen de los drops */
 .itemImageDrops {
     width: 100%;
     height: 500px;
 }
 
+.sectionBackground_newCollections {
+    background-color: white;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.carruselContainer_newCollections {
+    overflow: hidden;
+    border-top: 10px solid red;
+    border-bottom: 10px solid red;
+    width: 100%;
+    position: relative;
+}
+
+.carruselTrack {
+    display: flex;
+    animation: scroll 55s linear infinite; /* Animación continua */
+}
+
+.carruselSlide {
+    flex: 0 0 auto;
+    width: 145vh; /* Ajusta según el diseño */
+    text-align: center;
+}
+
+.carruselText {
+    font-size: 44px;
+    font-weight: bold;
+    color: #333;
+    margin: 1rem 0;
+}
+
+@keyframes scrollRightCarousel {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-200%);
+    }
+  }
+  
+  @keyframes scrollCarruselTrack {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-520%);
+    }
+  }
+
+  
+  .carruselTrack {
+    animation: scrollCarruselTrack 140s linear infinite;
+  }

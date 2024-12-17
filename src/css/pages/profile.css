@@ -90,7 +90,7 @@
 }
 
 .separation_div {
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #dcdcdc;
 }
 
 .headerProfileOrders {
@@ -117,7 +117,7 @@
 .required-fields {
     text-align: end;
     margin-bottom: 1rem;
-    border-top: 1px solid black;
+    border-top: 1px solid #dcdcdc;
     padding-top: 1rem;
     padding-right: 3rem;
 }
@@ -127,7 +127,7 @@
 }
 
 .input-field_profile label {
-    display: block; /* Asegura que las etiquetas estén en su propia línea */
+    display: block;
 }
 
 .inputProfile_Container {
@@ -394,7 +394,7 @@ select {
 }
 
 .logOut_blockSeparation {
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #dcdcdc;
     display: flex;
     justify-content: center;
 }

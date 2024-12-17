@@ -74,7 +74,7 @@
 .filterAccordion_Container{
     width: 100%;
     display: flex;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #dcdcdc;
     flex-direction: column;
 }
 
@@ -172,7 +172,7 @@
 }
 
 .divider {
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #dcdcdc;
 }
 
 .removeFiltersButton {

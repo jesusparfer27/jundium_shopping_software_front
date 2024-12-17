@@ -4,7 +4,7 @@
 
 .header h2 {
   padding-left: 0;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #dcdcdc;
   padding-bottom: 1.3rem;
 }
 
@@ -194,7 +194,7 @@
 
 /* Otros estilos específicos */
 .accordion-item {
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #dcdcdc;
   padding: 10px;
   cursor: pointer;
 }
