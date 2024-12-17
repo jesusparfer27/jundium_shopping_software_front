@@ -13,12 +13,16 @@
   width: 80%;
 }
 
+.error-container {
+  width: 90%;
+}
+
 .error-message {
-  color: red;
+  color: black;
   font-size: 0.9rem;
   margin-top: 0.5rem;
   text-align: start;
-  width: 91.5%;
+  width: 100%;
 }
 
 
@@ -132,6 +136,7 @@
 
 .campo label {
   width: 100%; /* El label ocupa todo el ancho del contenedor */
+  padding-bottom: .4rem;
 }
 
 .campo input,
@@ -207,4 +212,23 @@
 .checkbox-terms {
   margin-left: 3rem;
   width:  3%;
+  
+}
+
+
+.checkbox-terms:checked {
+  position: relative;
+  border: 1px solid black;
+}
+
+.checkbox-terms:checked::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px; 
+  background-color: black;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 2px;
 }

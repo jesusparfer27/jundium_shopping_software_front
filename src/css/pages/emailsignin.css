@@ -6,6 +6,16 @@
     padding-top: 5rem;
 }
 
+.errorMessage_signIn_top {
+    margin-bottom: -.4rem;
+    margin-top: -7px;
+}
+
+.errorMessage_signIn {
+    margin-bottom: -2rem;
+    margin-top: -7px;
+}
+
 .main-content {
     width: 100%;
     display: flex;
@@ -155,9 +165,13 @@
     padding: 10px 0;
 }
 
-.accordion-header-text {
+.accordion-body p{
     font-size: 14px;
-    font-weight: bold;
+}
+
+
+.accordion-header-text {
+    font-size: 16px;
 }
 
 .tittle-accordion-group {

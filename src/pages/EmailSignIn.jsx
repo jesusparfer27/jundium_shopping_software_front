@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import '../css/pages/emailsignin.css';
 import AccordionContainer from '../components/signin/AccordionContainer';
 import { useNavigate } from 'react-router-dom';
- 
-export const EmailSignIn = () => { 
+
+export const EmailSignIn = () => {
     const navigate = useNavigate();
     const [isAccordionOpen, setIsAccordionOpen] = useState([false, false, false, false, false, false, false, false]);
     const [apiData, setApiData] = useState(null);
@@ -12,7 +12,7 @@ export const EmailSignIn = () => {
     const [emailExists, setEmailExists] = useState(false);
     const [submitAttempted, setSubmitAttempted] = useState(false);
     const [emailRequired, setEmailRequired] = useState(false);
-    const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env; 
+    const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
 
     const toggleAccordion = (index) => {
         const updatedState = [...isAccordionOpen];
@@ -39,13 +39,16 @@ export const EmailSignIn = () => {
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
+        // Limpiar errores relacionados con el email
         setEmailExists(false);
         setEmailRequired(false);
+        setSubmitAttempted(false);
     };
-    
 
     const handleEmailConfirmChange = (event) => {
         setEmailConfirm(event.target.value);
+        // Limpiar errores relacionados con la coincidencia de emails
+        setSubmitAttempted(false);
     };
 
     const validateEmail = (email) => {
@@ -55,24 +58,24 @@ export const EmailSignIn = () => {
 
     const handleSubmit = async () => {
         setSubmitAttempted(true);
-    
+
         if (!email) {
             setEmailRequired(true);
             return;
         }
-    
+
         if (!validateEmail(email)) {
             setEmailExists(false);
-            // manejar el error de email no válido aquí si es necesario
+            // Manejar el error de email no válido aquí si es necesario
             return;
         }
-    
+
         if (email === emailConfirm) {
             if (apiData) {
                 // Verificar localmente si el email ya existe
                 const exists = apiData.some(user => user.email === email);
                 setEmailExists(exists);
-    
+
                 if (!exists) {
                     // Email no existe, guardar en localStorage y continuar al siguiente paso
                     localStorage.setItem('userEmail', email);
@@ -83,7 +86,6 @@ export const EmailSignIn = () => {
             setEmailExists(false);
         }
     };
-    
 
     return (
         <section className="email-signin-section">
@@ -102,7 +104,7 @@ export const EmailSignIn = () => {
                                     />
                                 </div>
                                 {emailRequired && (
-                                    <p className="error-message">El email es obligatorio.</p>
+                                    <p className="errorMessage_signIn_top">El email es obligatorio.</p>
                                 )}
                                 <label className="email-validation-label">Confirmar Email</label>
                                 <div className="email-validation-input">
@@ -114,10 +116,10 @@ export const EmailSignIn = () => {
                                     />
                                 </div>
                                 {emailExists && (
-                                    <p className="error-message">El email ya está registrado.</p>
+                                    <p className="errorMessage_signIn">Este email ya está registrado</p>
                                 )}
                                 {submitAttempted && email !== emailConfirm && (
-                                    <p className="error-message">Los emails no coinciden.</p>
+                                    <p className="errorMessage_signIn">Los emails no coinciden.</p>
                                 )}
                             </div>
                         </div>

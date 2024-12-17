@@ -8,8 +8,9 @@ const CartContainer = () => {
     const { activeMenu, closeMenu } = useContext(HeaderContext);
     const navigate = useNavigate();
     const { VITE_IMAGES_BASE_URL, VITE_IMAGE } = import.meta.env;
+    
 
-    const { 
+    const {
         loading,
         setErrorMessage,
         errorMessage,
@@ -21,7 +22,7 @@ const CartContainer = () => {
         removeFromCart,
         product,
         setProduct
-     } = useContext(CartContext);
+    } = useContext(CartContext);
 
     useEffect(() => {
         fetchCartItems();
@@ -37,14 +38,20 @@ const CartContainer = () => {
     return (
         <section className={`cartContainer ${activeMenu === 'cart' ? 'active slideIn' : ''}`}>
             {cartItems.length === 0 ? (
-                <div className="emptyCart">
-                    <div className="emptyCartMessage">
-                        <p>No hay elementos en su carrito.</p>
+                <>
+                    <button className="closeContainerCart_noOptions" onClick={closeMenu}><span className="material-symbols-outlined">
+                        close
+                    </span></button>
+                    <div className="emptyCart">
+
+                        <div className="emptyCartMessage">
+                            <p>No hay elementos en su carrito.</p>
+                        </div>
+                        <div className="redirectToHome">
+                            <button className="emptyCartButton" onClick={() => navigate('/')}>Ir a la tienda</button>
+                        </div>
                     </div>
-                    <div className="redirectToHome">
-                        <button className="emptyCartButton" onClick={() => navigate('/')}>Ir a la tienda</button>
-                    </div>
-                </div>
+                </>
             ) : (
                 <>
                     <div className="cartHeader">
@@ -82,9 +89,9 @@ const CartContainer = () => {
                                         <div className="cartItemContent">
                                             <p className="textCard_Header">{name}</p>
                                             <p className="textCard_Header">${variantPrice.toFixed(2)}</p>
-                                            <p className="textCard_Header">Cantidad: {quantity || 1}</p>
+                                            {quantity > 1 && <p className="textCard_Header">Cantidad: {quantity}</p>}
                                             <p className="textCard_Header">{colorName || 'No especificado'}</p>
-                                            <p className="textCard_Header">size: {size || 'No especificado'}</p>
+                                            <p className="textCard_Header">talla: {size || 'No especificado'}</p>
 
                                             <div className="submit-buttonProfile Cart">
                                                 <button onClick={() => {
@@ -103,14 +110,16 @@ const CartContainer = () => {
                         </div>
                     </div>
 
-                    <div className="cartSummary">
-                        <p>Mi Selección</p>
-                        <p>Total: ${cartItems.reduce((acc, item) => {
-                            const selectedVariant = item.product_id?.variants.find(variant => variant.variant_id === item.variant_id);
-                            const variantPrice = selectedVariant?.price || 0;
-                            const quantity = item.quantity || 1;
-                            return acc + (variantPrice * quantity);
-                        }, 0).toFixed(2)}</p>
+                    <div className="fatherContainer_summary">
+                        <div className="cartSummary">
+                            <p>Mi Selección</p>
+                            <p>Total: ${cartItems.reduce((acc, item) => {
+                                const selectedVariant = item.product_id?.variants.find(variant => variant.variant_id === item.variant_id);
+                                const variantPrice = selectedVariant?.price || 0;
+                                const quantity = item.quantity || 1;
+                                return acc + (variantPrice * quantity);
+                            }, 0).toFixed(2)}</p>
+                        </div>
                     </div>
 
                     <div className="checkoutButtonContainer">
@@ -125,4 +134,4 @@ const CartContainer = () => {
 export default CartContainer;
 
 
- 
+

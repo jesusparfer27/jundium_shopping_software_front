@@ -15,17 +15,37 @@
     box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1); /* Sombra ligera para dar profundidad */
 }
 
-/* Botón para cerrar el carrito */
-.closeContainer {
-    background: none;
-    border: none;
-    color: #333;
-    font-size: 1.5rem;
-    cursor: pointer;
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
+.h2Container_contact {
+    padding: 0;
 }
+
+.contactContainer_responsive {
+    padding-top: 3rem;
+    width: 100%;
+}
+
+.closeContainer_responsive {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.contactContainer_responsiveHeader {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    justify-content: center;
+}
+
+.contactContainer_responsiveHeaderContainer {
+    display: flex;
+    width: 70%;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+}
+
+/* Botón para cerrar el carrito */
+
 
 /* Estilos para la lista de productos (puedes ajustar o eliminar esto si no es necesario) */
 .contactContainer ul {
@@ -50,6 +70,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     width: 100%;
 }
 
@@ -57,13 +78,14 @@
     border-bottom: 1px solid #dcdcdc;
     width: 100%;
     padding-bottom: 2rem;
-
+    display: flex;
+    justify-content: center;
 }
 
 .contactList {
     display: flex;
     flex-direction: column;
-    width: 50%;
+    width: 70%;
 }
 
 .contactItem {
@@ -71,7 +93,6 @@
     align-items: center;
     gap: 0.5rem;
     margin: 0.5rem 0;
-    padding-left: 6.5rem;
 }
 
 .contactItem a {
@@ -86,7 +107,7 @@
 
 .formContainer {
     padding-top: 1rem;
-    width: 80%;
+    width: 70%;
 }
 
 .formContainer form{
@@ -100,23 +121,32 @@
 .formContainer textarea {
     width: 100%;
     margin: 0.5rem 0;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
+    padding: .8rem;
+    border: 1px solid #dcdcdc;
     border-radius: 5px;
 }
 
-.formContainer button {
-    background-color: #333;
+.submitContact_pageButton {
+    background-color:  black;
     color: #fff;
     border: none;
-    padding: 0.5rem 1rem;
     margin-top: 1rem;
+    border-radius: 22px;
+    padding: .75rem;
     cursor: pointer;
     width: 102%;
     transition: background-color 0.3s ease;
+    border: 1px solid black;
 }
 
-/* Efecto hover en el botón de enviar */
-.formContainer button:hover {
-    background-color: #000; /* Cambia a negro en el hover */
+.submitContact_pageButton:hover {
+    background-color:  transparent;
+    padding: .75rem;
+    color: black;
+    border: none;
+    margin-top: 1rem;
+    cursor: pointer;
+    width: 102%;
+    /* transition: background-color 0.3s ease; */
+    border: 1px solid black;
 }

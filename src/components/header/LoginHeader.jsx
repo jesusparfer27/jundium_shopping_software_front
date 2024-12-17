@@ -64,9 +64,6 @@ const LoginContainer = () => {
                     </button>
                 </div>
 
-                <div className="mandatoryFields">
-                    <p>Campos obligatorios *</p>
-                </div>
                 <div className="additionalText">
                     <p>Accede a tu usuario</p>
                 </div>
@@ -122,7 +119,7 @@ const LoginContainer = () => {
             {/* Segundo div: SignIn */}
             <div className="signIn">
                 <div className="welcomeText">
-                    <p>Bienvenido a nuestra app!</p>
+                    <p>Bienvenido a mi app!</p>
                 </div>
                 <div className="extraText">
                     <p>Registrar usuario</p>

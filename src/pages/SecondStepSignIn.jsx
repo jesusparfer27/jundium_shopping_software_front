@@ -9,6 +9,7 @@ export const SecondStepSignIn = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
   const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Para confirmar contraseña
+  const [isAccordionOpen, setIsAccordionOpen] = useState([false, false]);
 
   const [formData, setFormData] = useState({
     password: '',
@@ -19,6 +20,13 @@ export const SecondStepSignIn = () => {
     aceptar: false
   });
   const [error, setError] = useState(''); // Estado para el mensaje de error
+
+  const toggleAccordion = (index) => {
+    const updatedState = [...isAccordionOpen];
+    updatedState[index] = !updatedState[index];
+    setIsAccordionOpen(updatedState);
+  };
+
 
   const handleChange = (e) => {
     const { id, value, type, checked } = e.target;
@@ -120,7 +128,7 @@ export const SecondStepSignIn = () => {
           <form onSubmit={handleSubmit} className="signUpForm">
             <div className="inputField">
               <div className="input-password">
-                <label  className='password_signIn' htmlFor="password">Contraseña</label>
+                <label className='password_signIn' htmlFor="password">Contraseña</label>
                 <div className="passwordContainerSignIn">
                   <input
                     type={showPassword ? "text" : "password"}
@@ -180,7 +188,7 @@ export const SecondStepSignIn = () => {
               <label htmlFor="genero">Género</label>
               <select
                 id="gender"
-                className="input-field"
+                className="inputSignUp_Header"
                 value={formData.gender}
                 onChange={handleChange}
               >
@@ -195,7 +203,7 @@ export const SecondStepSignIn = () => {
               <input
                 type="text"
                 id="first_name"
-                className="input-field"
+                className="inputSignUp_Header"
                 value={formData.first_name}
                 onChange={handleChange}
               />
@@ -205,7 +213,7 @@ export const SecondStepSignIn = () => {
               <input
                 type="text"
                 id="last_name"
-                className="input-field"
+                className="inputSignUp_Header"
                 value={formData.last_name}
                 onChange={handleChange}
               />
@@ -222,13 +230,23 @@ export const SecondStepSignIn = () => {
           />
           <label htmlFor="aceptar">Acepto la política de privacidad</label>
         </div>
+        <div className="error-container">
+          {error && <p className="error-message">{error}</p>}
+        </div>
         <div className="boton-continuar">
+
+
           <button onClick={handleSubmit} className="submit-button2">
             Continuar
           </button>
         </div>
       </div>
-      <AccordionContainer data={accordionData} />
+      <AccordionContainer
+        isAccordionOpen={isAccordionOpen}
+        toggleAccordion={toggleAccordion}
+        data={accordionData}
+      />
+
     </section>
   );
 };

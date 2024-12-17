@@ -25,12 +25,12 @@ const AccordionContainer = ({ isAccordionOpen = [], toggleAccordion }) => {
                     <div className="accordion-row">
                         <div className="accordion-icon">
                             <span className="material-symbols-outlined">mail</span>
-                            <label className="accordion-header-text">Texto visible acordeón 1</label>
+                            <label className="accordion-header-text"> Comunicación Eficiente</label>
                         </div>
                     </div>
                     {isAccordionOpen[0] && (
                         <div className="accordion-body">
-                            <p>Texto oculto del acordeón 1</p>
+                            <p>Mantente al tanto con notificaciones exclusivas sobre ofertas especiales, novedades y promociones personalizadas enviadas directamente a tu correo.</p>
                         </div>
                     )}
                 </div>
@@ -43,12 +43,12 @@ const AccordionContainer = ({ isAccordionOpen = [], toggleAccordion }) => {
                     <div className="accordion-row">
                         <div className="accordion-icon">
                             <span className="material-symbols-outlined">person</span>
-                            <label className="accordion-header-text">Texto visible acordeón 2</label>
+                            <label className="accordion-header-text">Personalización Total</label>
                         </div>
                     </div>
                     {isAccordionOpen[1] && (
                         <div className="accordion-body">
-                            <p>Texto oculto del acordeón 2</p>
+                            <p>Accede a una experiencia personalizada basada en tus preferencias, historial de compras y productos favoritos.</p>
                         </div>
                     )}
                 </div>
@@ -61,12 +61,12 @@ const AccordionContainer = ({ isAccordionOpen = [], toggleAccordion }) => {
                     <div className="accordion-row">
                         <div className="accordion-icon">
                             <span className="material-symbols-outlined">favorite</span>
-                            <label className="accordion-header-text">Texto visible acordeón 3</label>
+                            <label className="accordion-header-text">Listas de Deseos</label>
                         </div>
                     </div>
                     {isAccordionOpen[2] && (
                         <div className="accordion-body">
-                            <p>Texto oculto del acordeón 3</p>
+                            <p>Crea y guarda listas de tus artículos favoritos para comprarlos más tarde o compartirlos con amigos.</p>
                         </div>
                     )}
                 </div>
@@ -83,12 +83,12 @@ const AccordionContainer = ({ isAccordionOpen = [], toggleAccordion }) => {
                     <div className="accordion-row">
                         <div className="accordion-icon">
                             <span className="material-symbols-outlined">phone_iphone</span>
-                            <label className="accordion-header-text">Texto visible acordeón 4</label>
+                            <label className="accordion-header-text">Compras en Movimiento</label>
                         </div>
                     </div>
                     {isAccordionOpen[3] && (
                         <div className="accordion-body">
-                            <p>Texto oculto del acordeón 4</p>
+                            <p>Disfruta de una experiencia optimizada desde cualquier dispositivo móvil con acceso instantáneo a tu cuenta.</p>
                         </div>
                     )}
                 </div>
@@ -101,12 +101,12 @@ const AccordionContainer = ({ isAccordionOpen = [], toggleAccordion }) => {
                     <div className="accordion-row">
                         <div className="accordion-icon">
                             <span className="material-symbols-outlined">star</span>
-                            <label className="accordion-header-text">Texto visible acordeón 5</label>
+                            <label className="accordion-header-text">Recompensas Exclusivas</label>
                         </div>
                     </div>
                     {isAccordionOpen[4] && (
                         <div className="accordion-body">
-                            <p>Texto oculto del acordeón 5</p>
+                            <p>Gana puntos de fidelidad y recibe recompensas especiales por tus compras, además de acceso anticipado a lanzamientos exclusivos.</p>
                         </div>
                     )}
                 </div>

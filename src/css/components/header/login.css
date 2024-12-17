@@ -38,6 +38,7 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
+    padding-top: 2rem;
     align-items: center;
 }
 
@@ -51,14 +52,9 @@
 }
 
 /* Estilo para el texto de cuenta */
-.accountText, .mandatoryFields, .additionalText {
+.accountText, .additionalText {
     width: 100%;
     text-align: center;
-}
-
-/* Estilo para los campos obligatorios */
-.mandatoryFields {
-    text-align: right;
 }
 
 /* Estilo para los campos de entrada */
