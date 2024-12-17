@@ -36,12 +36,119 @@ body,
     z-index: -99;
 }
 
+
+
+
+
+
+
+
+.renderSeasons_layout {
+    display: flex;
+    z-index: -1; /* Un valor negativo para asegurarte que esté por debajo */
+    position: relative; /* Necesario para que el z-index funcione */
+}
+
+.itemImageDrops {
+    position: relative;
+    z-index: -2; /* Asegúrate de que se mantengan detrás de las ventanas */
+}
+
+
+.dropItem {
+    justify-content: center;
+    text-decoration: none;
+    color: black;
+}
+
+.imageContainer {
+    width: 800px;
+    height: 700px;
+    animation: smoothScroll 20s linear infinite alternate;
+}
+
+.window {
+    width: 500px;
+    height: 600px;
+    background-color: transparent; /* Esto permite que las imágenes sean visibles detrás */
+    border: 2px solid rgba(0, 0, 0, 0.5); /* Opcional, para dar un contorno a las "ventanas" */
+}
+
+.newCollections_Container{
+    display: flex;
+    flex-direction: column;
+    background-color: red;
+}
+
+.newCollections.lastSection {
+    position: relative;
+    z-index: 2;
+    background-color: yellow;
+}
+
 .newCollections {
     text-align: center;
     z-index: 1;
     position: relative;
     padding-top: 2rem;
 }
+
+/* .newCollections_Block {
+    position: relative;
+    z-index: auto;
+    background-color: green;
+} */
+
+.newDropsHome2 {
+    display: flex;
+    gap: 3rem;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 3.6rem;
+    z-index: 1; /* Un valor positivo para que esté por encima */
+    position: relative; /* También necesario para que el z-index funcione */
+    background-color: aquamarine;
+}
+
+/* .dropContainer {
+    position: relative;
+    z-index: 1;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+@keyframes smoothScroll {
+    from {
+        transform: translate(-50%, -60%) scale(1.2);
+    }
+    to {
+        transform: translate(-50%, -40%) scale(1.2);
+    }
+}
+
+.itemDescription {
+    z-index: 2;
+    color: black;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+} */
+
+
+
+
+
+
+
+
+
+
+
+
 
 .h1Style {
     font-size: 2rem;
@@ -96,11 +203,6 @@ body,
     transform: scale(1.1);
 }
 
-.newCollections_Container{
-    display: flex;
-    flex-direction: column;
-}
-
 .newDropsHome_Container {
     width: 100%;
     display: flex;
@@ -129,7 +231,6 @@ body,
 .carruselHome,
 .container_image_autumn,
 .newCollections,
-.newDropsHome2,
 .newDropsHome {
     z-index: 2;
     position: relative;
@@ -197,7 +298,7 @@ body,
     width: 62%;
     padding-left: 17rem;
     padding-top: -2rem;
-    height: 100vh;
+    height: 120vh;
     margin-top: 24.5rem;
 }
 
@@ -252,15 +353,10 @@ body,
 .container_image_autumn.stickyVideo {
     top: 0;
     width: 100%;
-    height: 120vh;
+    height: 100vh;
     overflow: hidden;
     position: sticky;
     z-index: 1;
-}
-
-.newCollections.lastSection {
-    position: relative;
-    z-index: 2;
 }
 
 .miniLogo_modalContainer {
@@ -355,27 +451,6 @@ body,
     border-radius: 8px;
 }
 
-.dropItem {
-    justify-content: center;
-    text-decoration: none;
-    color: black;
-}
-
-.newDropsHome2 {
-    display: flex;
-    gap: 3rem;
-    justify-content: center;
-    align-items: center;
-    width: 90%;
-    padding-bottom: 3.6rem;
-}
-
-.newCollections_Block {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
 .itemImageDrops {
     width: 100%;
     height: 500px;
@@ -402,7 +477,7 @@ body,
 
 .carruselSlide {
     flex: 0 0 auto;
-    width: 145vh; /* Ajusta según el diseño */
+    width: 155vh; /* Ajusta según el diseño */
     text-align: center;
 }
 

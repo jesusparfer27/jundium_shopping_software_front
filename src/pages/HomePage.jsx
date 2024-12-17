@@ -281,6 +281,9 @@ export const HomePage = () => {
                         />
                     </NavLink>
                 </div>
+                <div className="renderSeasons_layout">
+                    {renderSeasons(seasonsData)}
+                </div>
             </section>
 
             <div className="newCollections lastSection">
@@ -288,7 +291,9 @@ export const HomePage = () => {
                     <h1 className='h1Style'>Echa un vistazo a la nueva temporada</h1>
                     <div className="newCollections_Block">
                         <div className="newDropsHome2">
-                            {renderSeasons(seasonsData)}
+                            <div className="window"></div>
+                            <div className="window"></div>
+                            <div className="window"></div>
                         </div>
                     </div>
                 </div>
