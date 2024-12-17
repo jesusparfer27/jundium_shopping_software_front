@@ -2,16 +2,17 @@ import React, { useEffect, useState, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import '../css/pages/homepage.css';
 
-// IMAGES
-// HOME-SECTIONS
 import SeasonVideo from '../assets/home-sections/home-video-season.mp4';
 import AutumnImage from '../assets/home-sections/autumn-session-home.jpg';
-import winterImage from '../assets/home-sections/winter-session-home.jpg';
 import VideoDiscounts from '../assets/home-sections/video-discounts.mp4'
+
+import winterImage from '../assets/home-sections/winter-session-home.jpg';
+import looksWoman from '../assets/home-sections/looks_woman.jpg'
+import bagsWoman from '../assets/home-sections/bags_woman.jpg'
+
 
 import VideoGif from '../assets/video-gif-home/video-gif.gif'
 
-// HOME-ARTICLES
 import WomanBags from '../assets/different-articles/example-bags-woman-home.jpg';
 import ManBags from '../assets/different-articles/example-bags-men-home.jpg';
 import WomanTshirts from '../assets/different-articles/example-tshirts-woman-home.jpg';
@@ -21,18 +22,18 @@ import ManJackets from '../assets/different-articles/example-jackets-men-home.jp
 import WomanShoes from '../assets/different-articles/example-shoes-woman-home.jpg';
 import ManShoes from '../assets/different-articles/example-shoes-man-home.jpg';
 
-// HOME-NEW-SEASON
 import SummerSeason from '../assets/new-season/summer-season-square-home.jpg';
 import SpringSeason from '../assets/new-season/spring-season-square-home.jpg';
 import WinterSeason from '../assets/new-season/winter-season-square-home.jpg';
 
 export const HomePage = () => {
     const [offset, setOffset] = useState(0);
-    const [scale, setScale] = useState(1); // Estado para el zoom
+    const [scale, setScale] = useState(1);
     const [imagesLoaded, setImagesLoaded] = useState(false);
     const [imagesToLoad, setImagesToLoad] = useState(0);
     const [imagesLoadedCount, setImagesLoadedCount] = useState(0);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [currentIndexAlternatives, setCurrentIndexAlternatives] = useState(0);
     const carouselRef = useRef(null);
 
     const carouselTexts = [
@@ -62,6 +63,19 @@ export const HomePage = () => {
         { id: 3, name: "Invierno 2024", image: WinterSeason, endpoint: "/products?collection=Invierno%202024" },
     ];
 
+    const alternatives = [
+        { id: 1, image: winterImage, text: 'Descubre la nueva colección de invierno.' },
+        { id: 2, image: looksWoman, text: 'Explora los looks más elegantes.' },
+        { id: 3, image: bagsWoman, text: 'Bolsos diseñados para cada ocasión.' },
+    ];
+
+
+    const handleNext = () => {
+        setCurrentIndexAlternatives((prevIndex) => (prevIndex + 1) % alternatives.length);
+    };
+
+    const { image, text } = alternatives[currentIndexAlternatives];
+
 
     useEffect(() => {
         setImagesToLoad(categoriesData.length + seasonsData.length);
@@ -87,13 +101,11 @@ export const HomePage = () => {
         const interval = setInterval(() => {
             setCurrentIndex((prevIndex) => {
                 if (prevIndex === totalItems) {
-                    // Reinicia el índice al inicio, sin transición
                     if (carouselRef.current) {
                         carouselRef.current.style.transition = "none";
                         return 0;
                     }
                 }
-                // Continua deslizando con transición
                 if (carouselRef.current) {
                     carouselRef.current.style.transition = "transform 1s ease-in-out";
                 }
@@ -167,14 +179,21 @@ export const HomePage = () => {
     );
 
     return (
-        <main className="images-loaded">
+        <>
             <section className="videoScrollContainer">
+                <div className="nextButton_Container">
+                    <button className="nextButton" onClick={handleNext}>
+                        &#8594;
+                    </button>
+                </div>
+                <div className="textsHero_container">
+                        <p>{text}</p>
+                    </div>
                 <div className="videoWrapper">
                     <img
                         className="scrollImage"
-                        style={{ transform: `scale(${scale})`, transition: 'transform 0.1s ease' }}
-                        src={winterImage}
-                        alt="Imagen de fondo"
+                        src={image}
+                        alt="Imagen del Hero"
                         loading="lazy"
                     />
                 </div>
@@ -189,20 +208,17 @@ export const HomePage = () => {
                 </div>
             </section>
 
-            <section className="sectionBackground_newCollections">
-                <div className="carruselContainer_newCollections">
+            <section className="carruselContainer_newCollections">
                     <div
                         className="carruselTrack"
                         ref={carouselRef}
                     >
-                        {/* Renderiza el contenido duplicado */}
                         {[...carouselTexts, ...carouselTexts].map((text, index) => (
                             <div className="carruselSlide" key={index}>
                                 <p className="carruselText">{text}</p>
                             </div>
                         ))}
                     </div>
-                </div>
             </section>
 
             <section className="container_videoSession-2">
@@ -281,9 +297,6 @@ export const HomePage = () => {
                         />
                     </NavLink>
                 </div>
-                <div className="renderSeasons_layout">
-                    {renderSeasons(seasonsData)}
-                </div>
             </section>
 
             <div className="newCollections lastSection">
@@ -291,14 +304,12 @@ export const HomePage = () => {
                     <h1 className='h1Style'>Echa un vistazo a la nueva temporada</h1>
                     <div className="newCollections_Block">
                         <div className="newDropsHome2">
-                            <div className="window"></div>
-                            <div className="window"></div>
-                            <div className="window"></div>
+                            {renderSeasons(seasonsData)}
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
+            </>
     );
 };
 

@@ -91,7 +91,7 @@ html,
     position: fixed;
     top: 0;
     width: 100%;
-    z-index: 11; /* Para superposición del contenedor completo */
+    z-index: 11;
     background-color: white;
     border-bottom: 1px solid #dcdcdc;
 }
@@ -101,7 +101,7 @@ html,
     display: flex;
     justify-content: space-between;
     align-items: center;
-    z-index: 11; /* Asegúrate de que quede por debajo del headerNews */
+    z-index: 11;
     background-color: white;
     border-bottom: 1px solid #dcdcdc;
 }
@@ -249,8 +249,8 @@ header {
 .logoHeaderBlack {
     width: 100%;
     height: 4vh;
-    object-fit: cover; /* Esto hará que la imagen rellene el espacio, recortando si es necesario */
-    object-position: center; /* Centra la imagen si se recorta */
+    object-fit: cover;
+    object-position: center;
 }
 
 .containerNews_sections {

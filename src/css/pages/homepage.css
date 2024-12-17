@@ -1,10 +1,10 @@
-body,
+/* body,
 *::after,
 *::before {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
+} */
 
 .myCustomClass {
     text-decoration: none;
@@ -26,129 +26,12 @@ body,
     color: black;
 }
 
-.scrollImage {
-    margin-top: -30rem;
-    margin-bottom: -9rem;
-    height: 145vh;
-    width: 100%;
-    object-fit: cover;
-    position: sticky;
-    z-index: -99;
-}
-
-
-
-
-
-
-
-
-.renderSeasons_layout {
-    display: flex;
-    z-index: -1; /* Un valor negativo para asegurarte que esté por debajo */
-    position: relative; /* Necesario para que el z-index funcione */
-}
-
-.itemImageDrops {
-    position: relative;
-    z-index: -2; /* Asegúrate de que se mantengan detrás de las ventanas */
-}
-
-
-.dropItem {
-    justify-content: center;
-    text-decoration: none;
-    color: black;
-}
-
-.imageContainer {
-    width: 800px;
-    height: 700px;
-    animation: smoothScroll 20s linear infinite alternate;
-}
-
-.window {
-    width: 500px;
-    height: 600px;
-    background-color: transparent; /* Esto permite que las imágenes sean visibles detrás */
-    border: 2px solid rgba(0, 0, 0, 0.5); /* Opcional, para dar un contorno a las "ventanas" */
-}
-
-.newCollections_Container{
-    display: flex;
-    flex-direction: column;
-    background-color: red;
-}
-
-.newCollections.lastSection {
-    position: relative;
-    z-index: 2;
-    background-color: yellow;
-}
-
 .newCollections {
     text-align: center;
     z-index: 1;
     position: relative;
     padding-top: 2rem;
 }
-
-/* .newCollections_Block {
-    position: relative;
-    z-index: auto;
-    background-color: green;
-} */
-
-.newDropsHome2 {
-    display: flex;
-    gap: 3rem;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    padding-bottom: 3.6rem;
-    z-index: 1; /* Un valor positivo para que esté por encima */
-    position: relative; /* También necesario para que el z-index funcione */
-    background-color: aquamarine;
-}
-
-/* .dropContainer {
-    position: relative;
-    z-index: 1;
-    height: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-}
-
-@keyframes smoothScroll {
-    from {
-        transform: translate(-50%, -60%) scale(1.2);
-    }
-    to {
-        transform: translate(-50%, -40%) scale(1.2);
-    }
-}
-
-.itemDescription {
-    z-index: 2;
-    color: black;
-    background: rgba(255, 255, 255, 0.8);
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-} */
-
-
-
-
-
-
-
-
-
-
-
-
 
 .h1Style {
     font-size: 2rem;
@@ -203,6 +86,11 @@ body,
     transform: scale(1.1);
 }
 
+.newCollections_Container{
+    display: flex;
+    flex-direction: column;
+}
+
 .newDropsHome_Container {
     width: 100%;
     display: flex;
@@ -231,6 +119,7 @@ body,
 .carruselHome,
 .container_image_autumn,
 .newCollections,
+.newDropsHome2,
 .newDropsHome {
     z-index: 2;
     position: relative;
@@ -251,12 +140,116 @@ body,
     color: #fff;
 }
 
+
+
+
+
+
+
+
+.textsHero_container {
+    position: absolute;
+    top: 20%;
+    left: 5%;
+    color: white;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+    z-index: 2;
+}
+
+.textsHero_container p {
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 0;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.videoScrollContainer {
+    position: sticky;
+    top: 0;
+    /* height: 1000px; */
+    /* top: 0; */
+}
+
+
 .videoWrapper {
     position: sticky;
     top: 0;
-    padding-top: 13rem;
     overflow: hidden;
+    /* height: 100vh; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
+.nextButton_Container {
+    /* z-index: 9999; */
+}
+
+.nextButton {
+    position: absolute;
+    top: 20%;
+    right: 10px;
+    transform: translateY(-50%);
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.nextButton:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: black;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.textsHero_container p{
+    font-size: 3rem;
+    position: absolute;
+}
+
+/* .videoWrapper {
+    position: sticky; 
+    overflow: hidden;
+} */
+
+.scrollImage {
+    top: 0;
+    width: 100%;
+    height: 1000px;
+    object-fit: cover;
+    position: sticky;
+    /* transform: scale(1, 0.5);  */
+    transform-origin: top;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 .itemImage {
     width: 100%;
@@ -272,7 +265,7 @@ body,
     margin-bottom: -3rem;
 }
 
-.preloader {
+/* .preloader {
     position: fixed;
     top: 0;
     left: 0;
@@ -287,19 +280,15 @@ body,
 
 .images-loading {
     display: none;
-}
-
-.images-loaded {
-    display: block;
-}
+} */
 
 .imageAutumn {
     object-fit: cover;
-    width: 62%;
+    width: 80%;
     padding-left: 17rem;
     padding-top: -2rem;
-    height: 120vh;
-    margin-top: 24.5rem;
+    height: 110vh;
+    margin-top: 21.5rem;
 }
 
 .videoCarousel {
@@ -357,6 +346,11 @@ body,
     overflow: hidden;
     position: sticky;
     z-index: 1;
+}
+
+.newCollections.lastSection {
+    position: relative;
+    z-index: 2;
 }
 
 .miniLogo_modalContainer {
@@ -420,13 +414,6 @@ body,
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
 }
 
-.videoScrollContainer {
-    height: 2000px;
-    position: sticky;
-    z-index: -1;
-    top: 0;
-}
-
 .containerProductsLast {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -451,34 +438,51 @@ body,
     border-radius: 8px;
 }
 
+.dropItem {
+    justify-content: center;
+    text-decoration: none;
+    color: black;
+}
+
+.newDropsHome2 {
+    display: flex;
+    gap: 3rem;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    padding-bottom: 3.6rem;
+}
+
+.newCollections_Block {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
 .itemImageDrops {
     width: 100%;
     height: 500px;
 }
 
-.sectionBackground_newCollections {
-    background-color: white;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-}
-
 .carruselContainer_newCollections {
     overflow: hidden;
-    border-top: 10px solid red;
-    border-bottom: 10px solid red;
+    padding-top: 1rem;
     width: 100%;
     position: relative;
+    padding-bottom: 1rem;
 }
 
 .carruselTrack {
     display: flex;
-    animation: scroll 55s linear infinite; /* Animación continua */
+    animation: scroll 55s linear infinite;
 }
 
 .carruselSlide {
     flex: 0 0 auto;
-    width: 155vh; /* Ajusta según el diseño */
+    width: 155vh;
     text-align: center;
+    border-top: 10px solid red;
+    border-bottom: 10px solid red;
 }
 
 .carruselText {
@@ -505,7 +509,6 @@ body,
       transform: translateX(-520%);
     }
   }
-
   
   .carruselTrack {
     animation: scrollCarruselTrack 140s linear infinite;
