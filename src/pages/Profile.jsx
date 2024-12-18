@@ -5,19 +5,21 @@ import { useUser } from '../hooks/useUser';
 import ProfileImage from '../components/profile-header/ProfileHeader';
 import '../css/pages/profile.css';
 
-
 export const Profile = () => {
     const [wishlistItems, setWishlistItems] = useState([]);
     const [orderItems, setOrderItems] = useState([]);
     const [isAccordionOpen, setIsAccordionOpen] = useState(false);
-    const { openMenu } = useContext(HeaderContext);
-    const navigate = useNavigate();
-    const { user, setUser, loading, error, fetchUserDetails } = useUser();
     const [isUserLoaded, setIsUserLoaded] = useState(false);
-    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
     const [isDirty, setIsDirty] = useState(false);
     const [saveStatus, setSaveStatus] = useState(null);
 
+    const { user, setUser, loading, error, fetchUserDetails } = useUser();
+    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
+    const navigate = useNavigate();
+    const { openMenu } = useContext(HeaderContext);
+
+
+    // SE QUEDA
     useEffect(() => {
         const token = localStorage.getItem('authToken');
         if (!token) {
@@ -25,6 +27,7 @@ export const Profile = () => {
         }
     }, [navigate]);
 
+    // ?
     useEffect(() => {
         const loadUser = async () => {
             const token = localStorage.getItem('authToken');
@@ -41,6 +44,7 @@ export const Profile = () => {
 
         loadUser();
     }, [user, fetchUserDetails, openMenu]);
+
 
     const fetchWishlistItems = useCallback(async () => {
         if (!user) return;
@@ -90,28 +94,6 @@ export const Profile = () => {
 
     const visibleItems = wishlistItems.slice(0, 2);
     const remainingCount = wishlistItems.length - 2;
-
-    useEffect(() => {
-        const fetchOrderItems = async () => {
-            const token = localStorage.getItem('authToken');
-            if (!token) return;
-
-            try {
-                const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/orders`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                const data = await response.json();
-                setOrderItems(data);
-                console.log("Datos de los pedidos del usuario logueado:", data);
-            } catch (err) {
-                console.error('Error al cargar los pedidos:', err);
-            }
-        };
-
-        fetchOrderItems();
-    }, [VITE_API_BACKEND, VITE_BACKEND_ENDPOINT]);
 
     useEffect(() => {
         if (error) {
@@ -221,8 +203,6 @@ export const Profile = () => {
         }
     };
 
-
-
     const handleLogout = () => {
         localStorage.removeItem("user");
         localStorage.removeItem('authToken');
@@ -238,7 +218,6 @@ export const Profile = () => {
         user.permissions.manage_products &&
         user.permissions.view_reports &&
         user.permissions.manage_orders;
-
 
     return (
         <section className="profile-section">
@@ -534,5 +513,27 @@ export const Profile = () => {
 };
 
 export default Profile;
+
+// useEffect(() => {
+    //     const fetchOrderItems = async () => {
+    //         const token = localStorage.getItem('authToken');
+    //         if (!token) return;
+
+    //         try {
+    //             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/orders`, {
+    //                 headers: {
+    //                     Authorization: `Bearer ${token}`,
+    //                 },
+    //             });
+    //             const data = await response.json();
+    //             setOrderItems(data);
+    //             console.log("Datos de los pedidos del usuario logueado:", data);
+    //         } catch (err) {
+    //             console.error('Error al cargar los pedidos:', err);
+    //         }
+    //     };
+
+    //     fetchOrderItems();
+    // }, [VITE_API_BACKEND, VITE_BACKEND_ENDPOINT]);
 
 
