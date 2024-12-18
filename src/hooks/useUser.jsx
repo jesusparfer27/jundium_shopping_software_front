@@ -16,12 +16,12 @@ export function UserProvider({ children }) {
             setUser(JSON.parse(storedUser));
             const token = localStorage.getItem('authToken');
             if (token) {
-                fetchUserDetails(); // Solo si el token está presente
+                fetchUserDetails();
             } else {
-                setLoading(false); // Si no hay token, se desactiva la carga
+                setLoading(false);
             }
         } else {
-            setLoading(false); // Si no hay usuario, no se necesita cargar
+            setLoading(false);
         }
     }, []);
 
@@ -36,7 +36,7 @@ export function UserProvider({ children }) {
                 },
             });
             const data = await response.json();
-            return data; // Devuelve los elementos de la wishlist
+            return data;
         } catch (err) {
             console.error('Error loading wishlist:', err);
         }
@@ -78,7 +78,7 @@ export function UserProvider({ children }) {
 
 
     const login = async (userData) => {
-        setError(null); // Resetear error al intentar login
+        setError(null);
         try {
             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/login`, {
                 method: "POST",
@@ -105,7 +105,7 @@ export function UserProvider({ children }) {
     };
 
     const register = async (userData) => {
-        setError(null); // Resetear error al intentar registro
+        setError(null);
         try {
             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/register`, {
                 method: "POST",
@@ -133,7 +133,7 @@ export function UserProvider({ children }) {
 
     const fetchUserDetails = async () => {
         const token = localStorage.getItem('authToken');
-        if (!token || isFetched.current) return; // Si no hay token o ya se ha llamado, detener
+        if (!token || isFetched.current) return;
 
         try {
             if (!VITE_API_BACKEND) {
@@ -156,7 +156,7 @@ export function UserProvider({ children }) {
             console.log("Detalles del usuario traídos:", responseData);
             setUser(responseData.data);
             localStorage.setItem("user", JSON.stringify(responseData.data));
-            isFetched.current = true; // Marcar como ejecutado
+            isFetched.current = true;
         } catch (error) {
             console.error("Error al obtener los detalles del usuario:", error.message);
         } finally {
@@ -164,19 +164,11 @@ export function UserProvider({ children }) {
         }
     };
 
-    const logout = () => {
-        localStorage.removeItem("user");
-        localStorage.removeItem('authToken');
-        setUser(null);
-        console.log("User logged out");
-    };
-
     const value = useMemo(() => ({
         user,
         loading,
         error,
         login,
-        logout,
         setUser,
         register,
         fetchUserDetails,

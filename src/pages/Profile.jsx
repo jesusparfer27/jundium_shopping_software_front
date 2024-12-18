@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../css/pages/profile.css';
-import ProfileImage from '../components/profile-header/ProfileHeader';
 import { HeaderContext } from '../context/HeaderContext';
 import { useUser } from '../hooks/useUser';
+import ProfileImage from '../components/profile-header/ProfileHeader';
+import '../css/pages/profile.css';
+
 
 export const Profile = () => {
     const [wishlistItems, setWishlistItems] = useState([]);
@@ -77,6 +78,10 @@ export const Profile = () => {
 
     const handleNavigateToWishlist = () => {
         navigate('/wish-list');
+    };
+
+    const handleNavigateToAdmin = () => {
+        navigate('/admin');
     };
 
     const handleNavigateToProducts = () => {
@@ -187,7 +192,7 @@ export const Profile = () => {
     const handleSaveChanges = async () => {
         const token = localStorage.getItem('authToken');
         if (!token || loading || !isDirty) return;
- 
+
         console.log("Guardando cambios con los siguientes datos del usuario:", user);
 
         try {
@@ -227,6 +232,12 @@ export const Profile = () => {
 
     console.log("Usuario logeado:", user);
     console.log("Nombre del usuario logeado:", user?.first_name);
+
+    const isAdmin = user?.permissions &&
+        user.permissions.manage_users &&
+        user.permissions.manage_products &&
+        user.permissions.view_reports &&
+        user.permissions.manage_orders;
 
 
     return (
@@ -503,6 +514,19 @@ export const Profile = () => {
                             <button onClick={handleLogout} className="logout-button">Cerrar sesión</button>
                         </div>
                     </div>
+                    {isAdmin && (
+                        <div className="admin_Container">
+                            <div className="admin_blockSeparation">
+                                <div className="admin_blockContent">
+                                    <span>Admin</span>
+                                </div>
+                            </div>
+                            <div className="buttonBlock">
+                                <button onClick={handleNavigateToAdmin} className="logout-button">Admin panel</button>
+                            </div>
+                        </div>
+                    )}
+
                 </div>
             </div>
         </section>
@@ -510,3 +534,5 @@ export const Profile = () => {
 };
 
 export default Profile;
+
+

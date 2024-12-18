@@ -406,6 +406,23 @@ select {
     font-size: 24px;
 }
 
+.admin_Container {
+    background-color: white;
+}
+
+.admin_blockSeparation {
+    border-bottom: 1px solid #dcdcdc;
+    display: flex;
+    justify-content: center;
+}
+
+.admin_blockContent {
+    width: 90%;
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+    font-size: 24px;
+}
+
 
 
 .buttonBlock {
