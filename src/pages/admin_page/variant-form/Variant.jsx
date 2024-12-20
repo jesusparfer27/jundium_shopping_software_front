@@ -16,7 +16,7 @@ export const Variant = () => {
     const [currentVariant, setCurrentVariant] = useState({
         name: '',
         color: { colorName: '', hexCode: '' },
-        size: [''],
+        sizes: [{ size: '', stock: 0 }],
         file: [],
         material: '',
         price: '',
@@ -43,7 +43,6 @@ export const Variant = () => {
             } else if (id === 'is_main') {
                 variant.is_main = checked;
             } else {
-                // Handle other fields, like color, material, etc.
                 if (id.includes('.')) {
                     const [parentKey, childKey] = id.split('.');
                     variant[parentKey] = {
@@ -64,17 +63,12 @@ export const Variant = () => {
     const handleAddImageInput = (index) => {
         setVariants((prevVariants) => {
             const updatedVariants = [...prevVariants];
-            // Asegurarte de que `image` es siempre un array.
             if (!Array.isArray(updatedVariants[index].image)) {
                 updatedVariants[index].image = [];
             }
-
-            // Evita agregar un campo vacío si el último ya está vacío
             if (updatedVariants[index].image[updatedVariants[index].image.length - 1] === '') {
                 return updatedVariants;
             }
-
-            // Agregar un nuevo campo vacío de imagen
             updatedVariants[index].image.push('');
             return updatedVariants;
         });
@@ -96,7 +90,7 @@ export const Variant = () => {
             variant.image = [...new Set([...variant.image, ...newUrls])];
             variant.file = [...new Set([...variant.file, ...newFileNames])];
 
-            console.log(`handleImageUploadChange - Index: ${index}, Updated Variants:`, updatedVariants); // Debug log
+            console.log(`handleImageUploadChange - Index: ${index}, Updated Variants:`, updatedVariants);
             return updatedVariants;
         });
     };
@@ -126,7 +120,7 @@ export const Variant = () => {
                 {
                     name: '',
                     color: { colorName: '', hexCode: '' },
-                    size: [],
+                    sizes: [{ size: '', stock: 0 }],
                     file: [],
                     material: '',
                     price: '',
@@ -141,7 +135,7 @@ export const Variant = () => {
 
     const generateProductCode = () => {
         const code = 'PROD-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-        console.log('Generated Product Code:', code);  // Verifica que se genera correctamente
+        console.log('Generated Product Code:', code);
         return code;
     };
 
@@ -160,16 +154,14 @@ export const Variant = () => {
         return true;
     };
 
-    // Cuando actualices selectedVariantIndex, asegúrate de hacerlo de manera correcta
     const handleSelectVariant = (index) => {
-        setSelectedVariantIndex(index);  // Set the selected index for input form to work correctly
+        setSelectedVariantIndex(index);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!validateData()) return;
 
-        // Generar el código del producto solo en el frontend
         const updatedVariants = variants.map((variant) => {
             const productCode = generateProductCode();
             if (!productCode) {
@@ -178,13 +170,13 @@ export const Variant = () => {
             }
             return {
                 ...variant,
-                product_code: productCode, // Añadimos el código generado
+                product_code: productCode,
             };
         });
 
         console.log("Datos de las variantes antes de enviar al backend:", updatedVariants);
 
-        if (updatedVariants.includes(null)) return; // Si alguna variante es inválida, no continuar
+        if (updatedVariants.includes(null)) return;
 
         const totalProducts = {
             ...generalProduct,
@@ -200,7 +192,7 @@ export const Variant = () => {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${localStorage.getItem("authToken")}`,
                 },
-                body: JSON.stringify({ generalProduct, variants: updatedVariants }), // Enviamos el product_code generado
+                body: JSON.stringify({ generalProduct, variants: updatedVariants }),
             });
 
             if (!response.ok) throw new Error("Error al crear el producto.");
@@ -211,16 +203,24 @@ export const Variant = () => {
     };
 
 
-    const handleSizeChange = (e, index) => {
-        const size = e.target.value.toUpperCase();
+    const handleSizeChange = (e, index, key) => {
+        const value = key === 'size' ? e.target.value.toUpperCase() : e.target.value;
         setVariants((prevVariants) => {
             const updatedVariants = [...prevVariants];
-            if (updatedVariants[index]) {
-                updatedVariants[index].size = updatedVariants[index].size || [];
-                if (!updatedVariants[index].size.includes(size)) {
-                    updatedVariants[index].size.push(size);
-                }
+            if (!updatedVariants[index].sizes) {
+                updatedVariants[index].sizes = [];
             }
+
+            const sizeIndex = updatedVariants[index].sizes.findIndex(
+                (s) => s.size === (key === 'size' ? value : currentSize)
+            );
+
+            if (sizeIndex !== -1) {
+                updatedVariants[index].sizes[sizeIndex][key] = value;
+            } else if (key === 'size') {
+                updatedVariants[index].sizes.push({ size: value, stock: 0 });
+            }
+
             return updatedVariants;
         });
     };
@@ -233,13 +233,18 @@ export const Variant = () => {
 
         setVariants((prevVariants) => {
             const updatedVariants = [...prevVariants];
-            if (!updatedVariants[index].size) {
-                updatedVariants[index].size = [];
+            if (!updatedVariants[index].sizes) {
+                updatedVariants[index].sizes = [];
             }
-            if (updatedVariants[index].size.includes(currentSize)) {
-                return updatedVariants;
+
+            const exists = updatedVariants[index].sizes.some(
+                (s) => s.size === currentSize
+            );
+
+            if (!exists) {
+                updatedVariants[index].sizes.push({ size: currentSize, stock: 0 });
             }
-            updatedVariants[index].size = [...updatedVariants[index].size, currentSize];
+
             return updatedVariants;
         });
 
@@ -249,10 +254,29 @@ export const Variant = () => {
     const handleDeleteSize = (sizeToRemove, index) => {
         setVariants((prevVariants) => {
             const updatedVariants = [...prevVariants];
-            updatedVariants[index].size = updatedVariants[index].size.filter((size) => size !== sizeToRemove);
+            updatedVariants[index].sizes = updatedVariants[index].sizes.filter(
+                (s) => s.size !== sizeToRemove
+            );
             return updatedVariants;
         });
     };
+
+    const handleStockChange = (e, index, size) => {
+        const stockValue = parseInt(e.target.value, 10) || 0;
+        setVariants((prevVariants) => {
+            const updatedVariants = [...prevVariants];
+            const sizeIndex = updatedVariants[index].sizes.findIndex(
+                (s) => s.size === size
+            );
+
+            if (sizeIndex !== -1) {
+                updatedVariants[index].sizes[sizeIndex].stock = stockValue;
+            }
+
+            return updatedVariants;
+        });
+    };
+
 
     const generateImageFolderPath = (product, variant) => {
         const type = product?.type || 'unknownType';
@@ -273,7 +297,7 @@ export const Variant = () => {
     const handleImageUrlChange = (index, urlIndex, value) => {
         setVariants((prevVariants) => {
             const updatedVariants = [...prevVariants];
-            updatedVariants[index].image[urlIndex] = value; // Actualiza el valor de la imagen
+            updatedVariants[index].image[urlIndex] = value;
             return updatedVariants;
         });
     };
@@ -289,7 +313,7 @@ export const Variant = () => {
             setCurrentVariant({
                 name: '',
                 color: { colorName: '', hexCode: '' },
-                size: [],
+                sizes: [{ size: '', stock: 0 }],
                 material: '',
                 price: '',
                 discount: 0,
@@ -304,7 +328,7 @@ export const Variant = () => {
         setCurrentVariant({
             name: '',
             color: { colorName: '', hexCode: '' },
-            size: [],
+            sizes: [{ size: '', stock: 0 }],
             material: '',
             price: '',
             discount: 0,
@@ -341,7 +365,7 @@ export const Variant = () => {
             {
                 name: '',
                 color: { colorName: '', hexCode: '' },
-                size: [],
+                sizes: [{ size: '', stock: 0 }],
                 material: '',
                 price: '',
                 discount: 0,
@@ -376,8 +400,8 @@ export const Variant = () => {
                                                     name="name"
                                                     type="text"
                                                     id="name"
-                                                    value={variant.name || ''}  // Each variant has its own name here
-                                                    onChange={(e) => handleVariantChange(e, index)}  // Ensure index is passed
+                                                    value={variant.name || ''}
+                                                    onChange={(e) => handleVariantChange(e, index)}
                                                 />
                                             </div>
                                             <div className="divForm_Column">
@@ -418,6 +442,16 @@ export const Variant = () => {
                                                     value={currentSize}
                                                     onChange={(e) => setCurrentSize(e.target.value.toUpperCase())}
                                                 />
+
+                                                <label htmlFor="stock">Stock:</label>
+                                                <input
+                                                    type="number"
+                                                    id="stock"
+                                                    placeholder="Ej: 20"
+                                                    value={currentStockNumber}
+                                                    onChange={(e) => setCurrentStockNumber(e.target.value)}
+                                                />
+
                                                 <div className="sizeContainer_Button">
                                                     <button
                                                         className="submitEditProductButton"

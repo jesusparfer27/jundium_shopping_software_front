@@ -15,7 +15,7 @@ export const ProductProvider = ({ children }) => {
     const [variants, setVariants] = useState([{
         name: '',
         color: { colorName: '', hexCode: '' },
-        size: [],
+        sizes: [{ size: '', stock: 0 }],
         file: [],
         material: '',
         price: '',
