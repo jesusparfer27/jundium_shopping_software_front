@@ -10,6 +10,7 @@ export const Variant = () => {
     const [error, setError] = useState('');
     const [variantCount, setVariantCount] = useState(0);
     const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
+    const [stock, setStock] = useState(0);
     const [activeAccordion, setActiveAccordion] = useState(null);
     const [currentSize, setCurrentSize] = useState('');
     const [imageUrls, setImageUrls] = useState([]);
@@ -231,6 +232,11 @@ export const Variant = () => {
             return;
         }
 
+        if (stock <= 0) {
+            alert('Por favor, ingrese un stock válido.');
+            return;
+        }
+
         setVariants((prevVariants) => {
             const updatedVariants = [...prevVariants];
             if (!updatedVariants[index].sizes) {
@@ -242,14 +248,16 @@ export const Variant = () => {
             );
 
             if (!exists) {
-                updatedVariants[index].sizes.push({ size: currentSize, stock: 0 });
+                updatedVariants[index].sizes.push({ size: currentSize, stock: stock });
             }
 
             return updatedVariants;
         });
 
         setCurrentSize('');
+        setStock(0);
     };
+
 
     const handleDeleteSize = (sizeToRemove, index) => {
         setVariants((prevVariants) => {
@@ -260,9 +268,11 @@ export const Variant = () => {
             return updatedVariants;
         });
     };
+    
 
     const handleStockChange = (e, index, size) => {
         const stockValue = parseInt(e.target.value, 10) || 0;
+
         setVariants((prevVariants) => {
             const updatedVariants = [...prevVariants];
             const sizeIndex = updatedVariants[index].sizes.findIndex(
@@ -434,48 +444,51 @@ export const Variant = () => {
                                                 />
                                             </div>
                                             <div className="divForm_Column">
-                                                <label htmlFor="size">Talla:</label>
-                                                <input
-                                                    type="text"
-                                                    id="size"
-                                                    placeholder="Ej: M"
-                                                    value={currentSize}
-                                                    onChange={(e) => setCurrentSize(e.target.value.toUpperCase())}
-                                                />
+    <label htmlFor="size">Talla:</label>
+    <input
+        type="text"
+        id="size"
+        placeholder="Ej: M"
+        value={currentSize}
+        onChange={(e) => setCurrentSize(e.target.value.toUpperCase())}
+    />
 
-                                                <label htmlFor="stock">Stock:</label>
-                                                <input
-                                                    type="number"
-                                                    id="stock"
-                                                    placeholder="Ej: 20"
-                                                    value={currentStockNumber}
-                                                    onChange={(e) => setCurrentStockNumber(e.target.value)}
-                                                />
+    <label htmlFor="stock">Stock:</label>
+    <input
+        type="number"
+        id="stock"
+        placeholder="Ej: 20"
+        value={stock}
+        onChange={(e) => setStock(parseInt(e.target.value, 10) || 0)} // Asigna el valor a stock
+    />
 
-                                                <div className="sizeContainer_Button">
-                                                    <button
-                                                        className="submitEditProductButton"
-                                                        onClick={() => handleAddSize(index)}
-                                                    >
-                                                        Enviar talla
-                                                    </button>
-                                                </div>
-                                                <div className="containerSize_Display">
-                                                    <ul className="sizeDisplay">
-                                                        {variants[index]?.size.map((size, idx) => (
-                                                            <li key={idx} className="sizeSelected_Group">
-                                                                {size}
-                                                                <button
-                                                                    className="deleteSize_Button"
-                                                                    onClick={() => handleDeleteSize(size, index)}
-                                                                >
-                                                                    X
-                                                                </button>
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                </div>
-                                            </div>
+    <div className="sizeContainer_Button">
+        <button
+            className="submitEditProductButton"
+            onClick={() => handleAddSize(index)}
+        >
+            Enviar talla
+        </button>
+    </div>
+
+    <div className="containerSize_Display">
+        <ul className="sizeDisplay">
+            {variants[index]?.sizes?.map((sizeObj, idx) => (
+                <li key={idx} className="sizeSelected_Group">
+                    {/* Display size and stock */}
+                    {`${sizeObj.size} - ${sizeObj.stock} en stock`}
+                    <button
+                        className="deleteSize_Button"
+                        onClick={() => handleDeleteSize(sizeObj.size, index)}
+                    >
+                        X
+                    </button>
+                </li>
+            ))}
+        </ul>
+    </div>
+</div>
+
                                             <div className="divForm_Column">
                                                 <div className="introduceImage">
                                                     <label htmlFor={`image-${index}`} className="labelImage">Subir Imagen</label>
