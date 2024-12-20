@@ -74,52 +74,48 @@ export const MultifunctionalModal = () => {
 
     useEffect(() => {
         if (activeModal !== 'multifunctionalModal') {
-            setFadeOut(false); // Resetea el fadeOut cuando el modal se activa
-            setTimerActive(true); // Reactiva el temporizador cuando el modal se activa
+            setFadeOut(false);
+            setTimerActive(true);
 
-            // Inicia el temporizador solo si está activo y no hay mouse sobre el modal
             if (timerActive && !mouseOver) {
                 const timerInterval = setInterval(() => {
-                    if (Date.now() - timerStartTime > 1000) {
-                        setFadeOut(true); // Comienza el desvanecimiento después de 1 segundo
-                        clearInterval(timerInterval); // Detiene el intervalo después de 1 segundo
+                    if (Date.now() - timerStartTime > 500) {
+                        setFadeOut(true);
+                        clearInterval(timerInterval);
                     }
                 }, 100);
 
-                return () => clearInterval(timerInterval); // Limpia el intervalo cuando el componente se desmonta o cambia
+                return () => clearInterval(timerInterval);
             }
         }
-    }, [activeModal, timerActive, timerStartTime, mouseOver]); // Dependencias para el efecto
+    }, [activeModal, timerActive, timerStartTime, mouseOver]);
 
     useEffect(() => {
         if (fadeOut) {
-            // Después de 1 segundo, cierra el modal
             const timer = setTimeout(() => {
                 closeModal();
-            }, 1000); // Espera 1 segundo para que el fadeOut termine
+            }, 1000);
             return () => clearTimeout(timer);
         }
     }, [fadeOut, closeModal]);
 
-    // Maneja el evento cuando el mouse entra al contenedor
-    const handleMouseEnter = () => {
-        setMouseOver(true);  // Establece que el mouse está dentro del modal
-        setTimerActive(false);  // Detiene el temporizador cuando el mouse entra
-        setTimerStartTime(Date.now()); // Reinicia el tiempo de inicio cuando el mouse entra
-        console.log('Mouse está encima del contenedor ModalWishlist');
-    };
+    // const handleMouseEnter = () => {
+    //     setMouseOver(true);
+    //     setTimerActive(false);
+    //     setTimerStartTime(Date.now());
+    //     console.log('Mouse está encima del contenedor ModalWishlist');
+    // };
 
-    // Maneja el evento cuando el mouse sale del contenedor
-    const handleMouseLeave = () => {
-        setMouseOver(false);  // Establece que el mouse ha salido del modal
-        setTimerActive(true);  // Reactiva el temporizador cuando el mouse sale
-        console.log('Mouse ha salido del contenedor ModalWishlist');
-    };
+    // const handleMouseLeave = () => {
+    //     setMouseOver(false);
+    //     setTimerActive(true);
+    //     console.log('Mouse ha salido del contenedor ModalWishlist');
+    // };
 
     return (
         <div className={`multifunctionalModal ${activeModal ? 'active slideInVertical' : ''}${fadeOut ? 'fadeOut' : ''}`}
-            onMouseEnter={handleMouseEnter}  // Detecta cuando el mouse entra
-            onMouseLeave={handleMouseLeave}  // Detecta cuando el mouse sale
+            // onMouseEnter={handleMouseEnter}
+            // onMouseLeave={handleMouseLeave}
         >
             <div className="containerWishlist_Advice">
                 <div className="containerIcon_Wishlist"></div>

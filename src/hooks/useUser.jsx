@@ -42,6 +42,8 @@ export function UserProvider({ children }) {
         }
     };
 
+    
+
     const updateUserDetails = async (userData) => {
         const token = localStorage.getItem('authToken');
         if (!token) return;
@@ -131,38 +133,42 @@ export function UserProvider({ children }) {
         }
     };
 
+    const handleFetchResponse = async (response) => {
+        if (!response.ok) {
+            if (response.status === 401) {
+                // Token inválido o expirado
+                alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('user');
+                window.location.href = '/login'; // Redirigir al login
+            } else {
+                const error = await response.json();
+                throw new Error(error.message || "Error en la solicitud.");
+            }
+        }
+        return response.json();
+    };
+
     const fetchUserDetails = async () => {
         const token = localStorage.getItem('authToken');
-        if (!token || isFetched.current) return;
-
+        if (!token) return;
+    
         try {
-            if (!VITE_API_BACKEND) {
-                throw new Error("VITE_API_BACKEND no está definido.");
-            }
-
             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/me`, {
-                method: "GET",
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
+                    Authorization: `Bearer ${token}`,
+                },
             });
-
-            if (!response.ok) {
-                throw new Error(`Error al obtener detalles del usuario: ${response.status}`);
-            }
-
-            const responseData = await response.json();
-            console.log("Detalles del usuario traídos:", responseData);
-            setUser(responseData.data);
-            localStorage.setItem("user", JSON.stringify(responseData.data));
+            const data = await handleFetchResponse(response);
+            setUser(data.data);
+            localStorage.setItem("user", JSON.stringify(data.data));
             isFetched.current = true;
+
         } catch (error) {
             console.error("Error al obtener los detalles del usuario:", error.message);
-        } finally {
-            setLoading(false);
         }
     };
+    
 
     const value = useMemo(() => ({
         user,

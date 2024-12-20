@@ -11,7 +11,6 @@ Currently, two official plugins are available:
 ## FALLOS LOGICA:
 
 LOGIN RECARGA REFORZADA
-MODAL PARA TOKEN EXPIRADO
 PAGINA ADMIN
 
 ## TAREAS DISEÑO:

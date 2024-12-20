@@ -9,9 +9,11 @@ const ProfileImage = ({ initials, userName, isAdmin }) => {
         <div className="profile-image">
             <img className='imgHeader_Profile' src={pictureProfile} alt="Perfil" />
             <div className="containerPadding_Image"></div>
-            <div className="backgroundPadding_Image">
-                <div className="profile-initials">{displayInitials}</div>
-                <div className="user_name">{userName}</div>
+            <div className="backgroundPadding_imageContainer">
+                <div className="backgroundPadding_Image">
+                    <div className="profile-initials">{displayInitials}</div>
+                </div>
+                {/* <div className="user_name">{userName}</div> */}
             </div>
         </div>
     );

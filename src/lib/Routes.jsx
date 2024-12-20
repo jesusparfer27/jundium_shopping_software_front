@@ -55,6 +55,11 @@ const router = createBrowserRouter([
             {
                 path: '/wish-list',
                 element: <MultifunctionalProductPage />
+            },
+            {
+                path: '/error',
+                element: <ErrorPage />,
+                errorElement: <ErrorPage />,
             }
         ]
     }

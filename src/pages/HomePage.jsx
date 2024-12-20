@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import '../css/pages/homepage.css';
 
+import PreloaderGif from '../assets/preloader-home/preloader-home.gif'
+
 import SeasonVideo from '../assets/home-sections/home-video-season.mp4';
 import AutumnImage from '../assets/home-sections/autumn-session-home.jpg';
 import VideoDiscounts from '../assets/home-sections/video-discounts.mp4'
@@ -308,6 +310,7 @@ export const HomePage = () => {
                         </div>
                     </div>
                 </div>
+                {/* <img src={PreloaderGif} alt="Cargando..." /> */}
             </div>
             </>
     );

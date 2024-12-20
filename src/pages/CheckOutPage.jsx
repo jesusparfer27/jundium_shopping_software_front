@@ -60,7 +60,7 @@ export const CheckOutPage = () => {
                 <div className="cartPrev">
                     <div>Mi selección: ({cartItems.reduce((sum, item) => sum + item.quantity, 0)})</div>
                     <div>
-                        <button className="view-cart-button" onClick={handleOpenSectionModal}>Ver carrito</button>
+                        {/* <button className="view-cart-button" onClick={handleOpenSectionModal}>Ver carrito</button> */}
                     </div>
                 </div>
 
@@ -179,7 +179,7 @@ export const CheckOutPage = () => {
                 </div>
 
                 <div className="checkout-button-container">
-                    <button className="checkout-button">Continuar</button>
+                    <button className="checkoutButton">Continuar</button>
                 </div>
             </div>
 
