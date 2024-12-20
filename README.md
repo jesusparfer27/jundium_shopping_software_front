@@ -8,9 +8,13 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
 
-## TAREAS MAÑANA
+## FALLOS LOGICA:
 
-- removeItem de mi cart sincronizado, si elimino uno y tengo dos desaparecen dos (?)
-- limpiar comentarios css
-- ESPACIOS EN LOS INPUTS DE DE REGISTER
+LOGIN RECARGA REFORZADA
+MODAL PARA TOKEN EXPIRADO
+PAGINA ADMIN
+
+## TAREAS DISEÑO:
+
+HERO ANIMADO 
 

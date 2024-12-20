@@ -26,6 +26,7 @@ export const Profile = () => {
             navigate('/error');
         }
     }, [navigate]);
+    
 
     // ?
     useEffect(() => {
@@ -207,6 +208,7 @@ export const Profile = () => {
         localStorage.removeItem("user");
         localStorage.removeItem('authToken');
         console.log("Sesión eliminada correctamente de localStorage.");
+        setUser(null);
         navigate('/');
     };
 
