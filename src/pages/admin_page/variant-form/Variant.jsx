@@ -247,10 +247,11 @@ export const Variant = () => {
 
     const handleSaveImageUrlsToBackend = async (e, index) => {
         const files = Array.from(e.target.files);
-        
         const formData = new FormData();
+    
+        // Asegúrate de que el campo se llame 'images' en vez de 'image'
         files.forEach((file) => {
-            formData.append('image', file);  // Asegúrate de que el campo se llame 'image'
+            formData.append('images', file); // Aquí debe ser 'images', no 'image'
         });
     
         try {
@@ -262,7 +263,6 @@ export const Variant = () => {
     
             if (response.ok) {
                 console.log('Imágenes subidas correctamente', data);
-                // Procesar la respuesta aquí (ej., guardar la URL en el estado)
             } else {
                 console.error('Error al subir imágenes', data);
             }
@@ -436,7 +436,7 @@ export const Variant = () => {
                                                         multiple
                                                         id={`image-${index}`}
                                                         className="inputImage"
-                                                        onChange={(e) => handleImageUploadChange(e, index)}
+                                                        onChange={(e) => handleSaveImageUrlsToBackend(e)}
                                                     />
                                                 </div>
                                                 <div className="containerForPreviews">
