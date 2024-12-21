@@ -245,16 +245,32 @@ export const Variant = () => {
     };
 
 
-    const handleSaveImageUrlsToBackend = (e, index) => {
+    const handleSaveImageUrlsToBackend = async (e, index) => {
         const files = Array.from(e.target.files);
-        const realImageUrls = files.map((file) => uploadImageToServer(file));
-
-        setVariants((prevVariants) => {
-            const updatedVariants = [...prevVariants];
-            updatedVariants[index].image = realImageUrls;
-            return updatedVariants;
+        
+        const formData = new FormData();
+        files.forEach((file) => {
+            formData.append('image', file);  // Asegúrate de que el campo se llame 'image'
         });
+    
+        try {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/upload-images`, {
+                method: 'POST',
+                body: formData,
+            });
+            const data = await response.json();
+    
+            if (response.ok) {
+                console.log('Imágenes subidas correctamente', data);
+                // Procesar la respuesta aquí (ej., guardar la URL en el estado)
+            } else {
+                console.error('Error al subir imágenes', data);
+            }
+        } catch (error) {
+            console.error('Error en la subida:', error);
+        }
     };
+    
 
     const saveVariant = (index) => {
         if (validateVariant()) {
