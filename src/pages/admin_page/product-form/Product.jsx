@@ -84,7 +84,6 @@ export const Product = () => {
                 name: '',
                 color: { colorName: '', hexCode: '' },
                 size: [],
-                file: [],
                 material: '',
                 price: '',
                 discount: 0,

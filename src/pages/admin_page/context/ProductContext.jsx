@@ -16,7 +16,6 @@ export const ProductProvider = ({ children }) => {
         name: '',
         color: { colorName: '', hexCode: '' },
         sizes: [{ size: '', stock: 0 }],
-        file: [],
         material: '',
         price: '',
         discount: 0,
