@@ -133,13 +133,13 @@ export const Variant = () => {
     const handleImageChange = (e, index) => {
         const files = Array.from(e.target.files);
         const imageUrls = files.map((file) => URL.createObjectURL(file));
-
+    
         setVariants((prevVariants) => {
             const updatedVariants = [...prevVariants];
             updatedVariants[index].image = imageUrls;
             return updatedVariants;
         });
-
+    
         const fileNames = files.map((file) => file.name);
         setVariants((prevVariants) => {
             const updatedVariants = [...prevVariants];
@@ -147,12 +147,13 @@ export const Variant = () => {
             return updatedVariants;
         });
     };
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         if (!validateData()) return;
-
+    
         const updatedVariants = variants.map((variant) => {
             const productCode = generateProductCode();
             if (!productCode) {
@@ -164,26 +165,35 @@ export const Variant = () => {
                 product_code: productCode,
             };
         });
-
+    
         if (updatedVariants.includes(null)) return;
-
+    
         const totalProducts = {
             ...generalProduct,
             variants: updatedVariants,
         };
-
+    
+        // Generar la ruta de las imágenes
+        const imageFolderPaths = updatedVariants.map((variant) =>
+            generateImageFolderPath(generalProduct, variant)
+        );
+    
         console.log("Producto enviado al backend:", totalProducts);
-
+    
         const formData = new FormData();
         formData.append("generalProduct", JSON.stringify(generalProduct));
         formData.append("variants", JSON.stringify(updatedVariants));
-
+    
+        // Aquí agregas la carpeta generada
+        formData.append("imageFolders", JSON.stringify(imageFolderPaths));
+    
         variants.forEach((variant) => {
+            // Subir solo las imágenes cuando se envíe el formulario
             variant.image.forEach((file) => {
                 formData.append("image", file);
             });
         });
-
+    
         try {
             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/create-product`, {
                 method: "POST",
@@ -192,14 +202,15 @@ export const Variant = () => {
                 },
                 body: formData,
             });
+    
             if (!response.ok) throw new Error("Error al crear el producto.");
             console.log("Producto creado con éxito.");
         } catch (error) {
             console.error("Error al enviar el producto:", error);
         }
-
     };
-
+    
+    
 
     const generateImageFolderPath = (product, variant) => {
         const type = product?.type || 'unknownType';
