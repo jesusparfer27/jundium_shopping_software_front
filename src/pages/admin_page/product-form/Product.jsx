@@ -119,9 +119,9 @@ export const Product = () => {
                                     onChange={handleChange}
                                 >
                                     <option value="">Select Gender</option>
-                                    <option value="mujer">Mujer</option>
-                                    <option value="hombre">Hombre</option>
-                                    <option value="unisex">Unisex</option>
+                                    <option value="woman">woman</option>
+                                    <option value="man">man</option>
+                                    <option value="unisex">unisex</option>
                                 </select>
                             </div>
 
@@ -157,10 +157,10 @@ export const Product = () => {
                                     onChange={handleChange}
                                 >
                                     <option value="">Select Type</option>
-                                    <option value="camiseta">Camiseta</option>
-                                    <option value="abrigo">Abrigo</option>
-                                    <option value="zapatillas">Zapatillas</option>
-                                    <option value="bolso">Bolso</option>
+                                    <option value="t-shirts">t-shirts</option>
+                                    <option value="jackets">jackets</option>
+                                    <option value="shoes">shoes</option>
+                                    <option value="bags">bags</option>
                                 </select>
                             </div>
                         </div>

@@ -60,7 +60,7 @@ export const Variant = () => {
     };
 
     useEffect(() => {
-        if (variants.length === 0) {
+        if (!variants || variants.length === 0) {
             setVariants([
                 {
                     name: '',
@@ -76,6 +76,7 @@ export const Variant = () => {
             ]);
         }
     }, []);
+    
 
     const handleAddSize = (index) => {
         if (!currentSize.trim()) {
@@ -129,72 +130,32 @@ export const Variant = () => {
     const handleSelectVariant = (index) => {
         setSelectedVariantIndex(index);
     };
-
-    const handleImageChange = (e, index) => {
-        const files = Array.from(e.target.files);
-        const imageUrls = files.map((file) => URL.createObjectURL(file));
     
-        setVariants((prevVariants) => {
-            const updatedVariants = [...prevVariants];
-            updatedVariants[index].image = imageUrls;
-            return updatedVariants;
-        });
-    
-        const fileNames = files.map((file) => file.name);
-        setVariants((prevVariants) => {
-            const updatedVariants = [...prevVariants];
-            updatedVariants[index].file = fileNames;
-            return updatedVariants;
-        });
-    };
-    
-
     const handleSubmit = async (e) => {
         e.preventDefault();
     
         if (!validateData()) return;
     
-        const updatedVariants = variants.map((variant) => {
-            const productCode = generateProductCode();
-            if (!productCode) {
-                console.error("El código del producto es nulo o vacío");
-                return null;
-            }
-            return {
-                ...variant,
-                product_code: productCode,
-            };
-        });
-    
-        if (updatedVariants.includes(null)) return;
-    
-        const totalProducts = {
-            ...generalProduct,
-            variants: updatedVariants,
-        };
-    
-        // Generar la ruta de las imágenes
-        const imageFolderPaths = updatedVariants.map((variant) =>
-            generateImageFolderPath(generalProduct, variant)
-        );
-    
-        console.log("Producto enviado al backend:", totalProducts);
-    
-        const formData = new FormData();
-        formData.append("generalProduct", JSON.stringify(generalProduct));
-        formData.append("variants", JSON.stringify(updatedVariants));
-    
-        // Aquí agregas la carpeta generada
-        formData.append("imageFolders", JSON.stringify(imageFolderPaths));
-    
-        variants.forEach((variant) => {
-            // Subir solo las imágenes cuando se envíe el formulario
-            variant.image.forEach((file) => {
-                formData.append("image", file);
-            });
-        });
+        const updatedVariants = variants.map((variant) => ({
+            ...variant,
+            product_code: generateProductCode(),
+        }));
     
         try {
+            for (let i = 0; i < updatedVariants.length; i++) {
+                const variant = updatedVariants[i];
+    
+                if (variant.imageFiles?.length) {
+                    const uploadedImageUrls = await handleSaveImageUrlsToBackend(variant.imageFiles);
+                    variant.image = uploadedImageUrls; // Actualiza con URLs del backend
+                    delete variant.imageFiles; // Elimina los archivos locales después de subirlos
+                }
+            }
+    
+            const formData = new FormData();
+            formData.append("generalProduct", JSON.stringify(generalProduct));
+            formData.append("variants", JSON.stringify(updatedVariants));
+    
             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/create-product`, {
                 method: "POST",
                 headers: {
@@ -209,8 +170,6 @@ export const Variant = () => {
             console.error("Error al enviar el producto:", error);
         }
     };
-    
-    
 
     const generateImageFolderPath = (product, variant) => {
         const type = product?.type || 'unknownType';
@@ -222,21 +181,21 @@ export const Variant = () => {
         return folderPath;
     };
 
-    const handleImageUploadChange = (e, variantIndex) => {
-        const files = e.target.files;
-        const newImages = [...variants[variantIndex].image];
-
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            const filePath = `/${file.name}`;
-            newImages.push(filePath);
+     
+    const handleImageUpload = async (e, index) => {
+        const files = Array.from(e.target.files); // Convierte FileList a Array
+        try {
+            const uploadedImageUrls = await handleSaveImageUrlsToBackend(files);
+            setVariants((prevVariants) => {
+                const updatedVariants = [...prevVariants];
+                updatedVariants[index].image = uploadedImageUrls;
+                return updatedVariants;
+            });
+        } catch (error) {
+            console.error("Error al manejar la carga de imágenes:", error);
         }
-
-        const updatedVariants = [...variants];
-        updatedVariants[variantIndex].image = newImages;
-        setVariants(updatedVariants);
     };
-
+    
     const handleDeleteImageInput = (variantIndex, imageIndex) => {
         const updatedVariants = [...variants];
         updatedVariants[variantIndex].image = updatedVariants[variantIndex].image.filter((_, idx) => idx !== imageIndex);
@@ -251,38 +210,51 @@ export const Variant = () => {
 
     const handleImageUrlChange = (variantIndex, imgIndex, value) => {
         const updatedVariants = [...variants];
-        updatedVariants[variantIndex].image[imgIndex] = value;
+    
+        // Extraer solo el nombre del archivo si hay un path
+        const parts = value.split("\\"); // Cambiar a "/" si aplica
+        const fileName = parts[parts.length - 1];
+        updatedVariants[variantIndex].image[imgIndex] = `/${fileName}`; // Agregar `/` al inicio
         setVariants(updatedVariants);
     };
-
-
-    const handleSaveImageUrlsToBackend = async (e, index) => {
-        const files = Array.from(e.target.files);
-        const formData = new FormData();
     
-        // Asegúrate de que el campo se llame 'images' en vez de 'image'
-        files.forEach((file) => {
-            formData.append('images', file); // Aquí debe ser 'images', no 'image'
-        });
+    
+
+
+    const handleSaveImageUrlsToBackend = async (files) => {
+        const formData = new FormData();
+        files.forEach((file) => formData.append("images", file));
     
         try {
             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/upload-images`, {
-                method: 'POST',
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+                },
                 body: formData,
             });
+    
+            if (!response.ok) throw new Error("Error al subir imágenes");
+    
             const data = await response.json();
     
-            if (response.ok) {
-                console.log('Imágenes subidas correctamente', data);
-            } else {
-                console.error('Error al subir imágenes', data);
-            }
+            // Procesar las rutas de imagen para eliminar el número inicial y conservar solo el nombre del archivo
+            return data.imagePaths.map((path) => {
+                const parts = path.split("\\"); // Cambiar a "/" si los paths tienen barras normales
+                const fileName = parts[parts.length - 1]; // Obtener solo el nombre del archivo
+                const fileNameWithoutPrefix = fileName.replace(/^\d+-/, ''); // Elimina el prefijo numérico y el guion
+                return `/${fileNameWithoutPrefix}`; // Retorna el nombre del archivo sin el número y con un "/"
+            });
         } catch (error) {
-            console.error('Error en la subida:', error);
+            console.error("Error al guardar URLs de imágenes en el backend:", error);
+            throw error;
         }
     };
     
-
+    
+    
+        
+    
     const saveVariant = (index) => {
         if (validateVariant()) {
             setVariants((prevVariants) => {
@@ -447,8 +419,9 @@ export const Variant = () => {
                                                         multiple
                                                         id={`image-${index}`}
                                                         className="inputImage"
-                                                        onChange={(e) => handleSaveImageUrlsToBackend(e)}
+                                                        onChange={(e) => handleImageUpload(e, index)}
                                                     />
+
                                                 </div>
                                                 <div className="containerForPreviews">
                                                     {variants[index]?.image.map((imageUrl, imgIndex) => (
@@ -618,3 +591,30 @@ export const Variant = () => {
 //         return updatedVariants;
 //     });
 // };
+
+    // const handleImageUploadChange = async (e, variantIndex) => {
+    //     try {
+    //         // Sube las imágenes al backend
+    //         const uploadedImageUrls = await handleSaveImageUrlsToBackend(files);
+    
+    //         // Actualiza las URLs en el estado
+    //         setVariants((prevVariants) => {
+    //             const updatedVariants = [...prevVariants];
+    //             updatedVariants[variantIndex].image = uploadedImageUrls; // Usa las URLs del backend
+    //             return updatedVariants;
+    //         });
+    //     } catch (error) {
+    //         console.error("Error al manejar la carga de imágenes:", error);
+    //     }
+    // };
+
+       // const handleImageChange = (e, index) => {
+    //     const files = Array.from(e.target.files);
+    //     const imageUrls = files.map((file) => URL.createObjectURL(file));
+    
+    //     setVariants((prevVariants) => {
+    //         const updatedVariants = [...prevVariants];
+    //         updatedVariants[index].imagePreview = imageUrls;
+    //         return updatedVariants;
+    //     });
+    // };
