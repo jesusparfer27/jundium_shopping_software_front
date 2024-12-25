@@ -130,59 +130,59 @@ export const Variant = () => {
 
   const handleImageUpload = (e, index) => {
     const files = Array.from(e.target.files);
-  
+
     setVariants((prevVariants) => {
       const updatedVariants = [...prevVariants];
       updatedVariants[index].imageFiles = files;
       return updatedVariants;
     });
   };
-  
+
   const handleShowImageUpload = (e, index) => {
     const file = e.target.files[0];
     setShowImage(file);
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!validateData()) return;
-  
+
     const updatedVariants = variants.map((variant) => ({
       ...variant,
       product_code: generateProductCode(),
     }));
-  
+
     try {
       for (let i = 0; i < updatedVariants.length; i++) {
         const variant = updatedVariants[i];
-  
+
         if (variant.imageFiles?.length || showImage) {
           const folderPath = generateImageFolderPath(generalProduct, variant);
           const formData = new FormData();
-  
+
           variant.imageFiles.forEach((file) => formData.append("file", file));
-  
+
           if (showImage) {
             formData.append("showing_image", showImage);
           }
-  
+
           formData.append("imageFolders", JSON.stringify([folderPath]));
-  
+
           const uploadedImageUrls = await handleSaveImageUrlsToBackend(formData);
-  
+
           variant.image = uploadedImageUrls.filter((url, index) => index < variant.imageFiles.length);
           variant.showing_image = uploadedImageUrls.filter((url, index) => index >= variant.imageFiles.length);
-  
+
           delete variant.imageFiles;
         }
       }
-  
+
       const formData = new FormData();
       formData.append("generalProduct", JSON.stringify(generalProduct));
       formData.append("variants", JSON.stringify(updatedVariants));
 
-  
+
       const response = await fetch(
         `${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/create-product`,
         {
@@ -194,7 +194,7 @@ export const Variant = () => {
         }
       );
 
-  
+
       if (!response.ok) throw new Error("Error al crear el producto.");
       console.log("Producto creado con éxito.");
     } catch (error) {
@@ -367,50 +367,65 @@ export const Variant = () => {
                         />
                       </div>
                       <div className="divForm_Column">
-                        <label htmlFor="size">Talla:</label>
-                        <input
-                          type="text"
-                          id="size"
-                          placeholder="Ej: M"
-                          value={currentSize}
-                          onChange={(e) =>
-                            setCurrentSize(e.target.value.toUpperCase())
-                          }
-                        />
+                        <div className="containerRow_forSize">
+                          <div className="containerFor_inputSize">
+                            <label htmlFor="size">Talla:</label>
+                            <input
+                              type="text"
+                              id="size"
+                              placeholder="Ej: M"
+                              value={currentSize}
+                              onChange={(e) =>
+                                setCurrentSize(e.target.value.toUpperCase())
+                              }
+                            />
+                          </div>
 
-                        <label htmlFor="stock">Stock:</label>
-                        <input
-                          type="number"
-                          id="stock"
-                          placeholder="Ej: 20"
-                          value={stock}
-                          onChange={(e) =>
-                            setStock(parseInt(e.target.value, 10) || 0)
-                          }
-                        />
+                          <div className="containerFor_inputSize">
+                            <label htmlFor="stock">Stock:</label>
+                            <input
+                              type="number"
+                              id="stock"
+                              placeholder="Ej: 20"
+                              value={stock}
+                              onChange={(e) =>
+                                setStock(parseInt(e.target.value, 10) || 0)
+                              }
+                            />
+                          </div>
 
-                        <div className="sizeContainer_Button">
-                          <button
-                            className="submitEditProductButton"
-                            onClick={() => handleAddSize(index)}
-                          >
-                            Enviar talla
-                          </button>
+                          <div className="containerFor_inputSize">
+                            <div className="sizeContainer_Button">
+                              <button
+                                className="submitEditProductButton"
+                                onClick={() => handleAddSize(index)}
+                              >
+                                Enviar talla
+                              </button>
+                            </div>
+                          </div>
                         </div>
 
                         <div className="containerSize_Display">
                           <ul className="sizeDisplay">
                             {variants[index]?.sizes?.map((sizeObj, idx) => (
                               <li key={idx} className="sizeSelected_Group">
-                                {`${sizeObj.size} - ${sizeObj.stock} en stock`}
-                                <button
-                                  className="deleteSize_Button"
-                                  onClick={() =>
-                                    handleDeleteSize(sizeObj.size, index)
-                                  }
-                                >
-                                  X
-                                </button>
+                                <div className="blockContainer_sizeDisplay">
+                                  <p className="pSize_display">{`size: ${sizeObj.size}`}</p>
+                                  <p className="pSize_display">{`en stock: ${sizeObj.stock}`}</p>
+                                </div>
+                                <div className="buttonSize_container">
+                                  <button
+                                    className="deleteSize_Button"
+                                    onClick={() =>
+                                      handleDeleteSize(sizeObj.size, index)
+                                    }
+                                  >
+                                    <span className="material-symbols-outlined">
+                                      close
+                                    </span>
+                                  </button>
+                                </div>
                               </li>
                             ))}
                           </ul>
@@ -616,28 +631,28 @@ export const Variant = () => {
 //     });
 // };
 
-  
-  // const generateImageFolderPath = (product, variant) => {
-  //   if (!product || !variant) {
-  //     console.error("Producto o variante no definidos.");
-  //     return "";
-  //   }
-  //   const type = product?.type || "unknownType";
-  //   const gender = product?.gender || "unknownGender";
-  //   // const name = variant?.name || 'unknownProduct';
-  //   const colorName = variant?.color?.colorName || "unknownColor";
-  //   const folderPath = `${gender}/${type}/${colorName}`;
-  //   console.log("Ruta generada para las imágenes:", folderPath);
-  //   return folderPath;
-  // };
+
+// const generateImageFolderPath = (product, variant) => {
+//   if (!product || !variant) {
+//     console.error("Producto o variante no definidos.");
+//     return "";
+//   }
+//   const type = product?.type || "unknownType";
+//   const gender = product?.gender || "unknownGender";
+//   // const name = variant?.name || 'unknownProduct';
+//   const colorName = variant?.color?.colorName || "unknownColor";
+//   const folderPath = `${gender}/${type}/${colorName}`;
+//   console.log("Ruta generada para las imágenes:", folderPath);
+//   return folderPath;
+// };
 
 
-  {/* <button onClick={() => handleAddImageInput(index)}>
+{/* <button onClick={() => handleAddImageInput(index)}>
                           Agregar casilla
                         </button> */}
 
-    // const handleAddImageInput = (variantIndex) => {
-  //   const updatedVariants = [...variants];
-  //   updatedVariants[variantIndex].image.push("");
-  //   setVariants(updatedVariants);
-  // };
+// const handleAddImageInput = (variantIndex) => {
+//   const updatedVariants = [...variants];
+//   updatedVariants[variantIndex].image.push("");
+//   setVariants(updatedVariants);
+// };
