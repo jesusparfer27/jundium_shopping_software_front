@@ -2,7 +2,7 @@
     position: fixed;
     top: -2px;
     right: 0;
-    width: 50%;
+    width: 40%;
     background-color: white;
     color: #333;
     padding: 2rem;
@@ -14,10 +14,22 @@
     box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
 }
 
+.submit-buttonProfile.Cart {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    height: 100%;
+}
+
 .submit-buttonProfile.Cart button{
     padding-top: .4rem;
     border:  1px solid black;
     padding-bottom: .4rem;
+    width: 100%;
 }
 
 .textCard_Header {
@@ -40,7 +52,7 @@
     cursor: pointer;
 }
 
-.cartHeader, .cartSummary, .checkoutButtonContainer {
+.cartHeader, .cartSummary, .cartButtonContainer {
     width: 70%;
 }
 
@@ -52,9 +64,9 @@
 }
 
 .cartItems {
-    width: 70%;
-    list-style: none;
-    padding: 0;
+    width: 75%;
+    list-style: none;   
+    margin: 0;
 }
 
 .scrollableCartItems {
@@ -63,6 +75,7 @@
     overflow-x: hidden;
     padding: 1rem;
     border-radius: 8px;
+    width: 80%;
 }
 
 .scrollableCartItems::-webkit-scrollbar {
@@ -108,7 +121,7 @@
 
 .cartItem img {
     width: 200px;
-    height: 200px;
+    height: 250px;
     object-fit: cover;
 }
 
@@ -117,7 +130,9 @@
     flex-direction: column;
     justify-content: center;
     flex-grow: 1;
-    margin-top: 1rem;
+    width: 100%;
+    /* margin-top: 1rem; */
+    padding-top: 2rem;
 }
 
 .cartItemContent :nth-child(4),
@@ -141,7 +156,7 @@
     justify-content: center;
 }
 
-.checkoutButton {
+.cart1Button {
     background-color: black;
     color: #fff;
     border: 1px solid black;

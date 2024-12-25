@@ -99,7 +99,7 @@ export const CheckOutPage = () => {
                                 <div className="infoProductCheckOut">
                                     <div className="productHeader_checkout">
                                         <div className="product-header">
-                                            <div className='divCosts'>{product_id?.name || "Nombre no disponible"}</div>
+                                            <div className='divCosts'>{selectedVariant?.name || "Nombre no disponible"}</div>
                                         </div>
                                         <div className="upperInformation">
                                             {selectedVariant && selectedVariant.color && (

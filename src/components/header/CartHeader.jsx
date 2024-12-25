@@ -87,7 +87,7 @@ const CartContainer = () => {
                                             )}
                                         </div>
                                         <div className="cartItemContent">
-                                            <p className="textCard_Header">{name}</p>
+                                            <p className="textCard_Header">{selectedVariant?.name}</p>
                                             <p className="textCard_Header">${variantPrice.toFixed(2)}</p>
                                             {quantity > 1 && <p className="textCard_Header">Cantidad: {quantity}</p>}
                                             <p className="textCard_Header">{colorName || 'No especificado'}</p>
@@ -122,8 +122,8 @@ const CartContainer = () => {
                         </div>
                     </div>
 
-                    <div className="checkoutButtonContainer">
-                        <button className="checkoutButton" onClick={handleCheckout}>Ver detalles</button>
+                    <div className="cartButtonContainer">
+                        <button className="cart1Button" onClick={handleCheckout}>Ver detalles</button>
                     </div>
                 </>
             )}

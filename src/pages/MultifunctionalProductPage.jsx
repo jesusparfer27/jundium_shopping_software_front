@@ -153,7 +153,7 @@ export const MultifunctionalProductPage = () => {
                                 </div>
                                 <div className="productInfoRow">
                                     <div className="productInfoColumn">
-                                        <div className="productName">{name}</div>
+                                        <div className="productName">{variant?.name}</div>
                                         <div className="productPrice">${variant?.price ?? 'N/A'}</div>
                                     </div>
                                     <div className="addToCartButtonContainer">

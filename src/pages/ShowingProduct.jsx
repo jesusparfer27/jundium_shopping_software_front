@@ -125,7 +125,7 @@ export const ShowingProductPage = () => {
     if (loading) return <div>Cargando producto...</div>;
     if (!product) return <div>Producto no encontrado.</div>;
 
-    const otherImages = selectedVariant?.image.slice(1) || [];
+    const otherImages = selectedVariant?.image || [];
 
     return (
         <section className="productSection">
@@ -136,7 +136,7 @@ export const ShowingProductPage = () => {
                             <img
                                 key={index}
                                 src={`${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${image}`}
-                                alt={`${product.name} - ${selectedVariant.color.colorName}`}
+                                alt={`${selectedVariant?.name} - ${selectedVariant.color.colorName}`}
                                 className="otherProductImage"
                                 onError={(e) => (e.target.src = 'ruta/a/imagen/por/defecto.jpg')}
                             />
@@ -152,10 +152,10 @@ export const ShowingProductPage = () => {
             <div className="infoProduct_Container">
                 <div className="infoProduct_ShowingProduct">
                     <div className="infoProduct_Row">
-                        <h2 className="h2_ShowingPage">{product.name}</h2>
+                        <h2 className="h2_ShowingPage">{selectedVariant?.name}</h2>
 
                         <p className="paraphHidden_Accordion">
-                            {selectedVariant ? selectedVariant.material : product.description}
+                            {selectedVariant?.description}
                         </p>
                         <p>Precio: ${selectedVariant?.price || product.base_price}</p>
 

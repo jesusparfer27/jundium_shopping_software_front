@@ -450,7 +450,7 @@ export const Profile = () => {
                                             ) : (
                                                 <p>Imagen no disponible</p>
                                             )}
-                                            <p>{name}</p>
+                                            <p>{selectedVariant?.name}</p>
                                             <p>{selectedVariant?.price} $</p>
                                         </div>
                                     );
