@@ -176,6 +176,8 @@
     align-items: center;
 }
 
+
+
 /* .containerFor_inputSize.sizeContainer_Button {
     display: flex;
     flex-direction: column;
@@ -213,6 +215,26 @@
     transition: background-color 0.3s, color 0.3s;
     width: 100%;
 }
+
+.introduceImage {
+    display: flex;
+    align-items: center; /* Centra verticalmente */
+    gap: 1rem; /* Espacio entre el label y el input */
+  }
+
+  .inputImage {
+    display: none;
+}
+
+  .labelImage {
+    background-color: #000; /* Cambia según tu diseño */
+    width: 100%;
+    color: #fff; /* Cambia según tu diseño */
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
 
 .divForm_Column:last-child {
     padding-bottom: 3rem;

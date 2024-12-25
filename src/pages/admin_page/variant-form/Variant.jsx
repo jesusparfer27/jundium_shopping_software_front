@@ -434,10 +434,7 @@ export const Variant = () => {
 
                       <div className="divForm_Column">
                         <div className="introduceImage">
-                          <label
-                            htmlFor={`image-${index}`}
-                            className="labelImage"
-                          >
+                          <label htmlFor={`image-${index}`} className="labelImage">
                             Subir Imagen
                           </label>
                           <input
@@ -461,6 +458,7 @@ export const Variant = () => {
                             onChange={(e) => handleShowImageUpload(e, index)}
                           />
                         </div>
+
                         <div className="containerForPreviews">
                           {variants[index]?.image?.map((imageUrl, imgIndex) => (
                             <div key={imgIndex} className="imagePreview">
