@@ -129,7 +129,7 @@ export const MultifunctionalProductPage = () => {
                         const { name, price, variants } = product_id;
 
                         const variant = variants?.find(v => v.variant_id === variant_id);
-                        const imageUrl = variant?.image?.[0];
+                        const imageUrl = variant?.showing_image;
                         const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null;
 
                         return (

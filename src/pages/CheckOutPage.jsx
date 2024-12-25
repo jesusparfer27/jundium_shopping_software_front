@@ -74,7 +74,7 @@ export const CheckOutPage = () => {
                         const selectedVariant = variants.find(
                             variant => variant.variant_id === item.variant_id
                         );
-                        const imageUrl = selectedVariant?.image ? selectedVariant.image[0] : null;
+                        const imageUrl = selectedVariant?.image ? selectedVariant?.showing_image : null;
                         const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null;
 
                         const adjustQuantity = (operation, product_id, variant_id, quantity) => {
