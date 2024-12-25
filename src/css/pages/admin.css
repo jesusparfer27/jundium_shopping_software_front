@@ -3,7 +3,7 @@
 }
 
 .blockContainer_sizeDisplay {
-    width: 60%;
+    width: 100%;
     padding-left: 1rem;
 }
 
@@ -127,17 +127,23 @@
     border: 1px solid black ;
     width: 100%;
     padding: 0;
-    /* padding-top: .5rem;
-    padding-bottom: .5rem; */
     display: flex;
 }
 
 .sizeSelected_Group {
+    border: 1px solid black;
     display: flex;
-    /* flex-direction: column; */
     width: 100%;
-    /* justify-content: center; */
-    height: 100%;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.containerSize_Display {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Cuatro columnas de igual tamaño */
+    grid-auto-rows: 100%; /* Altura de cada fila al 20% del contenedor */
+    gap: 1rem; /* Espacio entre filas y columnas */
+    width: 100%; /* Ajusta al tamaño completo del contenedor padre */
 }
 
 .sizeSelected_Group .pSize_display {
@@ -148,7 +154,10 @@
 }
 
 .sizeDisplay {
-    width: 15%;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: contents; /* Para que el contenedor no influya en el grid */
 }
 
 .buttonSize_container {
@@ -210,6 +219,10 @@
 }
 
 .divForm_Column input {
+    padding-left: 1rem; 
+  }
+
+  .divForm_Column select {
     padding-left: 1rem; 
   }
   
