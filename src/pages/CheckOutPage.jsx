@@ -44,6 +44,61 @@ export const CheckOutPage = () => {
 
     }, [user, navigate]);
 
+    const handleCheckout = async () => {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            console.error('No se está recibiendo el token');
+            return;
+        }
+        if (!user) {
+            return <div>Inicia sesión para continuar con el proceso de pago.</div>;
+        }
+        
+        console.log("User before checkout:", user); // Verificar valor de user
+    
+        const items = cartItems.map(item => ({
+            product_id: item.product_id._id,
+            variant_id: item.variant_id,
+            quantity: item.quantity,
+            price: item.price,
+            colorName: item.colorName,
+            size: item.size
+        }));
+    
+        const body = {
+            items,
+            total: total.price,
+            user_id: user._id,  // Asegúrate de que user tiene _id
+            status: 'Pending' // Asegurando que el status esté definido como 'Pending' si no se pasa explícitamente
+        };
+    
+        console.log("Request body:", body); // Para verificar que el cuerpo incluye user_id y status
+    
+        try {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/create-order`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify(body)
+            });
+    
+            const data = await response.json();
+    
+            if (response.ok) {
+                console.log('Pedido creado:', data);
+                // navigate('/success');
+            } else {
+                console.error('Error al crear el pedido:', data.message);
+            }
+        } catch (error) {
+            console.error('Error en la solicitud:', error);
+        }
+    };
+    
+    
+    
     
     const handleOpenSectionModal = (sectionId) => {
         openMenu(`modalInfo_CheckOut_${sectionId}`);
@@ -179,7 +234,7 @@ export const CheckOutPage = () => {
                 </div>
 
                 <div className="checkout-button-container">
-                    <button className="checkoutButton">Continuar</button>
+                    <button onClick={handleCheckout} className="checkoutButton">Continuar</button>
                 </div>
             </div>
 
@@ -199,7 +254,7 @@ export const CheckOutPage = () => {
                             <div className='finalPrice-CheckOutRight'>{total.endingPrice.toFixed(2)} €</div>
                         </div>
                         <div className="buyingButtonContainer">
-                            <button className='checkout-button'>Continuar</button>
+                            <button onClick={handleCheckout} className='checkout-button'>Continuar</button>
                         </div>
                     </div>
                 </div>

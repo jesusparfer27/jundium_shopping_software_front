@@ -440,7 +440,7 @@ export const Profile = () => {
 
                                     const variants = product_id?.variants || [];
                                     const selectedVariant = variants.find(variant => variant.variant_id === variant_id);
-                                    const imageUrl = selectedVariant?.image ? selectedVariant.image[0] : null;
+                                    const imageUrl = selectedVariant?.showing_image 
                                     const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null;
 
                                     return (
