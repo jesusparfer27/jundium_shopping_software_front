@@ -15,12 +15,12 @@ export const ProductProvider = ({ children }) => {
     const [variants, setVariants] = useState([{
         name: '',
         color: { colorName: '', hexCode: '' },
-        sizes: [{ size: '', stock: 0 }],
+        sizes: [],
         material: '',
         price: '',
         discount: 0,
         image: [],
-        is_main: false,
+        showing_image: "",
         description: '',
     }]);
 

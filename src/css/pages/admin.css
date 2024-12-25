@@ -118,7 +118,14 @@
 }
 
 
+.divForm_Column:last-child {
+    padding-bottom: 3rem;
+}
 
+.divForm_Column input {
+    padding-left: 1rem; /* O puedes usar 2rem si prefieres un margen más grande */
+  }
+  
 .divForm_Column {
     width: 88%;
     gap: .6rem;

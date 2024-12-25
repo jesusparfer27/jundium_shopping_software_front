@@ -14,15 +14,16 @@ export const Variant = () => {
   const [activeAccordion, setActiveAccordion] = useState(null);
   const [currentSize, setCurrentSize] = useState("");
   const [imageUrls, setImageUrls] = useState([]);
+  const [showImage, setShowImage] = useState("")
   const [currentVariant, setCurrentVariant] = useState({
     name: "",
     color: { colorName: "", hexCode: "" },
-    sizes: [{ size: "", stock: 0 }],
+    sizes: [],
     material: "",
     price: "",
     discount: 0,
     image: [],
-    is_main: false,
+    showing_image: "",
     description: "",
   });
   const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
@@ -39,8 +40,6 @@ export const Variant = () => {
 
       if (id === "name") {
         variant.name = value;
-      } else if (id === "is_main") {
-        variant.is_main = checked;
       } else {
         if (id.includes(".")) {
           const [parentKey, childKey] = id.split(".");
@@ -64,12 +63,12 @@ export const Variant = () => {
         {
           name: "",
           color: { colorName: "", hexCode: "" },
-          sizes: [{ size: "", stock: 0 }],
+          sizes: [],
           material: "",
           price: "",
           discount: 0,
           image: [],
-          is_main: false,
+          showing_image: "",
           description: "",
         },
       ]);
@@ -130,47 +129,60 @@ export const Variant = () => {
   };
 
   const handleImageUpload = (e, index) => {
-    const files = Array.from(e.target.files); // Convierte FileList a Array
-
+    const files = Array.from(e.target.files);
+  
     setVariants((prevVariants) => {
       const updatedVariants = [...prevVariants];
-      updatedVariants[index].imageFiles = files; // Guarda los archivos localmente en el estado
+      updatedVariants[index].imageFiles = files;
       return updatedVariants;
     });
   };
-
+  
+  const handleShowImageUpload = (e, index) => {
+    const file = e.target.files[0];
+    setShowImage(file);
+  };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!validateData()) return;
-
+  
     const updatedVariants = variants.map((variant) => ({
       ...variant,
       product_code: generateProductCode(),
     }));
-
+  
     try {
       for (let i = 0; i < updatedVariants.length; i++) {
         const variant = updatedVariants[i];
-
-        if (variant.imageFiles?.length) {
+  
+        if (variant.imageFiles?.length || showImage) {
           const folderPath = generateImageFolderPath(generalProduct, variant);
           const formData = new FormData();
-          variant.imageFiles.forEach((file) => formData.append("file", file)); // Añade los archivos seleccionados
-          formData.append("imageFolders", JSON.stringify([folderPath])); // Asegúrate de que esta ruta se pase correctamente
-
-          const uploadedImageUrls = await handleSaveImageUrlsToBackend(
-            formData
-          );
-          variant.image = uploadedImageUrls; // Actualiza con URLs del backend
-          delete variant.imageFiles; // Elimina los archivos locales después de subirlos
+  
+          variant.imageFiles.forEach((file) => formData.append("file", file));
+  
+          if (showImage) {
+            formData.append("showing_image", showImage);
+          }
+  
+          formData.append("imageFolders", JSON.stringify([folderPath]));
+  
+          const uploadedImageUrls = await handleSaveImageUrlsToBackend(formData);
+  
+          variant.image = uploadedImageUrls.filter((url, index) => index < variant.imageFiles.length);
+          variant.showing_image = uploadedImageUrls.filter((url, index) => index >= variant.imageFiles.length);
+  
+          delete variant.imageFiles;
         }
       }
-
+  
       const formData = new FormData();
       formData.append("generalProduct", JSON.stringify(generalProduct));
       formData.append("variants", JSON.stringify(updatedVariants));
 
+  
       const response = await fetch(
         `${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/create-product`,
         {
@@ -182,25 +194,12 @@ export const Variant = () => {
         }
       );
 
+  
       if (!response.ok) throw new Error("Error al crear el producto.");
       console.log("Producto creado con éxito.");
     } catch (error) {
       console.error("Error al enviar el producto:", error);
     }
-  };
-
-  const generateImageFolderPath = (product, variant) => {
-    if (!product || !variant) {
-      console.error("Producto o variante no definidos.");
-      return "";
-    }
-    const type = product?.type || "unknownType";
-    const gender = product?.gender || "unknownGender";
-    // const name = variant?.name || 'unknownProduct';
-    const colorName = variant?.color?.colorName || "unknownColor";
-    const folderPath = `${gender}/${type}/${colorName}`;
-    console.log("Ruta generada para las imágenes:", folderPath);
-    return folderPath;
   };
 
   const handleDeleteImageInput = (variantIndex, imageIndex) => {
@@ -211,26 +210,19 @@ export const Variant = () => {
     setVariants(updatedVariants);
   };
 
-  const handleAddImageInput = (variantIndex) => {
-    const updatedVariants = [...variants];
-    updatedVariants[variantIndex].image.push("");
-    setVariants(updatedVariants);
-  };
-
   const handleImageUrlChange = (variantIndex, imgIndex, value) => {
     const updatedVariants = [...variants];
 
-    // Extraer solo el nombre del archivo si hay un path
-    const parts = value.split("\\"); // Cambiar a "/" si aplica
+    const parts = value.split("\\");
     const fileName = parts[parts.length - 1];
-    updatedVariants[variantIndex].image[imgIndex] = `/${fileName}`; // Agregar `/` al inicio
+    updatedVariants[variantIndex].image[imgIndex] = `/${fileName}`;
     setVariants(updatedVariants);
   };
 
   const handleSaveImageUrlsToBackend = async (files) => {
     const formData = new FormData();
     files.forEach((file) => formData.append("images", file));
-  
+
     try {
       const response = await fetch(
         `${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/upload-images`,
@@ -242,23 +234,22 @@ export const Variant = () => {
           body: formData,
         }
       );
-  
+
       if (!response.ok) throw new Error("Error al subir imágenes");
-  
+
       const data = await response.json();
-  
-      // Procesar las rutas de imagen conservando el prefijo numérico
+
       return data.imagePaths.map((path) => {
-        const parts = path.split("\\"); // Cambiar a "/" si los paths tienen barras normales
-        const fileName = parts[parts.length - 1]; // Obtener solo el nombre del archivo
-        return `/${fileName}`; // Retorna el nombre completo con el número
+        const parts = path.split("\\");
+        const fileName = parts[parts.length - 1];
+        return `/${fileName}`;
       });
     } catch (error) {
       console.error("Error al guardar URLs de imágenes en el backend:", error);
       throw error;
     }
   };
-  
+
   const saveVariant = (index) => {
     if (validateVariant()) {
       setVariants((prevVariants) => {
@@ -270,12 +261,12 @@ export const Variant = () => {
       setCurrentVariant({
         name: "",
         color: { colorName: "", hexCode: "" },
-        sizes: [{ size: "", stock: 0 }],
+        sizes: [],
         material: "",
         price: "",
         discount: 0,
         image: [],
-        is_main: false,
+        showing_image: "",
         description: "",
       });
     }
@@ -287,12 +278,12 @@ export const Variant = () => {
       {
         name: "",
         color: { colorName: "", hexCode: "" },
-        sizes: [{ size: "", stock: 0 }],
+        sizes: [],
         material: "",
         price: "",
         discount: 0,
         image: [],
-        is_main: false,
+        showing_image: "",
         description: "",
       },
     ]);
@@ -317,9 +308,8 @@ export const Variant = () => {
       <form onSubmit={handleSubmit}>
         <div className="godDiv">
           <div
-            className={`accordionContainer ${
-              activeAccordion === "variant" ? "open" : ""
-            }`}
+            className={`accordionContainer ${activeAccordion === "variant" ? "open" : ""
+              }`}
           >
             {variants.map((variant, index) => (
               <div className="godSon" key={index}>
@@ -441,7 +431,19 @@ export const Variant = () => {
                             multiple
                             id={`image-${index}`}
                             className="inputImage"
-                            onChange={(e) => handleImageUpload(e, index)} // Solo guarda los archivos, no los sube
+                            onChange={(e) => handleImageUpload(e, index)}
+                          />
+                        </div>
+                        <div className="introduceImage">
+                          <label htmlFor={`showing-image-${index}`} className="labelImage">
+                            Imagen de portada
+                          </label>
+                          <input
+                            name="showing_image"
+                            type="file"
+                            id={`showing-image-${index}`}
+                            className="inputImage"
+                            onChange={(e) => handleShowImageUpload(e, index)}
                           />
                         </div>
                         <div className="containerForPreviews">
@@ -463,9 +465,6 @@ export const Variant = () => {
                             </div>
                           ))}
                         </div>
-                        <button onClick={() => handleAddImageInput(index)}>
-                          Agregar casilla
-                        </button>
                       </div>
 
                       <div className="divForm_Column">
@@ -492,15 +491,6 @@ export const Variant = () => {
                         <textarea
                           id="description"
                           value={variants[index]?.description || ""}
-                          onChange={(e) => handleVariantChange(e, index)}
-                        />
-                      </div>
-                      <div className="divForm_Column">
-                        <label htmlFor="is_main">¿Es Principal?</label>
-                        <input
-                          type="checkbox"
-                          id="is_main"
-                          checked={variant.is_main}
                           onChange={(e) => handleVariantChange(e, index)}
                         />
                       </div>
@@ -546,7 +536,6 @@ export const Variant = () => {
 //         price: '',
 //         discount: 0,
 //         image: [],
-//         is_main: false,
 //         description: '',
 //     });
 //     setSelectedVariantIndex(null);
@@ -626,3 +615,29 @@ export const Variant = () => {
 //         return updatedVariants;
 //     });
 // };
+
+  
+  // const generateImageFolderPath = (product, variant) => {
+  //   if (!product || !variant) {
+  //     console.error("Producto o variante no definidos.");
+  //     return "";
+  //   }
+  //   const type = product?.type || "unknownType";
+  //   const gender = product?.gender || "unknownGender";
+  //   // const name = variant?.name || 'unknownProduct';
+  //   const colorName = variant?.color?.colorName || "unknownColor";
+  //   const folderPath = `${gender}/${type}/${colorName}`;
+  //   console.log("Ruta generada para las imágenes:", folderPath);
+  //   return folderPath;
+  // };
+
+
+  {/* <button onClick={() => handleAddImageInput(index)}>
+                          Agregar casilla
+                        </button> */}
+
+    // const handleAddImageInput = (variantIndex) => {
+  //   const updatedVariants = [...variants];
+  //   updatedVariants[variantIndex].image.push("");
+  //   setVariants(updatedVariants);
+  // };

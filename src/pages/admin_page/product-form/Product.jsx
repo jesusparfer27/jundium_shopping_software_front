@@ -78,21 +78,21 @@ export const Product = () => {
         }
     };
 
-    useEffect(() => {
-        if (variants.length === 0) {
-            setVariants([{
-                name: '',
-                color: { colorName: '', hexCode: '' },
-                size: [],
-                material: '',
-                price: '',
-                discount: 0,
-                image: [],
-                is_main: false,
-                description: '',
-            }]);
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (variants.length === 0) {
+    //         setVariants([{
+    //             name: '',
+    //             color: { colorName: '', hexCode: '' },
+    //             size: [],
+    //             material: '',
+    //             price: '',
+    //             discount: 0,
+    //             image: [],
+    //             showing_image: "",
+    //             description: '',
+    //         }]);
+    //     }
+    // }, []);
     
     useEffect(() => {
         if (variants.length > 0) {
@@ -119,8 +119,8 @@ export const Product = () => {
                                     onChange={handleChange}
                                 >
                                     <option value="">Select Gender</option>
-                                    <option value="woman">woman</option>
-                                    <option value="man">man</option>
+                                    <option value="mujer">mujer</option>
+                                    <option value="hombre">hombre</option>
                                     <option value="unisex">unisex</option>
                                 </select>
                             </div>
