@@ -68,7 +68,7 @@ export const Variant = () => {
           price: "",
           discount: 0,
           image: [],
-          showing_image:[] ,
+          showing_image: [],
           description: "",
         },
       ]);
@@ -146,18 +146,19 @@ export const Variant = () => {
     const file = e.target.files[0];
     console.log(`Esto es file en handleShowImageUpload ${index + 1}, ${file}`)
 
+
     if (file) {
       const blobUrl = URL.createObjectURL(file);
 
       setVariants((prevVariants) => {
         const updatedVariants = [...prevVariants];
-        updatedVariants[index].showing_image = blobUrl; // Actualiza en variants
+        updatedVariants[index].showing_image_file = file; // Guarda el archivo seleccionado
+        updatedVariants[index].showing_image = blobUrl;  // Guarda el blobUrl para previsualización
         return updatedVariants;
       });
-
-      setShowImage(file); // Guarda el archivo seleccionado para enviarlo al backend
     }
   };
+
 
 
   const handleSubmit = async (e) => {
@@ -174,22 +175,24 @@ export const Variant = () => {
       for (let i = 0; i < updatedVariants.length; i++) {
         const variant = updatedVariants[i];
 
-        if (variant.imageFiles?.length || showImage) {
+        if (variant.imageFiles?.length || variant.showing_image_file) {
           const formData = new FormData();
 
           variant.imageFiles.forEach((file) => formData.append("file", file));
 
-          if (showImage) {
-            formData.append("showing_image", showImage);
+          if (variant.showing_image_file) {
+            formData.append("showing_image", variant.showing_image_file);
           }
 
           const uploadedImageUrls = await handleSaveImageUrlsToBackend(formData);
 
           variant.image = uploadedImageUrls.filter((url, index) => index < variant.imageFiles.length);
-          variant.showing_image = uploadedImageUrls.filter((url, index) => index >= variant.imageFiles.length);
+          variant.showing_image = uploadedImageUrls.find((url, index) => index === variant.imageFiles.length);
 
           delete variant.imageFiles;
+          delete variant.showing_image_file; // Limpia el archivo después de usarlo
         }
+
         console.log(`Esto es variant.image ${i + 1}, ${variant.image}`)
         console.log(`Esto es variant.showing_image ${i + 1}, ${variant.showing_image}`)
       }
@@ -448,8 +451,8 @@ export const Variant = () => {
                                 onClick={() => handleDeleteImageInput(index, imgIndex)}
                               >
                                 <span className="material-symbols-outlined">
-                                      close
-                                    </span>
+                                  close
+                                </span>
                               </button>
                             </div>
                           ))}
@@ -489,8 +492,8 @@ export const Variant = () => {
                                 }
                               >
                                 <span className="material-symbols-outlined">
-                                      close
-                                    </span>
+                                  close
+                                </span>
                               </button>
                             </div>
                           )}
