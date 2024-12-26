@@ -126,7 +126,8 @@ export const Variant = () => {
 
   const handleImageUpload = (e, index) => {
     const files = Array.from(e.target.files);
-    console.log("esto es el file de handleShowImageUpload", files)
+    console.log(`esto son los files de handleImageUpload", ${index + 1}, ${files}`)
+
 
 
     setVariants((prevVariants) => {
@@ -143,7 +144,7 @@ export const Variant = () => {
 
   const handleShowImageUpload = (e, index) => {
     const file = e.target.files[0];
-    console.log("esto es el file de handleShowImageUpload", file)
+    console.log(`Esto es file en handleShowImageUpload ${index + 1}, ${file}`)
 
     if (file) {
       const blobUrl = URL.createObjectURL(file);
