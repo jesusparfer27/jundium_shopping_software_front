@@ -20,7 +20,7 @@ export const ProductProvider = ({ children }) => {
         price: '',
         discount: 0,
         image: [],
-        showing_image: "",
+        showing_image: [],
         description: '',
     }]);
 

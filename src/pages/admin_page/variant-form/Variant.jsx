@@ -23,7 +23,7 @@ export const Variant = () => {
     price: "",
     discount: 0,
     image: [],
-    showing_image: "",
+    showing_image: [],
     description: "",
   });
   const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
@@ -68,7 +68,7 @@ export const Variant = () => {
           price: "",
           discount: 0,
           image: [],
-          showing_image: "",
+          showing_image:[] ,
           description: "",
         },
       ]);
@@ -126,34 +126,38 @@ export const Variant = () => {
 
   const handleImageUpload = (e, index) => {
     const files = Array.from(e.target.files);
-  
+    console.log("esto es el file de handleShowImageUpload", files)
+
+
     setVariants((prevVariants) => {
       const updatedVariants = [...prevVariants];
       updatedVariants[index].imageFiles = files;
-  
+
       // Generar blobs para mostrar vistas previas
       const blobUrls = files.map((file) => URL.createObjectURL(file));
       updatedVariants[index].image = blobUrls;
-  
+
       return updatedVariants;
     });
   };
-  
+
   const handleShowImageUpload = (e, index) => {
     const file = e.target.files[0];
+    console.log("esto es el file de handleShowImageUpload", file)
+
     if (file) {
       const blobUrl = URL.createObjectURL(file);
-  
+
       setVariants((prevVariants) => {
         const updatedVariants = [...prevVariants];
         updatedVariants[index].showing_image = blobUrl; // Actualiza en variants
         return updatedVariants;
       });
-  
+
       setShowImage(file); // Guarda el archivo seleccionado para enviarlo al backend
     }
   };
-  
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -185,7 +189,10 @@ export const Variant = () => {
 
           delete variant.imageFiles;
         }
+        console.log(`Esto es variant.image ${i + 1}, ${variant.image}`)
+        console.log(`Esto es variant.showing_image ${i + 1}, ${variant.showing_image}`)
       }
+
 
       const formData = new FormData();
       formData.append("generalProduct", JSON.stringify(generalProduct));
@@ -261,7 +268,7 @@ export const Variant = () => {
         price: "",
         discount: 0,
         image: [],
-        showing_image: "",
+        showing_image: [],
         description: "",
       },
     ]);
@@ -411,9 +418,10 @@ export const Variant = () => {
                       </div>
 
                       <div className="divForm_Column">
+                        {/* Input para subir múltiples imágenes */}
                         <div className="introduceImage">
                           <label htmlFor={`image-${index}`} className="labelImage">
-                            Subir Imagen
+                            Subir Imágenes
                           </label>
                           <input
                             name="image"
@@ -424,9 +432,32 @@ export const Variant = () => {
                             onChange={(e) => handleImageUpload(e, index)}
                           />
                         </div>
+
+                        {/* Vista previa de las imágenes cargadas desde "image" */}
+                        <div className="containerForPreviews">
+                          {variants[index]?.image?.map((imageUrl, imgIndex) => (
+                            <div key={imgIndex} className="imagePreview">
+                              <img
+                                src={imageUrl}
+                                alt={`Preview ${imgIndex}`}
+                                className="previewImage"
+                              />
+                              <button
+                                className="deleteImage_Button"
+                                onClick={() => handleDeleteImageInput(index, imgIndex)}
+                              >
+                                <span className="material-symbols-outlined">
+                                      close
+                                    </span>
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Input para cargar una imagen de portada */}
                         <div className="introduceImage">
                           <label htmlFor={`showing-image-${index}`} className="labelImage">
-                            Imagen de portada
+                            Imagen de Portada
                           </label>
                           <input
                             name="showing_image"
@@ -437,47 +468,34 @@ export const Variant = () => {
                           />
                         </div>
 
+                        {/* Vista previa de la imagen de portada */}
                         <div className="containerForPreviews">
-  {variants[index]?.image?.map((imageUrl, imgIndex) => (
-    <div key={imgIndex} className="imagePreview">
-      <img
-        src={imageUrl}
-        alt={`Preview ${imgIndex}`}
-        className="previewImage"
-      />
-      <button
-        className="deleteImage_Button"
-        onClick={() => handleDeleteImageInput(index, imgIndex)}
-      >
-        Eliminar
-      </button>
-    </div>
-  ))}
-
-  {variants[index]?.showing_image && (
-    <div className="imagePreview">
-      <img
-        src={variants[index].showing_image}
-        alt="Preview portada"
-        className="previewImage"
-      />
-      <button
-        className="deleteImage_Button"
-        onClick={() =>
-          setVariants((prevVariants) => {
-            const updatedVariants = [...prevVariants];
-            updatedVariants[index].showing_image = "";
-            return updatedVariants;
-          })
-        }
-      >
-        Eliminar
-      </button>
-    </div>
-  )}
-</div>
-
+                          {variants[index]?.showing_image && (
+                            <div className="imagePreview">
+                              <img
+                                src={variants[index].showing_image}
+                                alt="Preview portada"
+                                className="previewImage"
+                              />
+                              <button
+                                className="deleteImage_Button"
+                                onClick={() =>
+                                  setVariants((prevVariants) => {
+                                    const updatedVariants = [...prevVariants];
+                                    updatedVariants[index].showing_image = "";
+                                    return updatedVariants;
+                                  })
+                                }
+                              >
+                                <span className="material-symbols-outlined">
+                                      close
+                                    </span>
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       </div>
+
 
                       <div className="divForm_Column">
                         <label htmlFor="price">Precio:</label>
@@ -539,27 +557,27 @@ export const Variant = () => {
   );
 };
 
-  // const saveVariant = (index) => {
-  //   if (validateVariant()) {
-  //     setVariants((prevVariants) => {
-  //       const updatedVariants = [...prevVariants];
-  //       updatedVariants[index] = { ...currentVariant };
-  //       return updatedVariants;
-  //     });
+// const saveVariant = (index) => {
+//   if (validateVariant()) {
+//     setVariants((prevVariants) => {
+//       const updatedVariants = [...prevVariants];
+//       updatedVariants[index] = { ...currentVariant };
+//       return updatedVariants;
+//     });
 
-  //     setCurrentVariant({
-  //       name: "",
-  //       color: { colorName: "", hexCode: "" },
-  //       sizes: [],
-  //       material: "",
-  //       price: "",
-  //       discount: 0,
-  //       image: [],
-  //       showing_image: "",
-  //       description: "",
-  //     });
-  //   }
-  // };
+//     setCurrentVariant({
+//       name: "",
+//       color: { colorName: "", hexCode: "" },
+//       sizes: [],
+//       material: "",
+//       price: "",
+//       discount: 0,
+//       image: [],
+//       showing_image: "",
+//       description: "",
+//     });
+//   }
+// };
 
 // const resetCurrentVariant = () => {
 //     setCurrentVariant({
@@ -676,15 +694,15 @@ export const Variant = () => {
 //   setVariants(updatedVariants);
 // };
 
-  // const handleImageUrlChange = (variantIndex, imgIndex, value) => {
-  //   const updatedVariants = [...variants];
+// const handleImageUrlChange = (variantIndex, imgIndex, value) => {
+//   const updatedVariants = [...variants];
 
-  //   const parts = value.split("\\");
-  //   const fileName = parts[parts.length - 1];
-  //   updatedVariants[variantIndex].image[imgIndex] = `/${fileName}`;
-  //   setVariants(updatedVariants);
-  // };
+//   const parts = value.split("\\");
+//   const fileName = parts[parts.length - 1];
+//   updatedVariants[variantIndex].image[imgIndex] = `/${fileName}`;
+//   setVariants(updatedVariants);
+// };
 
-    // const handleSelectVariant = (index) => {
-  //   setSelectedVariantIndex(index);
-  // };
+// const handleSelectVariant = (index) => {
+//   setSelectedVariantIndex(index);
+// };
