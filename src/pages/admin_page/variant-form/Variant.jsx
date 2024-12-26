@@ -126,18 +126,34 @@ export const Variant = () => {
 
   const handleImageUpload = (e, index) => {
     const files = Array.from(e.target.files);
-
+  
     setVariants((prevVariants) => {
       const updatedVariants = [...prevVariants];
       updatedVariants[index].imageFiles = files;
+  
+      // Generar blobs para mostrar vistas previas
+      const blobUrls = files.map((file) => URL.createObjectURL(file));
+      updatedVariants[index].image = blobUrls;
+  
       return updatedVariants;
     });
   };
-
+  
   const handleShowImageUpload = (e, index) => {
     const file = e.target.files[0];
-    setShowImage(file);
+    if (file) {
+      const blobUrl = URL.createObjectURL(file);
+  
+      setVariants((prevVariants) => {
+        const updatedVariants = [...prevVariants];
+        updatedVariants[index].showing_image = blobUrl; // Actualiza en variants
+        return updatedVariants;
+      });
+  
+      setShowImage(file); // Guarda el archivo seleccionado para enviarlo al backend
+    }
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -422,24 +438,45 @@ export const Variant = () => {
                         </div>
 
                         <div className="containerForPreviews">
-                          {variants[index]?.image?.map((imageUrl, imgIndex) => (
-                            <div key={imgIndex} className="imagePreview">
-                              <img
-                                src={imageUrl}
-                                alt={`Preview ${imgIndex}`}
-                                className="previewImage"
-                              />
-                              <button
-                                className="deleteImage_Button"
-                                onClick={() =>
-                                  handleDeleteImageInput(index, imgIndex)
-                                }
-                              >
-                                Eliminar
-                              </button>
-                            </div>
-                          ))}
-                        </div>
+  {variants[index]?.image?.map((imageUrl, imgIndex) => (
+    <div key={imgIndex} className="imagePreview">
+      <img
+        src={imageUrl}
+        alt={`Preview ${imgIndex}`}
+        className="previewImage"
+      />
+      <button
+        className="deleteImage_Button"
+        onClick={() => handleDeleteImageInput(index, imgIndex)}
+      >
+        Eliminar
+      </button>
+    </div>
+  ))}
+
+  {variants[index]?.showing_image && (
+    <div className="imagePreview">
+      <img
+        src={variants[index].showing_image}
+        alt="Preview portada"
+        className="previewImage"
+      />
+      <button
+        className="deleteImage_Button"
+        onClick={() =>
+          setVariants((prevVariants) => {
+            const updatedVariants = [...prevVariants];
+            updatedVariants[index].showing_image = "";
+            return updatedVariants;
+          })
+        }
+      >
+        Eliminar
+      </button>
+    </div>
+  )}
+</div>
+
                       </div>
 
                       <div className="divForm_Column">
