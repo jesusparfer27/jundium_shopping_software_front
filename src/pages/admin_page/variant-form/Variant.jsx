@@ -33,7 +33,7 @@ export const Variant = () => {
   }, [variants]);
 
   const handleVariantChange = (e, index) => {
-    const { id, value, checked } = e.target;
+    const { id, value } = e.target;
     setVariants((prevVariants) => {
       const updatedVariants = [...prevVariants];
       const variant = updatedVariants[index];
@@ -124,10 +124,6 @@ export const Variant = () => {
     return code;
   };
 
-  const handleSelectVariant = (index) => {
-    setSelectedVariantIndex(index);
-  };
-
   const handleImageUpload = (e, index) => {
     const files = Array.from(e.target.files);
 
@@ -158,7 +154,6 @@ export const Variant = () => {
         const variant = updatedVariants[i];
 
         if (variant.imageFiles?.length || showImage) {
-          const folderPath = generateImageFolderPath(generalProduct, variant);
           const formData = new FormData();
 
           variant.imageFiles.forEach((file) => formData.append("file", file));
@@ -166,8 +161,6 @@ export const Variant = () => {
           if (showImage) {
             formData.append("showing_image", showImage);
           }
-
-          formData.append("imageFolders", JSON.stringify([folderPath]));
 
           const uploadedImageUrls = await handleSaveImageUrlsToBackend(formData);
 
@@ -210,15 +203,6 @@ export const Variant = () => {
     setVariants(updatedVariants);
   };
 
-  const handleImageUrlChange = (variantIndex, imgIndex, value) => {
-    const updatedVariants = [...variants];
-
-    const parts = value.split("\\");
-    const fileName = parts[parts.length - 1];
-    updatedVariants[variantIndex].image[imgIndex] = `/${fileName}`;
-    setVariants(updatedVariants);
-  };
-
   const handleSaveImageUrlsToBackend = async (files) => {
     const formData = new FormData();
     files.forEach((file) => formData.append("images", file));
@@ -247,28 +231,6 @@ export const Variant = () => {
     } catch (error) {
       console.error("Error al guardar URLs de imágenes en el backend:", error);
       throw error;
-    }
-  };
-
-  const saveVariant = (index) => {
-    if (validateVariant()) {
-      setVariants((prevVariants) => {
-        const updatedVariants = [...prevVariants];
-        updatedVariants[index] = { ...currentVariant };
-        return updatedVariants;
-      });
-
-      setCurrentVariant({
-        name: "",
-        color: { colorName: "", hexCode: "" },
-        sizes: [],
-        material: "",
-        price: "",
-        discount: 0,
-        image: [],
-        showing_image: "",
-        description: "",
-      });
     }
   };
 
@@ -540,6 +502,28 @@ export const Variant = () => {
   );
 };
 
+  // const saveVariant = (index) => {
+  //   if (validateVariant()) {
+  //     setVariants((prevVariants) => {
+  //       const updatedVariants = [...prevVariants];
+  //       updatedVariants[index] = { ...currentVariant };
+  //       return updatedVariants;
+  //     });
+
+  //     setCurrentVariant({
+  //       name: "",
+  //       color: { colorName: "", hexCode: "" },
+  //       sizes: [],
+  //       material: "",
+  //       price: "",
+  //       discount: 0,
+  //       image: [],
+  //       showing_image: "",
+  //       description: "",
+  //     });
+  //   }
+  // };
+
 // const resetCurrentVariant = () => {
 //     setCurrentVariant({
 //         name: '',
@@ -654,3 +638,16 @@ export const Variant = () => {
 //   updatedVariants[variantIndex].image.push("");
 //   setVariants(updatedVariants);
 // };
+
+  // const handleImageUrlChange = (variantIndex, imgIndex, value) => {
+  //   const updatedVariants = [...variants];
+
+  //   const parts = value.split("\\");
+  //   const fileName = parts[parts.length - 1];
+  //   updatedVariants[variantIndex].image[imgIndex] = `/${fileName}`;
+  //   setVariants(updatedVariants);
+  // };
+
+    // const handleSelectVariant = (index) => {
+  //   setSelectedVariantIndex(index);
+  // };
