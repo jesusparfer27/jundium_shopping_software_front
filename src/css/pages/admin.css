@@ -26,15 +26,75 @@
     width: 90%;
 }
 
-.containerForPreviews {
+/* .containerForPreviews {
     display: grid;
     grid-template-columns: repeat(4, 20%);
-    grid-template-rows: auto; /* Ajusta la altura según el contenido */
+    grid-template-rows: auto;
     gap: 10px;
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
+} */
+
+.containerForPreviews {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #dcdcdc;
+    padding-top: 1rem;
 }
+
+.noImagePreview {
+    text-align: center;
+    color: #888;
+    font-size: 0.9rem;
+    background-color: #f0f0f0;
+    width: 200px;
+    height: 200px;
+    border: 1px dashed #ccc;
+    border-radius: 5px;
+  }
+
+.imagePreview {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+    border: 1px dashed #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.previewImage {
+    border-radius: 8px;
+    max-width: 200px;
+    min-width: 200px;
+    object-fit: cover;
+}
+
+  .deleteImage_Button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: transparent;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+
+
+
+
+
+
+
+
 
 .productForm {
     width: 100%;
@@ -66,6 +126,8 @@
     justify-content: center;
     padding-bottom: 10rem;
 }
+
+
 
 .accordionContainer.open {
     background-color: white;
@@ -205,8 +267,8 @@
 }
 
 .submitEditProductButton {
-    background-color: black;
-    color: white;
+    background-color: transparent;
+    color: black;
     padding: 0.75rem 2rem;
     border: 1px solid black;
     cursor: pointer;
@@ -214,10 +276,22 @@
     width: 100%;
 }
 
-.introduceImage {
+.introduceImageContainer {
     display: flex;
     align-items: center; /* Centra verticalmente */
+    justify-content: center;
+    text-align: center;
     gap: 1rem; /* Espacio entre el label y el input */
+    width: 100%;
+}
+
+.introduceImage {
+    display: flex;
+    align-items: center;
+    padding-top: 1rem;
+    text-align: center;
+    gap: 1rem;
+    width: 50%;
   }
 
   .inputImage {
@@ -231,7 +305,14 @@
     padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
+    border: 1px solid black;
     transition: background-color 0.3s ease;
+  }
+
+  .labelImage:hover {
+    background-color: transparent;
+    border: 1px solid black;
+    color: black;
   }
 
 .divForm_Column:last-child {
@@ -257,7 +338,7 @@
 .createProductContainer {
     display: flex;
     justify-content: center;
-    margin-top: -20rem;
+    margin-top: -10rem;
     z-index: 10;
 }
 
@@ -351,23 +432,50 @@ textarea {
     display: inline-block;
   }
   
-  .previewImage {
-    max-width: 150px;
-    max-height: 150px;
-    object-fit: cover;
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .admin-nav {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+}
+
+.admin-nav button {
+    padding: 0.5rem 1rem;
+    background: #f5f5f5;
     border: 1px solid #ccc;
-    border-radius: 8px;
-    width: 200px;
-  }
-  
-  .deleteImage_Button {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background: transparent;
-    color: white;
-    border: none;
-    border-radius: 50%;
     cursor: pointer;
-  }
-  
+    transition: background 0.3s;
+}
+
+.admin-nav button.active {
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.active {
+    font-weight: bold;
+}
+
+
+.products-section, .other-section {
+    padding: 1rem;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 8px;
+}

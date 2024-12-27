@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import { ProductContext } from "../context/ProductContext";
-import "../../../css/pages/admin.css";
+import { ProductContext } from "../../context/ProductContext";
+import "../../../../css/pages/admin.css";
 
 export const Variant = () => {
   const { generalProduct, variants, setVariants } = useContext(ProductContext);
@@ -10,7 +10,7 @@ export const Variant = () => {
   const [error, setError] = useState("");
   const [variantCount, setVariantCount] = useState(0);
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
-  const [stock, setStock] = useState(0);
+  const [stock, setStock] = useState("");
   const [activeAccordion, setActiveAccordion] = useState(null);
   const [currentSize, setCurrentSize] = useState("");
   const [imageUrls, setImageUrls] = useState([]);
@@ -104,7 +104,7 @@ export const Variant = () => {
     });
 
     setCurrentSize("");
-    setStock(0);
+    setStock("");
   };
 
   const handleDeleteSize = (sizeToRemove, index) => {
@@ -377,11 +377,13 @@ export const Variant = () => {
                               id="stock"
                               placeholder="Ej: 20"
                               value={stock}
-                              onChange={(e) =>
-                                setStock(parseInt(e.target.value, 10) || 0)
-                              }
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                setStock(value === "" ? "" : Math.max(0, parseInt(value, 10) || 0));
+                              }}
                             />
                           </div>
+
 
                           <div className="containerFor_inputSize">
                             <div className="sizeContainer_Button">
@@ -423,58 +425,64 @@ export const Variant = () => {
 
                       <div className="divForm_Column">
                         {/* Input para subir múltiples imágenes */}
-                        <div className="introduceImage">
-                          <label htmlFor={`image-${index}`} className="labelImage">
-                            Subir Imágenes
-                          </label>
-                          <input
-                            name="image"
-                            type="file"
-                            multiple
-                            id={`image-${index}`}
-                            className="inputImage"
-                            onChange={(e) => handleImageUpload(e, index)}
-                          />
+                        <div className="introduceImageContainer">
+                          <div className="introduceImage">
+                            <label htmlFor={`image-${index}`} className="labelImage">
+                              Subir Imágenes
+                            </label>
+                            <input
+                              name="image"
+                              type="file"
+                              multiple
+                              id={`image-${index}`}
+                              className="inputImage"
+                              onChange={(e) => handleImageUpload(e, index)}
+                            />
+                          </div>
                         </div>
 
                         {/* Vista previa de las imágenes cargadas desde "image" */}
                         <div className="containerForPreviews">
-                          {variants[index]?.image?.map((imageUrl, imgIndex) => (
-                            <div key={imgIndex} className="imagePreview">
-                              <img
-                                src={imageUrl}
-                                alt={`Preview ${imgIndex}`}
-                                className="previewImage"
-                              />
-                              <button
-                                className="deleteImage_Button"
-                                onClick={() => handleDeleteImageInput(index, imgIndex)}
-                              >
-                                <span className="material-symbols-outlined">
-                                  close
-                                </span>
-                              </button>
-                            </div>
-                          ))}
+                          {variants[index]?.image?.length > 0 ? (
+                            variants[index].image.map((imageUrl, imgIndex) => (
+                              <div key={imgIndex} className="imagePreview">
+                                <img
+                                  src={imageUrl}
+                                  alt={`Preview ${imgIndex}`}
+                                  className="previewImage"
+                                />
+                                <button
+                                  className="deleteImage_Button"
+                                  onClick={() => handleDeleteImageInput(index, imgIndex)}
+                                >
+                                  <span className="material-symbols-outlined">close</span>
+                                </button>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="noImagePreview"></div>
+                          )}
                         </div>
 
                         {/* Input para cargar una imagen de portada */}
-                        <div className="introduceImage">
-                          <label htmlFor={`showing-image-${index}`} className="labelImage">
-                            Imagen de Portada
-                          </label>
-                          <input
-                            name="showing_image"
-                            type="file"
-                            id={`showing-image-${index}`}
-                            className="inputImage"
-                            onChange={(e) => handleShowImageUpload(e, index)}
-                          />
+                        <div className="introduceImageContainer">
+                          <div className="introduceImage">
+                            <label htmlFor={`showing-image-${index}`} className="labelImage">
+                              Imagen de Portada
+                            </label>
+                            <input
+                              name="showing_image"
+                              type="file"
+                              id={`showing-image-${index}`}
+                              className="inputImage"
+                              onChange={(e) => handleShowImageUpload(e, index)}
+                            />
+                          </div>
                         </div>
 
                         {/* Vista previa de la imagen de portada */}
                         <div className="containerForPreviews">
-                          {variants[index]?.showing_image && (
+                          {variants[index]?.showing_image ? (
                             <div className="imagePreview">
                               <img
                                 src={variants[index].showing_image}
@@ -491,14 +499,15 @@ export const Variant = () => {
                                   })
                                 }
                               >
-                                <span className="material-symbols-outlined">
-                                  close
-                                </span>
+                                <span className="material-symbols-outlined">close</span>
                               </button>
                             </div>
+                          ) : (
+                            <div className="noImagePreview">Sin imagen</div>
                           )}
                         </div>
                       </div>
+
 
 
                       <div className="divForm_Column">
