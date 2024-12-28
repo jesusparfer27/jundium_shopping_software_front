@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
-import { ProductContext } from "../../context/ProductContext";
-import '../../../../css/pages/admin.css'
+import { ProductContext } from "../context/ProductContext";
+import '../../../css/pages/admin.css'
 
-export const Product = () => {
+export const EditProduct = () => {
     const { generalProduct, setGeneralProduct } = useContext(ProductContext);
 
     const [variants, setVariants] = useState([]);

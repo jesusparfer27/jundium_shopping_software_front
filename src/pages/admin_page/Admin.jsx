@@ -3,13 +3,22 @@ import { useNavigate } from "react-router-dom";
 
 import ProfileHeader from '../../components/profile-header/ProfileHeader';
 import { useUser } from "../../hooks/useUser";
-import { Variant } from "./create-products/variant-form/Variant";
-import { Product } from "./create-products/product-form/Product";
+import { Variant } from "./create-products/Variant";
+import { Product } from "./create-products/Product";
+
+
+// Esto es AddVariants
+import { AddVariantProductForm } from './add-variants/AddVariantProductForm'
+import { AddVariantVariantForm } from './add-variants/AddVariantVariantForm'
+
+// Esto es editProducts
+import { EditProduct } from './edit-form/EditProduct'
+import { EditVariant } from './edit-form/EditVariant'
 
 import "../../css/pages/admin.css";
 
 export const Admin = () => {
-    const [activeSection, setActiveSection] = useState("products");
+    const [activeSection, setActiveSection] = useState("Add Product");
     const navigate = useNavigate();
     const { user, loading } = useUser();
     const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
@@ -105,29 +114,38 @@ export const Admin = () => {
             {/* Botones de navegación */}
             <nav className="admin-nav">
                 <button
-                    className={activeSection === "products" ? "active" : ""}
+                    className={activeSection === "Add Product" ? "active" : ""}
                     onClick={() => {
                         console.log("Botón 'Crear Productos' clicado");
-                        setActiveSection("products");
+                        setActiveSection("Add Product");
                     }}
                 >
                     Crear Productos
                 </button>
                 <button
-                    className={activeSection === "other" ? "active" : ""}
+                    className={activeSection === "Add Variant" ? "active" : ""}
                     onClick={() => {
                         console.log("Botón 'Otras Opciones' clicado");
-                        setActiveSection("other");
+                        setActiveSection("Add Variant");
                     }}
                 >
-                    Otras Opciones
+                    Añadir Variantes
+                </button>
+                <button
+                    className={activeSection === "Edit Product" ? "active" : ""}
+                    onClick={() => {
+                        console.log("Botón 'Otras Opciones' clicado");
+                        setActiveSection("Edit Product");
+                    }}
+                >
+                    Editar Productos
                 </button>
             </nav>
 
             {/* Renderizado condicional: Solo muestra la sección si se selecciona una */}
             <div className="admin-content">
                 <div className="admin-section">
-                    {activeSection === "products" && (
+                    {activeSection === "Add Product" && (
                         <>
                         {/* <div className="other-section"> */}
                             <Product />
@@ -135,11 +153,17 @@ export const Admin = () => {
                             </>
                             
                     )}
-                    {activeSection === "other" && (
-                        <div className="other-section">
-                            <h2>Sección de Otras Opciones</h2>
-                            {/* Aquí puedes incluir otros componentes o funcionalidades */}
-                        </div>
+                    {activeSection === "Add Variant" && (
+                        <>
+                        <AddVariantProductForm />
+                        <AddVariantVariantForm />
+                        </>
+                    )}
+                    {activeSection === "Edit Product" && (
+                        <>
+                        <EditProduct />
+                        <EditVariant />
+                        </>
                     )}
                 </div>
             </div>

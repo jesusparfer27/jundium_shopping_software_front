@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import { ProductContext } from "../../context/ProductContext";
-import "../../../../css/pages/admin.css";
+import { ProductContext } from "../context/ProductContext";
+import "../../../css/pages/admin.css";
 
 export const Variant = () => {
   const { generalProduct, variants, setVariants } = useContext(ProductContext);
@@ -124,6 +124,13 @@ export const Variant = () => {
     return code;
   };
 
+  const generateProductReference = () => {
+    const code =
+      "PROD-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+    console.log("Generated Product Code:", code);
+    return code;
+  };
+
   const handleImageUpload = (e, index) => {
     const files = Array.from(e.target.files);
     console.log(`esto son los files de handleImageUpload", ${index + 1}, ${files}`)
@@ -159,12 +166,14 @@ export const Variant = () => {
     }
   };
 
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateData()) return;
+
+    // Generar referencia de producto
+  const productReference = generateProductReference();
+  generalProduct.product_reference = productReference; // Agregar referencia al producto general
 
     const updatedVariants = variants.map((variant) => ({
       ...variant,
@@ -201,6 +210,11 @@ export const Variant = () => {
       const formData = new FormData();
       formData.append("generalProduct", JSON.stringify(generalProduct));
       formData.append("variants", JSON.stringify(updatedVariants));
+
+      // Log para inspeccionar todo lo que hay en el FormData
+    for (const pair of formData.entries()) {
+      console.log(`${pair[0]}:`, pair[1]);
+    }
 
 
       const response = await fetch(
@@ -569,153 +583,3 @@ export const Variant = () => {
     </>
   );
 };
-
-// const saveVariant = (index) => {
-//   if (validateVariant()) {
-//     setVariants((prevVariants) => {
-//       const updatedVariants = [...prevVariants];
-//       updatedVariants[index] = { ...currentVariant };
-//       return updatedVariants;
-//     });
-
-//     setCurrentVariant({
-//       name: "",
-//       color: { colorName: "", hexCode: "" },
-//       sizes: [],
-//       material: "",
-//       price: "",
-//       discount: 0,
-//       image: [],
-//       showing_image: "",
-//       description: "",
-//     });
-//   }
-// };
-
-// const resetCurrentVariant = () => {
-//     setCurrentVariant({
-//         name: '',
-//         color: { colorName: '', hexCode: '' },
-//         sizes: [{ size: '', stock: 0 }],
-//         material: '',
-//         price: '',
-//         discount: 0,
-//         image: [],
-//         description: '',
-//     });
-//     setSelectedVariantIndex(null);
-// };
-
-// const handleSaveEdit = () => {
-//     if (validateVariant(currentVariant)) {
-//         const updatedVariants = [...variants];
-//         updatedVariants[selectedVariantIndex] = currentVariant;
-//         setVariants(updatedVariants);
-//         resetCurrentVariant();
-//     }
-// };
-
-// const handleSizeChange = (e, index, key) => {
-//     const value = key === 'size' ? e.target.value.toUpperCase() : e.target.value;
-//     setVariants((prevVariants) => {
-//         const updatedVariants = [...prevVariants];
-//         if (!updatedVariants[index].sizes) {
-//             updatedVariants[index].sizes = [];
-//         }
-
-//         const sizeIndex = updatedVariants[index].sizes.findIndex(
-//             (s) => s.size === (key === 'size' ? value : currentSize)
-//         );
-
-//         if (sizeIndex !== -1) {
-//             updatedVariants[index].sizes[sizeIndex][key] = value;
-//         } else if (key === 'size') {
-//             updatedVariants[index].sizes.push({ size: value, stock: 0 });
-//         }
-
-//         return updatedVariants;
-//     });
-// };
-
-// const handleStockChange = (e, index, size) => {
-//     const stockValue = parseInt(e.target.value, 10) || 0;
-
-//     setVariants((prevVariants) => {
-//         const updatedVariants = [...prevVariants];
-//         const sizeIndex = updatedVariants[index].sizes.findIndex(
-//             (s) => s.size === size
-//         );
-
-//         if (sizeIndex !== -1) {
-//             updatedVariants[index].sizes[sizeIndex].stock = stockValue;
-//         }
-
-//         return updatedVariants;
-//     });
-// };
-
-// const handleImageUploadChange = async (e, variantIndex) => {
-//     try {
-//         // Sube las imágenes al backend
-//         const uploadedImageUrls = await handleSaveImageUrlsToBackend(files);
-
-//         // Actualiza las URLs en el estado
-//         setVariants((prevVariants) => {
-//             const updatedVariants = [...prevVariants];
-//             updatedVariants[variantIndex].image = uploadedImageUrls; // Usa las URLs del backend
-//             return updatedVariants;
-//         });
-//     } catch (error) {
-//         console.error("Error al manejar la carga de imágenes:", error);
-//     }
-// };
-
-// const handleImageChange = (e, index) => {
-//     const files = Array.from(e.target.files);
-//     const imageUrls = files.map((file) => URL.createObjectURL(file));
-
-//     setVariants((prevVariants) => {
-//         const updatedVariants = [...prevVariants];
-//         updatedVariants[index].imagePreview = imageUrls;
-//         return updatedVariants;
-//     });
-// };
-
-
-// const generateImageFolderPath = (product, variant) => {
-//   if (!product || !variant) {
-//     console.error("Producto o variante no definidos.");
-//     return "";
-//   }
-//   const type = product?.type || "unknownType";
-//   const gender = product?.gender || "unknownGender";
-//   // const name = variant?.name || 'unknownProduct';
-//   const colorName = variant?.color?.colorName || "unknownColor";
-//   const folderPath = `${gender}/${type}/${colorName}`;
-//   console.log("Ruta generada para las imágenes:", folderPath);
-//   return folderPath;
-// };
-
-
-{/* <button onClick={() => handleAddImageInput(index)}>
-                          Agregar casilla
-                        </button> */}
-
-// const handleAddImageInput = (variantIndex) => {
-//   const updatedVariants = [...variants];
-//   updatedVariants[variantIndex].image.push("");
-//   setVariants(updatedVariants);
-// };
-
-// const handleImageUrlChange = (variantIndex, imgIndex, value) => {
-//   const updatedVariants = [...variants];
-
-//   const parts = value.split("\\");
-//   const fileName = parts[parts.length - 1];
-//   updatedVariants[variantIndex].image[imgIndex] = `/${fileName}`;
-//   setVariants(updatedVariants);
-// };
-
-// const handleSelectVariant = (index) => {
-//   setSelectedVariantIndex(index);
-// };
