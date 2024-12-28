@@ -3,12 +3,26 @@ import { ProductContext } from "../context/ProductContext";
 import "../../../css/pages/admin.css";
 
 export const Variant = () => {
-  const { generalProduct, variants, setVariants, validateData, addNewVariantForm } = useContext(ProductContext);
+  const {
+    generalProduct,
+    variants,
+    setVariants,
+    validateData,
+    addNewVariantForm,
+    handleDeleteImageInput,
+    handleShowImageUpload,
+    handleImageUpload,
+    generateProductReference,
+    generateProductCode,
+    handleVariantChange,
+    handleDeleteSize
+  } = useContext(ProductContext);
+
+  // const [variantCount, setVariantCount] = useState(0);
+  // const [fileNames, setFileNames] = useState([]);
 
   const [sizes, setSizes] = useState([]);
-  const [fileNames, setFileNames] = useState([]);
   const [error, setError] = useState("");
-  const [variantCount, setVariantCount] = useState(0);
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const [stock, setStock] = useState("");
   const [activeAccordion, setActiveAccordion] = useState(null);
@@ -20,49 +34,6 @@ export const Variant = () => {
   useEffect(() => {
     localStorage.setItem("variants", JSON.stringify(variants));
   }, [variants]);
-
-  const handleVariantChange = (e, index) => {
-    const { id, value } = e.target;
-    setVariants((prevVariants) => {
-      const updatedVariants = [...prevVariants];
-      const variant = updatedVariants[index];
-
-      if (id === "name") {
-        variant.name = value;
-      } else {
-        if (id.includes(".")) {
-          const [parentKey, childKey] = id.split(".");
-          variant[parentKey] = {
-            ...variant[parentKey],
-            [childKey]: value,
-          };
-        } else {
-          variant[id] = value;
-        }
-      }
-
-      updatedVariants[index] = variant;
-      return updatedVariants;
-    });
-  };
-
-  useEffect(() => {
-    if (!variants || variants.length === 0) {
-      setVariants([
-        {
-          name: "",
-          color: { colorName: "", hexCode: "" },
-          sizes: [],
-          material: "",
-          price: "",
-          discount: 0,
-          image: [],
-          showing_image: [],
-          description: "",
-        },
-      ]);
-    }
-  }, []);
 
   const handleAddSize = (index) => {
     if (!currentSize.trim()) {
@@ -96,73 +67,13 @@ export const Variant = () => {
     setStock("");
   };
 
-  const handleDeleteSize = (sizeToRemove, index) => {
-    setVariants((prevVariants) => {
-      const updatedVariants = [...prevVariants];
-      updatedVariants[index].sizes = updatedVariants[index].sizes.filter(
-        (s) => s.size !== sizeToRemove
-      );
-      return updatedVariants;
-    });
-  };
-
-  const generateProductCode = () => {
-    const code =
-      "PROD-" + Math.random().toString(36).substr(2, 9).toUpperCase();
-    console.log("Generated Product Code:", code);
-    return code;
-  };
-
-  const generateProductReference = () => {
-    const code =
-      "PROD-" + Math.random().toString(36).substr(2, 9).toUpperCase();
-    console.log("Generated Product Code:", code);
-    return code;
-  };
-
-  const handleImageUpload = (e, index) => {
-    const files = Array.from(e.target.files);
-    console.log(`esto son los files de handleImageUpload", ${index + 1}, ${files}`)
-
-
-
-    setVariants((prevVariants) => {
-      const updatedVariants = [...prevVariants];
-      updatedVariants[index].imageFiles = files;
-
-      // Generar blobs para mostrar vistas previas
-      const blobUrls = files.map((file) => URL.createObjectURL(file));
-      updatedVariants[index].image = blobUrls;
-
-      return updatedVariants;
-    });
-  };
-
-  const handleShowImageUpload = (e, index) => {
-    const file = e.target.files[0];
-    console.log(`Esto es file en handleShowImageUpload ${index + 1}, ${file}`)
-
-
-    if (file) {
-      const blobUrl = URL.createObjectURL(file);
-
-      setVariants((prevVariants) => {
-        const updatedVariants = [...prevVariants];
-        updatedVariants[index].showing_image_file = file; // Guarda el archivo seleccionado
-        updatedVariants[index].showing_image = blobUrl;  // Guarda el blobUrl para previsualización
-        return updatedVariants;
-      });
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateData()) return;
 
-    // Generar referencia de producto
-  const productReference = generateProductReference();
-  generalProduct.product_reference = productReference; // Agregar referencia al producto general
+    const productReference = generateProductReference();
+    generalProduct.product_reference = productReference;
 
     const updatedVariants = variants.map((variant) => ({
       ...variant,
@@ -188,7 +99,7 @@ export const Variant = () => {
           variant.showing_image = uploadedImageUrls.find((url, index) => index === variant.imageFiles.length);
 
           delete variant.imageFiles;
-          delete variant.showing_image_file; // Limpia el archivo después de usarlo
+          delete variant.showing_image_file;
         }
 
         console.log(`Esto es variant.image ${i + 1}, ${variant.image}`)
@@ -200,10 +111,9 @@ export const Variant = () => {
       formData.append("generalProduct", JSON.stringify(generalProduct));
       formData.append("variants", JSON.stringify(updatedVariants));
 
-      // Log para inspeccionar todo lo que hay en el FormData
-    for (const pair of formData.entries()) {
-      console.log(`${pair[0]}:`, pair[1]);
-    }
+      for (const pair of formData.entries()) {
+        console.log(`${pair[0]}:`, pair[1]);
+      }
 
 
       const response = await fetch(
@@ -223,14 +133,6 @@ export const Variant = () => {
     } catch (error) {
       console.error("Error al enviar el producto:", error);
     }
-  };
-
-  const handleDeleteImageInput = (variantIndex, imageIndex) => {
-    const updatedVariants = [...variants];
-    updatedVariants[variantIndex].image = updatedVariants[
-      variantIndex
-    ].image.filter((_, idx) => idx !== imageIndex);
-    setVariants(updatedVariants);
   };
 
   const handleSaveImageUrlsToBackend = async (files) => {
@@ -541,3 +443,22 @@ export const Variant = () => {
     </>
   );
 };
+
+
+  // useEffect(() => {
+  //   if (!variants || variants.length === 0) {
+  //     setVariants([
+  //       {
+  //         name: "",
+  //         color: { colorName: "", hexCode: "" },
+  //         sizes: [],
+  //         material: "",
+  //         price: "",
+  //         discount: 0,
+  //         image: [],
+  //         showing_image: [],
+  //         description: "",
+  //       },
+  //     ]);
+  //   }
+  // }, []);
