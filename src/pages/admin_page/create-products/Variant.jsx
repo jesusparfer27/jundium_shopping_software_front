@@ -3,7 +3,7 @@ import { ProductContext } from "../context/ProductContext";
 import "../../../css/pages/admin.css";
 
 export const Variant = () => {
-  const { generalProduct, variants, setVariants } = useContext(ProductContext);
+  const { generalProduct, variants, setVariants, validateData, addNewVariantForm } = useContext(ProductContext);
 
   const [sizes, setSizes] = useState([]);
   const [fileNames, setFileNames] = useState([]);
@@ -13,19 +13,8 @@ export const Variant = () => {
   const [stock, setStock] = useState("");
   const [activeAccordion, setActiveAccordion] = useState(null);
   const [currentSize, setCurrentSize] = useState("");
-  const [imageUrls, setImageUrls] = useState([]);
   const [showImage, setShowImage] = useState("")
-  const [currentVariant, setCurrentVariant] = useState({
-    name: "",
-    color: { colorName: "", hexCode: "" },
-    sizes: [],
-    material: "",
-    price: "",
-    discount: 0,
-    image: [],
-    showing_image: [],
-    description: "",
-  });
+
   const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
 
   useEffect(() => {
@@ -273,37 +262,6 @@ export const Variant = () => {
       console.error("Error al guardar URLs de imágenes en el backend:", error);
       throw error;
     }
-  };
-
-  const addNewVariantForm = () => {
-    setVariants((prevVariants) => [
-      ...prevVariants,
-      {
-        name: "",
-        color: { colorName: "", hexCode: "" },
-        sizes: [],
-        material: "",
-        price: "",
-        discount: 0,
-        image: [],
-        showing_image: [],
-        description: "",
-      },
-    ]);
-  };
-
-  const validateData = () => {
-    if (!generalProduct.collection || !generalProduct.brand) {
-      console.error("Faltan datos del producto.");
-      return false;
-    }
-    for (const variant of variants) {
-      if (!variant.name || !variant.price) {
-        console.error("Faltan datos de una variante.");
-        return false;
-      }
-    }
-    return true;
   };
 
   return (

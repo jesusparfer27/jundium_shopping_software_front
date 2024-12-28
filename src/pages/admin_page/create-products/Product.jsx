@@ -1,17 +1,9 @@
-import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import { ProductContext } from "../context/ProductContext";
 import '../../../css/pages/admin.css'
 
 export const Product = () => {
     const { generalProduct, setGeneralProduct } = useContext(ProductContext);
-
-    const [variants, setVariants] = useState([]);
-    const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
-    const [currentVariant, setCurrentVariant] = useState({});
-
-    const navigate = useNavigate();
-    const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -25,13 +17,6 @@ export const Product = () => {
     useEffect(() => {
         localStorage.setItem("generalProduct", JSON.stringify(generalProduct));
     }, [generalProduct]);
-
-    
-    useEffect(() => {
-        if (variants.length > 0) {
-            setCurrentVariant(variants[selectedVariantIndex]);
-        }
-    }, [selectedVariantIndex, variants]);
 
     return (
         <div className="createProductContainer">
@@ -101,6 +86,17 @@ export const Product = () => {
         </div>
     );
 };
+
+    // useEffect(() => {
+    //     if (variants.length > 0) {
+    //         setCurrentVariant(variants[selectedVariantIndex]);
+    //     }
+    // }, [selectedVariantIndex, variants]);
+
+    // const [variants, setVariants] = useState([]);
+    // const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
+    // const [currentVariant, setCurrentVariant] = useState({});
+
 
     // useEffect(() => {
     //     const timer = setTimeout(() => {
