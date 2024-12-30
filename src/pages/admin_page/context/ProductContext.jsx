@@ -3,6 +3,8 @@ import { createContext, useState } from "react";
 export const ProductContext = createContext();
 
 export const ProductProvider = ({ children }) => {
+    const [productReference, setProductReference] = useState("");
+
     const [generalProduct, setGeneralProduct] = useState({
         collection: "",
         brand: "",
@@ -161,6 +163,7 @@ export const ProductProvider = ({ children }) => {
             generateProductCode,
             handleVariantChange,
             handleDeleteSize,
+            productReference, setProductReference
         }}>
             {children}
         </ProductContext.Provider>

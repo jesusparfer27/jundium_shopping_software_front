@@ -3,77 +3,35 @@ import { ProductContext } from "../context/ProductContext";
 import "../../../css/pages/admin.css";
 
 export const AddVariantVariantForm = () => {
-  const { generalProduct, variants, setVariants } = useContext(ProductContext);
+  const {
+    // generalProduct,
+    productReference,
+    setProductReference,
+    variants,
+    setVariants,
+    validateData,
+    addNewVariantForm,
+    handleDeleteImageInput,
+    handleShowImageUpload,
+    handleImageUpload,
+    generateProductCode,
+    handleVariantChange,
+    handleDeleteSize
+  } = useContext(ProductContext);
 
   const [sizes, setSizes] = useState([]);
-  const [fileNames, setFileNames] = useState([]);
   const [error, setError] = useState("");
-  const [variantCount, setVariantCount] = useState(0);
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const [stock, setStock] = useState("");
   const [activeAccordion, setActiveAccordion] = useState(null);
   const [currentSize, setCurrentSize] = useState("");
   const [imageUrls, setImageUrls] = useState([]);
   const [showImage, setShowImage] = useState("")
-  const [currentVariant, setCurrentVariant] = useState({
-    name: "",
-    color: { colorName: "", hexCode: "" },
-    sizes: [],
-    material: "",
-    price: "",
-    discount: 0,
-    image: [],
-    showing_image: [],
-    description: "",
-  });
   const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
 
   useEffect(() => {
     localStorage.setItem("variants", JSON.stringify(variants));
   }, [variants]);
-
-  const handleVariantChange = (e, index) => {
-    const { id, value } = e.target;
-    setVariants((prevVariants) => {
-      const updatedVariants = [...prevVariants];
-      const variant = updatedVariants[index];
-
-      if (id === "name") {
-        variant.name = value;
-      } else {
-        if (id.includes(".")) {
-          const [parentKey, childKey] = id.split(".");
-          variant[parentKey] = {
-            ...variant[parentKey],
-            [childKey]: value,
-          };
-        } else {
-          variant[id] = value;
-        }
-      }
-
-      updatedVariants[index] = variant;
-      return updatedVariants;
-    });
-  };
-
-  useEffect(() => {
-    if (!variants || variants.length === 0) {
-      setVariants([
-        {
-          name: "",
-          color: { colorName: "", hexCode: "" },
-          sizes: [],
-          material: "",
-          price: "",
-          discount: 0,
-          image: [],
-          showing_image: [],
-          description: "",
-        },
-      ]);
-    }
-  }, []);
 
   const handleAddSize = (index) => {
     if (!currentSize.trim()) {
@@ -107,63 +65,10 @@ export const AddVariantVariantForm = () => {
     setStock("");
   };
 
-  const handleDeleteSize = (sizeToRemove, index) => {
-    setVariants((prevVariants) => {
-      const updatedVariants = [...prevVariants];
-      updatedVariants[index].sizes = updatedVariants[index].sizes.filter(
-        (s) => s.size !== sizeToRemove
-      );
-      return updatedVariants;
-    });
-  };
-
-  const generateProductCode = () => {
-    const code =
-      "PROD-" + Math.random().toString(36).substr(2, 9).toUpperCase();
-    console.log("Generated Product Code:", code);
-    return code;
-  };
-
-  const handleImageUpload = (e, index) => {
-    const files = Array.from(e.target.files);
-    console.log(`esto son los files de handleImageUpload", ${index + 1}, ${files}`)
-
-
-
-    setVariants((prevVariants) => {
-      const updatedVariants = [...prevVariants];
-      updatedVariants[index].imageFiles = files;
-
-      const blobUrls = files.map((file) => URL.createObjectURL(file));
-      updatedVariants[index].image = blobUrls;
-
-      return updatedVariants;
-    });
-  };
-
-  const handleShowImageUpload = (e, index) => {
-    const file = e.target.files[0];
-    console.log(`Esto es file en handleShowImageUpload ${index + 1}, ${file}`)
-
-
-    if (file) {
-      const blobUrl = URL.createObjectURL(file);
-
-      setVariants((prevVariants) => {
-        const updatedVariants = [...prevVariants];
-        updatedVariants[index].showing_image_file = file;
-        updatedVariants[index].showing_image = blobUrl;
-        return updatedVariants;
-      });
-    }
-  };
-
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // if (!validateData()) return;
+    if (!validateData()) return;
 
     const updatedVariants = variants.map((variant) => ({
       ...variant,
@@ -174,13 +79,28 @@ export const AddVariantVariantForm = () => {
       for (let i = 0; i < updatedVariants.length; i++) {
         const variant = updatedVariants[i];
 
-        if (variant.imageFiles?.length || variant.showing_image_file) {
-          const formData = new FormData();
+        console.log("Datos de la variante antes de enviar:", variant);
 
-          variant.imageFiles.forEach((file) => formData.append("file", file));
+        if (variant.imageFiles?.length || variant.showing_image_file) {
+          console.log('Imágenes a agregar:', variant.imageFiles);
+          console.log('Imagen de portada a agregar:', variant.showing_image_file);
+
+          const formData = new FormData();
+          formData.append("imageFolders", JSON.stringify(["public", "images"])); // Ejemplo de cómo añadirlo
+
+          variant.imageFiles.forEach((file) => {
+            console.log('Archivo agregado al formData:', file); // Depuración por archivo
+            formData.append("file", file);
+          });
 
           if (variant.showing_image_file) {
+            console.log('Imagen de portada agregada al formData:', variant.showing_image_file);
             formData.append("showing_image", variant.showing_image_file);
+          }
+
+          // Aquí puedes depurar el formData antes de enviarlo
+          for (let pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
           }
 
           const uploadedImageUrls = await handleSaveImageUrlsToBackend(formData);
@@ -192,47 +112,46 @@ export const AddVariantVariantForm = () => {
           delete variant.showing_image_file;
         }
 
-        console.log(`Esto es variant.image ${i + 1}, ${variant.image}`)
-        console.log(`Esto es variant.showing_image ${i + 1}, ${variant.showing_image}`)
+
+        console.log(`Esto es variant.image ${i + 1}`, variant.image);
+        console.log(`Esto es variant.showing_image ${i + 1}`, variant.showing_image);
       }
 
-
       const formData = new FormData();
-      formData.append("generalProduct", JSON.stringify(generalProduct));
+      // formData.append("generalProduct", JSON.stringify(generalProduct));
       formData.append("variants", JSON.stringify(updatedVariants));
 
-    for (const pair of formData.entries()) {
-      console.log(`${pair[0]}:`, pair[1]);
-    }
+      // console.log('generalProduct:', generalProduct);
+      console.log('updatedVariants:', updatedVariants);
 
+      // for (let pair of formData.entries()) {
+      //   console.log(pair[0] + ': ' + pair[1]);
+      // }
 
       const response = await fetch(
-        `${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/add-variant`,
+        `${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/add-variant/${productReference}`,
         {
           method: "POST",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
-          body: formData,
+          body: formData,  // No pongas Content-Type aquí, FormData lo establece automáticamente
         }
       );
 
+      console.log("esto es productReference", productReference)
+
+
+      console.log('Respuesta de la API:', response);
 
       if (!response.ok) throw new Error("Error al crear el producto.");
       console.log("Producto creado con éxito.");
+
     } catch (error) {
       console.error("Error al enviar el producto:", error);
     }
   };
 
-  const handleDeleteImageInput = (variantIndex, imageIndex) => {
-    const updatedVariants = [...variants];
-    updatedVariants[variantIndex].image = updatedVariants[
-      variantIndex
-    ].image.filter((_, idx) => idx !== imageIndex);
-    setVariants(updatedVariants);
-  };
-  
 
   const handleSaveImageUrlsToBackend = async (files) => {
     const formData = new FormData();
@@ -240,7 +159,7 @@ export const AddVariantVariantForm = () => {
 
     try {
       const response = await fetch(
-        `${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/upload-images`,
+        `${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/upload-images/to-product`,
         {
           method: "POST",
           headers: {
@@ -262,32 +181,6 @@ export const AddVariantVariantForm = () => {
     } catch (error) {
       console.error("Error al guardar URLs de imágenes en el backend:", error);
       throw error;
-    }
-  };
-
-  const addNewVariantForm = () => {
-    setVariants((prevVariants) => [
-      ...prevVariants,
-      {
-        name: "",
-        color: { colorName: "", hexCode: "" },
-        sizes: [],
-        material: "",
-        price: "",
-        discount: 0,
-        image: [],
-        showing_image: [],
-        description: "",
-      },
-    ]);
-  };
-
-  const validateData = () => {
-    for (const variant of variants) {
-      if (!variant.name || !variant.price) {
-        console.error("Faltan datos de una variante.");
-        return false;
-      }
     }
   };
 
@@ -398,17 +291,17 @@ export const AddVariantVariantForm = () => {
 
                         <div className="containerSize_Display">
                           <ul className="sizeDisplay">
-                            {variants[index]?.sizes?.map((sizeObj, idx) => (
+                            {variants[index]?.sizes?.map((sizes, idx) => (
                               <li key={idx} className="sizeSelected_Group">
                                 <div className="blockContainer_sizeDisplay">
-                                  <p className="pSize_display">{`size: ${sizeObj.size}`}</p>
-                                  <p className="pSize_display">{`en stock: ${sizeObj.stock}`}</p>
+                                  <p className="pSize_display">{`size: ${sizes.size}`}</p>
+                                  <p className="pSize_display">{`en stock: ${sizes.stock}`}</p>
                                 </div>
                                 <div className="buttonSize_container">
                                   <button
                                     className="deleteSize_Button"
                                     onClick={() =>
-                                      handleDeleteSize(sizeObj.size, index)
+                                      handleDeleteSize(sizes.size, index)
                                     }
                                   >
                                     <span className="material-symbols-outlined">

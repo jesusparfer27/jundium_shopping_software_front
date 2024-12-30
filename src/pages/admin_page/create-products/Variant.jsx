@@ -111,9 +111,9 @@ export const Variant = () => {
       formData.append("generalProduct", JSON.stringify(generalProduct));
       formData.append("variants", JSON.stringify(updatedVariants));
 
-      for (const pair of formData.entries()) {
-        console.log(`${pair[0]}:`, pair[1]);
-      }
+      // for (const pair of formData.entries()) {
+      //   console.log(`${pair[0]}:`, pair[1]);
+      // }
 
 
       const response = await fetch(
@@ -443,22 +443,3 @@ export const Variant = () => {
     </>
   );
 };
-
-
-  // useEffect(() => {
-  //   if (!variants || variants.length === 0) {
-  //     setVariants([
-  //       {
-  //         name: "",
-  //         color: { colorName: "", hexCode: "" },
-  //         sizes: [],
-  //         material: "",
-  //         price: "",
-  //         discount: 0,
-  //         image: [],
-  //         showing_image: [],
-  //         description: "",
-  //       },
-  //     ]);
-  //   }
-  // }, []);

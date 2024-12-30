@@ -4,8 +4,7 @@ import { ProductContext } from "../context/ProductContext";
 import '../../../css/pages/admin.css'
 
 export const AddVariantProductForm = () => {
-    const { generalProduct, setGeneralProduct } = useContext(ProductContext);
-    const [productReference, setProductReference] = useState("");
+    const { generalProduct, setGeneralProduct, productReference, setProductReference } = useContext(ProductContext);
 
     const [variants, setVariants] = useState([]);
     const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
@@ -68,7 +67,7 @@ export const AddVariantProductForm = () => {
         try {
             const token = localStorage.getItem("authToken");
 
-            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/products/:productId/variants`, {
+            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/add-variant/${productReference}`, {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${token}`,
