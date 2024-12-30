@@ -142,7 +142,7 @@ export const AddVariantVariantForm = () => {
       console.log("esto es productReference", productReference)
 
 
-      console.log('Respuesta de la API:', response);
+      // console.log('Respuesta de la API:', response);
 
       if (!response.ok) throw new Error("Error al crear el producto.");
       console.log("Producto creado con éxito.");
@@ -151,6 +151,13 @@ export const AddVariantVariantForm = () => {
       console.error("Error al enviar el producto:", error);
     }
   };
+
+  useEffect(() => {
+  const storedVariants = localStorage.getItem("variants");
+  if (storedVariants) {
+    setVariants(JSON.parse(storedVariants));
+  }
+}, []);
 
 
   const handleSaveImageUrlsToBackend = async (files) => {
@@ -186,7 +193,7 @@ export const AddVariantVariantForm = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form  onSubmit={handleSubmit}>
         <div className="godDiv">
           <div
             className={`accordionContainer ${activeAccordion === "variant" ? "open" : ""

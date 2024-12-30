@@ -97,7 +97,7 @@ export const AddVariantProductForm = () => {
     return (
         <div className="createProductContainer">
             <div className="createProduct">
-                <form onSubmit={handleSubmit}>
+                <form  onSubmit={handleSubmit}>
                     <div className="containerTittle_AdminContainer_Create">
                         <div className="containerTittle_AdminCreate">
                             <h1>Añadir Variantes</h1>
