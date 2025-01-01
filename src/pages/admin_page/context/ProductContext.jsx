@@ -4,6 +4,7 @@ export const ProductContext = createContext();
 
 export const ProductProvider = ({ children }) => {
     const [productReference, setProductReference] = useState("");
+    const [productCode, setProductCode] = useState("")
 
     const [generalProduct, setGeneralProduct] = useState({
         collection: "",
@@ -26,6 +27,16 @@ export const ProductProvider = ({ children }) => {
         description: '',
     }]);
 
+    const handleOutOfStockChange = (e, index) => {
+        const { checked } = e.target; // Obtiene el valor true/false del checkbox
+        setVariants((prevVariants) => {
+          const updatedVariants = [...prevVariants];
+          updatedVariants[index].out_of_stock = checked; // Actualiza el valor
+          return updatedVariants;
+        });
+      };
+      
+
     const validateData = () => {
         if (!generalProduct.collection || !generalProduct.brand) {
             console.error("Faltan datos del producto.");
@@ -39,6 +50,11 @@ export const ProductProvider = ({ children }) => {
         }
         return true;
     };
+
+    const calculateDiscountedPrice = (price, discount) => {
+        return price - (price * discount) / 100;
+      };
+      
 
     const addNewVariantForm = () => {
         setVariants((prevVariants) => [
@@ -163,7 +179,10 @@ export const ProductProvider = ({ children }) => {
             generateProductCode,
             handleVariantChange,
             handleDeleteSize,
-            productReference, setProductReference
+            productReference, setProductReference,
+            productCode, setProductCode,
+            handleOutOfStockChange,
+            calculateDiscountedPrice
         }}>
             {children}
         </ProductContext.Provider>

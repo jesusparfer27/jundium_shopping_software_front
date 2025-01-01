@@ -3,77 +3,40 @@ import { ProductContext } from "../context/ProductContext";
 import "../../../css/pages/admin.css";
 
 export const EditVariant = () => {
-  const { generalProduct, variants, setVariants } = useContext(ProductContext);
+  const {
+    // generalProduct,
+    variants,
+    setVariants,
+    // validateData,
+    addNewVariantForm,
+    handleDeleteImageInput,
+    handleShowImageUpload,
+    handleImageUpload,
+    // generateProductReference,
+    // generateProductCode,
+    // handleVariantChange,
+    handleOutOfStockChange,
+    handleDeleteSize,
+    productCode,
+    setProductCode
+  } = useContext(ProductContext);
+
+  // const [variantCount, setVariantCount] = useState(0);
+  // const [fileNames, setFileNames] = useState([]);
 
   const [sizes, setSizes] = useState([]);
-  const [fileNames, setFileNames] = useState([]);
   const [error, setError] = useState("");
-  const [variantCount, setVariantCount] = useState(0);
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const [stock, setStock] = useState("");
   const [activeAccordion, setActiveAccordion] = useState(null);
   const [currentSize, setCurrentSize] = useState("");
-  const [imageUrls, setImageUrls] = useState([]);
   const [showImage, setShowImage] = useState("")
-  const [currentVariant, setCurrentVariant] = useState({
-    name: "",
-    color: { colorName: "", hexCode: "" },
-    sizes: [],
-    material: "",
-    price: "",
-    discount: 0,
-    image: [],
-    showing_image: [],
-    description: "",
-  });
+
   const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
 
   useEffect(() => {
     localStorage.setItem("variants", JSON.stringify(variants));
   }, [variants]);
-
-  const handleVariantChange = (e, index) => {
-    const { id, value } = e.target;
-    setVariants((prevVariants) => {
-      const updatedVariants = [...prevVariants];
-      const variant = updatedVariants[index];
-
-      if (id === "name") {
-        variant.name = value;
-      } else {
-        if (id.includes(".")) {
-          const [parentKey, childKey] = id.split(".");
-          variant[parentKey] = {
-            ...variant[parentKey],
-            [childKey]: value,
-          };
-        } else {
-          variant[id] = value;
-        }
-      }
-
-      updatedVariants[index] = variant;
-      return updatedVariants;
-    });
-  };
-
-  useEffect(() => {
-    if (!variants || variants.length === 0) {
-      setVariants([
-        {
-          name: "",
-          color: { colorName: "", hexCode: "" },
-          sizes: [],
-          material: "",
-          price: "",
-          discount: 0,
-          image: [],
-          showing_image: [],
-          description: "",
-        },
-      ]);
-    }
-  }, []);
 
   const handleAddSize = (index) => {
     if (!currentSize.trim()) {
@@ -107,71 +70,16 @@ export const EditVariant = () => {
     setStock("");
   };
 
-  const handleDeleteSize = (sizeToRemove, index) => {
-    setVariants((prevVariants) => {
-      const updatedVariants = [...prevVariants];
-      updatedVariants[index].sizes = updatedVariants[index].sizes.filter(
-        (s) => s.size !== sizeToRemove
-      );
-      return updatedVariants;
-    });
-  };
-
-  const generateProductCode = () => {
-    const code =
-      "PROD-" + Math.random().toString(36).substr(2, 9).toUpperCase();
-    console.log("Generated Product Code:", code);
-    return code;
-  };
-
-  const handleImageUpload = (e, index) => {
-    const files = Array.from(e.target.files);
-    console.log(`esto son los files de handleImageUpload", ${index + 1}, ${files}`)
-
-
-
-    setVariants((prevVariants) => {
-      const updatedVariants = [...prevVariants];
-      updatedVariants[index].imageFiles = files;
-
-      // Generar blobs para mostrar vistas previas
-      const blobUrls = files.map((file) => URL.createObjectURL(file));
-      updatedVariants[index].image = blobUrls;
-
-      return updatedVariants;
-    });
-  };
-
-  const handleShowImageUpload = (e, index) => {
-    const file = e.target.files[0];
-    console.log(`Esto es file en handleShowImageUpload ${index + 1}, ${file}`)
-
-
-    if (file) {
-      const blobUrl = URL.createObjectURL(file);
-
-      setVariants((prevVariants) => {
-        const updatedVariants = [...prevVariants];
-        updatedVariants[index].showing_image_file = file; // Guarda el archivo seleccionado
-        updatedVariants[index].showing_image = blobUrl;  // Guarda el blobUrl para previsualización
-        return updatedVariants;
-      });
-    }
-  };
-
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validateData()) return;
-
     const updatedVariants = variants.map((variant) => ({
       ...variant,
-      product_code: generateProductCode(),
     }));
 
     try {
+      console.log("Datos antes de enviar:", updatedVariants);
+
       for (let i = 0; i < updatedVariants.length; i++) {
         const variant = updatedVariants[i];
 
@@ -190,44 +98,102 @@ export const EditVariant = () => {
           variant.showing_image = uploadedImageUrls.find((url, index) => index === variant.imageFiles.length);
 
           delete variant.imageFiles;
-          delete variant.showing_image_file; // Limpia el archivo después de usarlo
+          delete variant.showing_image_file;
         }
 
-        console.log(`Esto es variant.image ${i + 1}, ${variant.image}`)
-        console.log(`Esto es variant.showing_image ${i + 1}, ${variant.showing_image}`)
+        console.log(`Esto es variant.image ${i + 1}, ${variant.image}`);
+        console.log(`Esto es variant.showing_image ${i + 1}, ${variant.showing_image}`);
       }
 
+      if (!productCode.trim()) {
+        alert("Por favor, ingrese una referencia de producto válida.");
+        return;
+      }
 
-      const formData = new FormData();
-      formData.append("generalProduct", JSON.stringify(generalProduct));
-      formData.append("variants", JSON.stringify(updatedVariants));
+      const url = `${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/edit-variant-data/${productCode}`;
+      console.log("URL de la solicitud:", url); // Log de la URL
 
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json", // JSON payload
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+        body: JSON.stringify({ variants: updatedVariants }), // Enviar como JSON
+      });
 
-      const response = await fetch(
-        `${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/create-product`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-          },
-          body: formData,
-        }
-      );
-
-
-      if (!response.ok) throw new Error("Error al crear el producto.");
-      console.log("Producto creado con éxito.");
+      if (!response.ok) throw new Error("Error al actualizar la variante.");
+      console.log("Variante actualizada con éxito.");
     } catch (error) {
-      console.error("Error al enviar el producto:", error);
+      console.error("Error al actualizar la variante:", error);
     }
   };
 
-  const handleDeleteImageInput = (variantIndex, imageIndex) => {
-    const updatedVariants = [...variants];
-    updatedVariants[variantIndex].image = updatedVariants[
-      variantIndex
-    ].image.filter((_, idx) => idx !== imageIndex);
-    setVariants(updatedVariants);
+
+
+
+  const handleVariantChange = (e, index) => {
+    const { id, value } = e.target;
+
+    setVariants((prevVariants) => {
+      const updatedVariants = [...prevVariants];
+      const updatedVariant = updatedVariants[index];
+
+      if (id.startsWith("color.") && updatedVariant.color) {
+        updatedVariant.color[id.split('.')[1]] = value;
+      } else if (id === "name" || id === "material") {
+        updatedVariant[id] = value;
+      } else {
+        updatedVariant[id] = value;
+      }
+
+      return updatedVariants;
+    });
+  };
+
+  const handleSearchProductByCode = async () => {
+    if (!productCode || typeof productCode !== "string" || !productCode.trim()) {
+      alert("Por favor, ingrese una referencia de producto válida.");
+      return;
+    }
+
+    const url = `${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/product/by-reference?product_code=${productCode}`;
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: Producto no encontrado`);
+      }
+
+      const data = await response.json();
+
+      if (data.variant) {
+        console.log("Variante encontrada:", data.variant);
+        setVariants([data.variant]);
+      } else if (data.variants) {
+        const filteredVariants = data.variants.filter(
+          (variant) => variant.product_code === productCode
+        );
+
+        if (filteredVariants.length === 0) {
+          alert("No se encontró ninguna variante con el código proporcionado.");
+        } else {
+          console.log("Variantes encontradas:", filteredVariants);
+          setVariants(filteredVariants);
+        }
+      } else {
+        alert("Datos inesperados recibidos del servidor.");
+      }
+    } catch (error) {
+      console.error("Error al buscar producto por referencia:", error);
+    }
   };
 
   const handleSaveImageUrlsToBackend = async (files) => {
@@ -236,7 +202,7 @@ export const EditVariant = () => {
 
     try {
       const response = await fetch(
-        `${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/upload-images`,
+        `${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/upload-images/${productCode}`,
         {
           method: "POST",
           headers: {
@@ -259,37 +225,6 @@ export const EditVariant = () => {
       console.error("Error al guardar URLs de imágenes en el backend:", error);
       throw error;
     }
-  };
-
-  const addNewVariantForm = () => {
-    setVariants((prevVariants) => [
-      ...prevVariants,
-      {
-        name: "",
-        color: { colorName: "", hexCode: "" },
-        sizes: [],
-        material: "",
-        price: "",
-        discount: 0,
-        image: [],
-        showing_image: [],
-        description: "",
-      },
-    ]);
-  };
-
-  const validateData = () => {
-    if (!generalProduct.collection || !generalProduct.brand) {
-      console.error("Faltan datos del producto.");
-      return false;
-    }
-    for (const variant of variants) {
-      if (!variant.name || !variant.price) {
-        console.error("Faltan datos de una variante.");
-        return false;
-      }
-    }
-    return true;
   };
 
   return (
@@ -317,6 +252,24 @@ export const EditVariant = () => {
                   <div className="variant">
                     <div className="variantForm">
                       <div className="divForm_Column">
+                        <label htmlFor="product_code" className="labelTypeOfProduct">
+                          Referencia de la Variante
+                        </label>
+                        <input
+                          type="text"
+                          id="product_code"
+                          className="inputTypeOfProduct"
+                          placeholder="EXAMPLE: #REF-23911"
+                          value={productCode}
+                          onChange={(e) => setProductCode(e.target.value)}
+                        />
+                        <button type="button" className="submitCreateButton" onClick={handleSearchProductByCode}>
+                          Buscar Producto
+                        </button>
+                      </div>
+                      <div className="divForm_Column">
+                        <div className="containerEdit_form">
+                        </div>
                         <label htmlFor="colorName">Name:</label>
                         <input
                           name="name"
@@ -326,6 +279,7 @@ export const EditVariant = () => {
                           onChange={(e) => handleVariantChange(e, index)}
                         />
                       </div>
+
                       <div className="divForm_Column">
                         <label htmlFor="colorName">Color Name:</label>
                         <input
@@ -397,6 +351,23 @@ export const EditVariant = () => {
                           </div>
                         </div>
 
+                        <div className="divForm_Column">
+                          {variants.map((variant, index) => (
+                            <div key={variant.variant_id} className="variant-container">
+                              <div className="containerRow_outStock">
+                                <label htmlFor={`outOfStock-${index}`}>Fuera de stock</label>
+                                <input
+                                  type="checkbox"
+                                  id={`outOfStock-${index}`}
+                                  checked={variant.out_of_stock}
+                                  onChange={(e) => handleOutOfStockChange(e, index)}
+                                />
+                              </div>
+                            </div>
+                          ))}
+
+                        </div>
+
                         <div className="containerSize_Display">
                           <ul className="sizeDisplay">
                             {variants[index]?.sizes?.map((sizeObj, idx) => (
@@ -424,7 +395,7 @@ export const EditVariant = () => {
                       </div>
 
                       <div className="divForm_Column">
-                        {/* Input para subir múltiples imágenes */}
+
                         <div className="introduceImageContainer">
                           <div className="introduceImage">
                             <label htmlFor={`image-${index}`} className="labelImage">
@@ -441,30 +412,32 @@ export const EditVariant = () => {
                           </div>
                         </div>
 
-                        {/* Vista previa de las imágenes cargadas desde "image" */}
                         <div className="containerForPreviews">
                           {variants[index]?.image?.length > 0 ? (
-                            variants[index].image.map((imageUrl, imgIndex) => (
-                              <div key={imgIndex} className="imagePreview">
-                                <img
-                                  src={imageUrl}
-                                  alt={`Preview ${imgIndex}`}
-                                  className="previewImage"
-                                />
-                                <button
-                                  className="deleteImage_Button"
-                                  onClick={() => handleDeleteImageInput(index, imgIndex)}
-                                >
-                                  <span className="material-symbols-outlined">close</span>
-                                </button>
-                              </div>
-                            ))
+                            variants[index].image.map((imageUrl, imgIndex) => {
+
+                              return (
+                                <div key={imgIndex} className="imagePreview">
+                                  <img
+                                    src={`${VITE_API_BACKEND}/images${imageUrl}`}
+                                    alt={`Preview ${imgIndex}`}
+                                    className="previewImage"
+                                  />
+                                  <button
+                                    className="deleteImage_Button"
+                                    onClick={() => handleDeleteImageInput(index, imgIndex)}
+                                  >
+                                    <span className="material-symbols-outlined">close</span>
+                                  </button>
+                                </div>
+                              );
+                            })
                           ) : (
                             <div className="noImagePreview"></div>
                           )}
                         </div>
 
-                        {/* Input para cargar una imagen de portada */}
+
                         <div className="introduceImageContainer">
                           <div className="introduceImage">
                             <label htmlFor={`showing-image-${index}`} className="labelImage">
@@ -480,12 +453,11 @@ export const EditVariant = () => {
                           </div>
                         </div>
 
-                        {/* Vista previa de la imagen de portada */}
                         <div className="containerForPreviews">
                           {variants[index]?.showing_image ? (
                             <div className="imagePreview">
                               <img
-                                src={variants[index].showing_image}
+                                src={`${VITE_API_BACKEND}/images${variants[index].showing_image}`}
                                 alt="Preview portada"
                                 className="previewImage"
                               />
@@ -507,7 +479,6 @@ export const EditVariant = () => {
                           )}
                         </div>
                       </div>
-
 
 
                       <div className="divForm_Column">
