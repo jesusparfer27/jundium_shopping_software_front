@@ -16,7 +16,9 @@ export const AddVariantVariantForm = () => {
     handleImageUpload,
     generateProductCode,
     handleVariantChange,
-    handleDeleteSize
+    handleDeleteSize,
+    handleOutOfStockChange,
+    // calculateDiscountedPrice
   } = useContext(ProductContext);
 
   const [sizes, setSizes] = useState([]);
@@ -73,6 +75,7 @@ export const AddVariantVariantForm = () => {
     const updatedVariants = variants.map((variant) => ({
       ...variant,
       product_code: generateProductCode(),
+      originalPrice: variant.originalPrice || variant.price,  // Asegúrate de que este campo esté presente
     }));
 
     try {
@@ -153,11 +156,11 @@ export const AddVariantVariantForm = () => {
   };
 
   useEffect(() => {
-  const storedVariants = localStorage.getItem("variants");
-  if (storedVariants) {
-    setVariants(JSON.parse(storedVariants));
-  }
-}, []);
+    const storedVariants = localStorage.getItem("variants");
+    if (storedVariants) {
+      setVariants(JSON.parse(storedVariants));
+    }
+  }, []);
 
 
   const handleSaveImageUrlsToBackend = async (files) => {
@@ -193,7 +196,7 @@ export const AddVariantVariantForm = () => {
 
   return (
     <>
-      <form  onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <div className="godDiv">
           <div
             className={`accordionContainer ${activeAccordion === "variant" ? "open" : ""
@@ -298,17 +301,26 @@ export const AddVariantVariantForm = () => {
 
                         <div className="containerSize_Display">
                           <ul className="sizeDisplay">
-                            {variants[index]?.sizes?.map((sizes, idx) => (
-                              <li key={idx} className="sizeSelected_Group">
+                            {variants[index]?.sizes?.map((sizeObj, sizeIndex) => (
+                              <li key={sizeIndex} className="sizeSelected_Group">
                                 <div className="blockContainer_sizeDisplay">
-                                  <p className="pSize_display">{`size: ${sizes.size}`}</p>
-                                  <p className="pSize_display">{`en stock: ${sizes.stock}`}</p>
+                                  <p className="pSize_display">{`size: ${sizeObj.size}`}</p>
+                                  <p className="pSize_display">{`en stock: ${sizeObj.stock}`}</p>
+                                  <div className="containerRow_outStock">
+                                    <label htmlFor={`outOfStock-${index}-${sizeIndex}`}>Fuera de stock</label>
+                                    <input
+                                      type="checkbox"
+                                      id={`outOfStock-${index}-${sizeIndex}`}
+                                      checked={sizeObj.outOfStock}
+                                      onChange={(e) => handleOutOfStockChange(e, sizeIndex, index)}
+                                    />
+                                  </div>
                                 </div>
                                 <div className="buttonSize_container">
                                   <button
                                     className="deleteSize_Button"
                                     onClick={() =>
-                                      handleDeleteSize(sizes.size, index)
+                                      handleDeleteSize(sizeObj.size, index)
                                     }
                                   >
                                     <span className="material-symbols-outlined">
@@ -403,7 +415,15 @@ export const AddVariantVariantForm = () => {
                       </div>
 
 
-
+                      <div className="divForm_Column">
+                        <label htmlFor="price">Precio original:</label>
+                        <input
+                          type="number"
+                          id="originalPrice"
+                          value={variants[index]?.originalPrice || ""}
+                          onChange={(e) => handleVariantChange(e, index)}
+                        />
+                      </div>
                       <div className="divForm_Column">
                         <label htmlFor="price">Precio:</label>
                         <input

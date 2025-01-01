@@ -18,7 +18,8 @@ export const EditVariant = () => {
     handleOutOfStockChange,
     handleDeleteSize,
     productCode,
-    setProductCode
+    setProductCode,
+    calculateDiscountedPrice,
   } = useContext(ProductContext);
 
   // const [variantCount, setVariantCount] = useState(0);
@@ -147,9 +148,22 @@ export const EditVariant = () => {
         updatedVariant[id] = value;
       }
 
+      // Lógica para actualizar el precio cuando se cambia el descuento
+      if (id === "discount") {
+        const discountValue = parseFloat(value);
+        if (discountValue > 0) {
+          // Si el descuento es mayor que 0, calculamos el precio con descuento
+          updatedVariant.price = calculateDiscountedPrice(updatedVariant.originalPrice, discountValue);
+        } else {
+          // Si el descuento es 0, volvemos al precio original
+          updatedVariant.price = updatedVariant.originalPrice;
+        }
+      }
+
       return updatedVariants;
     });
   };
+
 
   const handleSearchProductByCode = async () => {
     if (!productCode || typeof productCode !== "string" || !productCode.trim()) {
@@ -351,30 +365,22 @@ export const EditVariant = () => {
                           </div>
                         </div>
 
-                        <div className="divForm_Column">
-                          {variants.map((variant, index) => (
-                            <div key={variant.variant_id} className="variant-container">
-                              <div className="containerRow_outStock">
-                                <label htmlFor={`outOfStock-${index}`}>Fuera de stock</label>
-                                <input
-                                  type="checkbox"
-                                  id={`outOfStock-${index}`}
-                                  checked={variant.out_of_stock}
-                                  onChange={(e) => handleOutOfStockChange(e, index)}
-                                />
-                              </div>
-                            </div>
-                          ))}
-
-                        </div>
-
                         <div className="containerSize_Display">
                           <ul className="sizeDisplay">
-                            {variants[index]?.sizes?.map((sizeObj, idx) => (
-                              <li key={idx} className="sizeSelected_Group">
+                            {variants[index]?.sizes?.map((sizeObj, sizeIndex) => (
+                              <li key={sizeIndex} className="sizeSelected_Group">
                                 <div className="blockContainer_sizeDisplay">
                                   <p className="pSize_display">{`size: ${sizeObj.size}`}</p>
                                   <p className="pSize_display">{`en stock: ${sizeObj.stock}`}</p>
+                                  <div className="containerRow_outStock">
+                                    <label htmlFor={`outOfStock-${index}-${sizeIndex}`}>Fuera de stock</label>
+                                    <input
+                                      type="checkbox"
+                                      id={`outOfStock-${index}-${sizeIndex}`}
+                                      checked={sizeObj.outOfStock}
+                                      onChange={(e) => handleOutOfStockChange(e, sizeIndex, index)}
+                                    />
+                                  </div>
                                 </div>
                                 <div className="buttonSize_container">
                                   <button
@@ -481,6 +487,15 @@ export const EditVariant = () => {
                       </div>
 
 
+                      <div className="divForm_Column">
+                        <label htmlFor="price">Precio original:</label>
+                        <input
+                          type="number"
+                          id="originalPrice"
+                          value={variants[index]?.originalPrice || ""}
+                          onChange={(e) => handleVariantChange(e, index)}
+                        />
+                      </div>
                       <div className="divForm_Column">
                         <label htmlFor="price">Precio:</label>
                         <input

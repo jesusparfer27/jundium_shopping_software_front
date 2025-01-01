@@ -21,21 +21,19 @@ export const ProductProvider = ({ children }) => {
         sizes: [],
         material: '',
         price: '',
+        originalPrice: '',
         discount: 0,
         image: [],
         showing_image: [],
         description: '',
     }]);
 
-    const handleOutOfStockChange = (e, index) => {
-        const { checked } = e.target; // Obtiene el valor true/false del checkbox
-        setVariants((prevVariants) => {
-          const updatedVariants = [...prevVariants];
-          updatedVariants[index].out_of_stock = checked; // Actualiza el valor
-          return updatedVariants;
-        });
-      };
-      
+    const calculateDiscountedPrice = (originalPrice, discount) => {
+        if (!originalPrice || !discount) return "0.00"; // Retorna como cadena para consistencia
+        const discountedPrice = originalPrice - (originalPrice * discount) / 100;
+        return discountedPrice.toFixed(2); // Mantiene siempre dos decimales como cadena
+    };
+    
 
     const validateData = () => {
         if (!generalProduct.collection || !generalProduct.brand) {
@@ -43,7 +41,7 @@ export const ProductProvider = ({ children }) => {
             return false;
         }
         for (const variant of variants) {
-            if (!variant.name || !variant.price) {
+            if (!variant.name || !variant.price || !variant.originalPrice) {
                 console.error("Faltan datos de una variante.");
                 return false;
             }
@@ -51,9 +49,26 @@ export const ProductProvider = ({ children }) => {
         return true;
     };
 
-    const calculateDiscountedPrice = (price, discount) => {
-        return price - (price * discount) / 100;
+    const handleOutOfStockChange = (e, sizeIndex, variantIndex) => {
+        const { checked } = e.target;
+      
+        // Actualizamos el estado para reflejar el cambio en outOfStock
+        setVariants((prevVariants) => {
+          const updatedVariants = [...prevVariants];
+          const updatedSizes = [...updatedVariants[variantIndex].sizes];
+      
+          // Establecemos el valor de outOfStock en el índice correspondiente
+          updatedSizes[sizeIndex] = {
+            ...updatedSizes[sizeIndex],
+            out_of_stock: checked // Aquí se actualiza el valor
+          };
+      
+          updatedVariants[variantIndex].sizes = updatedSizes;
+      
+          return updatedVariants;
+        });
       };
+      
       
 
     const addNewVariantForm = () => {
@@ -65,6 +80,7 @@ export const ProductProvider = ({ children }) => {
                 sizes: [],
                 material: "",
                 price: "",
+                originalPrice: '',
                 discount: 0,
                 image: [],
                 showing_image: [],
@@ -131,28 +147,41 @@ export const ProductProvider = ({ children }) => {
 
   const handleVariantChange = (e, index) => {
     const { id, value } = e.target;
+  
     setVariants((prevVariants) => {
       const updatedVariants = [...prevVariants];
-      const variant = updatedVariants[index];
-
-      if (id === "name") {
-        variant.name = value;
+      const updatedVariant = updatedVariants[index];
+  
+      // Actualización directa de las propiedades del variant
+      if (id.startsWith("color.")) {
+        // Actualizamos las propiedades dentro de "color"
+        const colorKey = id.split(".")[1]; // Extraemos "colorName" o "hexCode"
+        updatedVariant.color = {
+          ...updatedVariant.color, // Mantenemos el resto de propiedades
+          [colorKey]: value, // Actualizamos solo la propiedad cambiada
+        };
       } else {
-        if (id.includes(".")) {
-          const [parentKey, childKey] = id.split(".");
-          variant[parentKey] = {
-            ...variant[parentKey],
-            [childKey]: value,
-          };
+        updatedVariant[id] = value; // Actualizamos el campo directo
+      }
+  
+      // Actualización de precio con base en "originalPrice" y "discount"
+      if (id === "originalPrice") {
+        updatedVariant.price = value;
+      }
+      if (id === "discount") {
+        const discountValue = parseFloat(value);
+        if (discountValue > 0) {
+          updatedVariant.price = calculateDiscountedPrice(updatedVariant.originalPrice, discountValue);
         } else {
-          variant[id] = value;
+          updatedVariant.price = updatedVariant.originalPrice;
         }
       }
-
-      updatedVariants[index] = variant;
+  
       return updatedVariants;
     });
   };
+  
+  
 
   const handleDeleteSize = (sizeToRemove, index) => {
     setVariants((prevVariants) => {

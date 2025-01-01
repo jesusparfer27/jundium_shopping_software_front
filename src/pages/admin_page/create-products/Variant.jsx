@@ -15,7 +15,8 @@ export const Variant = () => {
     generateProductReference,
     generateProductCode,
     handleVariantChange,
-    handleDeleteSize
+    handleDeleteSize,
+    handleOutOfStockChange
   } = useContext(ProductContext);
 
   // const [variantCount, setVariantCount] = useState(0);
@@ -273,11 +274,21 @@ export const Variant = () => {
 
                         <div className="containerSize_Display">
                           <ul className="sizeDisplay">
-                            {variants[index]?.sizes?.map((sizeObj, idx) => (
-                              <li key={idx} className="sizeSelected_Group">
+                            {variants[index]?.sizes?.map((sizeObj, sizeIndex) => (
+                              <li key={sizeIndex} className="sizeSelected_Group">
                                 <div className="blockContainer_sizeDisplay">
                                   <p className="pSize_display">{`size: ${sizeObj.size}`}</p>
                                   <p className="pSize_display">{`en stock: ${sizeObj.stock}`}</p>
+                                  <div className="containerRow_outStock">
+                                    <label htmlFor={`out_of_stock-${index}-${sizeIndex}`}>Fuera de stock</label>
+                                    <input
+                                      type="checkbox"
+                                      id={`out_of_stock-${index}-${sizeIndex}`}
+                                      checked={sizeObj.out_of_stock || false} // Aquí aseguras que sea falso por defecto
+                                      onChange={(e) => handleOutOfStockChange(e, sizeIndex, index)}
+                                    />
+                                  </div>
+
                                 </div>
                                 <div className="buttonSize_container">
                                   <button
@@ -383,7 +394,15 @@ export const Variant = () => {
                       </div>
 
 
-
+                      <div className="divForm_Column">
+                        <label htmlFor="price">Precio original:</label>
+                        <input
+                          type="number"
+                          id="originalPrice"
+                          value={variants[index]?.originalPrice || ""}
+                          onChange={(e) => handleVariantChange(e, index)}
+                        />
+                      </div>
                       <div className="divForm_Column">
                         <label htmlFor="price">Precio:</label>
                         <input
