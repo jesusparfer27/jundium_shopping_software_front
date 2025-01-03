@@ -3,24 +3,26 @@ import { useParams } from 'react-router-dom';
 import { CartContext } from '../context/CartContext';
 import { ModalContext } from '../components/modal-wishlist/ModalContext';
 import { MultifunctionalModal } from '../components/modal-wishlist/MultifunctionalModal';
+import { ProductContext } from './admin_page/context/ProductContext';
 import '../css/pages/showing_product_page.css';
 
 export const ShowingProductPage = () => {
     const { id } = useParams();
     const [accordionOpen, setAccordionOpen] = useState(false);
-
+    const [lowStockWarning, setLowStockWarning] = useState(false);
+    const { hasDiscount, renderPriceWithDiscount } = useContext(ProductContext)
     const { loading,
-            setErrorMessage,
-            errorMessage,
-            handleAddToCart,
-            selectedSize,
-            setSelectedSize,
-            selectedVariant,
-            setSelectedVariant,
-            setLoading,
-            product,
-            setProduct
-         } = useContext(CartContext);
+        setErrorMessage,
+        errorMessage,
+        handleAddToCart,
+        selectedSize,
+        setSelectedSize,
+        selectedVariant,
+        setSelectedVariant,
+        setLoading,
+        product,
+        setProduct
+    } = useContext(CartContext);
 
     const { activeModal } = useContext(ModalContext);
 
@@ -113,12 +115,14 @@ export const ShowingProductPage = () => {
 
             if (variant) {
                 setSelectedVariant(variant);
-                console.log(`Tamaño seleccionado: ${selectedSize}`);
-            } else {
-                console.warn(`Tamaño no disponible para el color seleccionado y la talla ${selectedSize}`);
+                // Comprobación de stock bajo
+                const sizeObj = variant.sizes.find(size => size.size === selectedSize);
+                if (sizeObj && sizeObj.stock < 5) {
+                    setLowStockWarning(true);
+                } else {
+                    setLowStockWarning(false);
+                }
             }
-        } else {
-            console.warn('No hay una variante seleccionada previamente o faltan datos del producto.');
         }
     };
 
@@ -126,6 +130,16 @@ export const ShowingProductPage = () => {
     if (!product) return <div>Producto no encontrado.</div>;
 
     const otherImages = selectedVariant?.image || [];
+
+    // Comprobación de descuento y cálculo de precio
+    // const price = selectedVariant?.price || product.base_price;
+    // const finalPrice = hasDiscount && hasDiscount() ? renderPriceWithDiscount(selectedVariant) : price;
+    const hasDiscountApplied = selectedVariant?.discount > 0;
+    const variantPrice = selectedVariant?.price || 0;
+    // Usamos renderPriceWithDiscount para obtener el precio final con descuento
+    const priceToDisplay = renderPriceWithDiscount(selectedVariant);
+
+
 
     return (
         <section className="productSection">
@@ -157,7 +171,18 @@ export const ShowingProductPage = () => {
                         <p className="paraphHidden_Accordion">
                             {selectedVariant?.description}
                         </p>
-                        <p>Precio: ${selectedVariant?.price || product.base_price}</p>
+                        {hasDiscountApplied ? (
+                            <>
+                                <p className="textCard_Header discountedPrice">
+                                    {priceToDisplay}
+                                </p>
+                                <p className="textCard_Header originalPrice">
+                                    Antes: ${variantPrice.toFixed(2)}
+                                </p>
+                            </>
+                        ) : (
+                            <p className="textCard_Header">${variantPrice.toFixed(2)}</p>
+                        )}
 
                         <button onClick={toggleAccordion} className="accordion">
                             {accordionOpen ? 'Ocultar materiales' : 'Mostrar materiales'}
@@ -170,38 +195,51 @@ export const ShowingProductPage = () => {
 
                         <br />
                         <label htmlFor="size" className="label_Size">Tamaño:</label>
-                        <select
-                            id="size"
-                            className="select_Size"
-                            value={selectedSize}
-                            onChange={handleSizeChange}
-                        >
-                            <option value="">Seleccionar Talla</option>
-                            {selectedVariant?.sizes.map((sizeObj, index) => (
-                                <option key={index} value={sizeObj.size} className="option_Size">
-                                    {sizeObj.size}
-                                </option>
-                            ))}
-                        </select>
+                        <label htmlFor="size" className="label_Size">Tamaño:</label>
+<select
+    id="size"
+    className="select_Size"
+    value={selectedSize}
+    onChange={handleSizeChange}
+>
+    <option value="">Seleccionar Talla</option>
+    {selectedVariant?.sizes.map((sizeObj, index) => (
+        <option
+            key={index}
+            value={sizeObj.size}
+            className={`option_Size ${sizeObj.stock === 0 ? 'outOfStock' : ''}`}
+            disabled={sizeObj.stock === 0}
+        >
+            {sizeObj.size} {sizeObj.stock === 0 ? '(Agotado)' : ''}
+        </option>
+    ))}
+</select>
 
-                        <label htmlFor="color" className="label_Color">Color:</label>
-                        <select
-                            id="color"
-                            className="select_Color"
-                            value={selectedVariant?.color?.colorName || ""}
-                            onChange={handleColorChange}
-                        >
-                            <option value="">Seleccionar Color</option>
-                            {product?.variants?.map((variant, index) => (
-                                <option
-                                    key={index}
-                                    value={variant.color.colorName}
-                                    className="option_Color"
-                                >
-                                    {variant.color.colorName}
-                                </option>
-                            ))}
-                        </select>
+<label htmlFor="color" className="label_Color">Color:</label>
+<select
+    id="color"
+    className="select_Color"
+    value={selectedVariant?.color?.colorName || ""}
+    onChange={handleColorChange}
+>
+    <option value="">Seleccionar Color</option>
+    {product?.variants?.map((variant, index) => (
+        <option
+            key={index}
+            value={variant.color.colorName}
+            className={`option_Color ${variant.stock === 0 ? 'outOfStock' : ''}`}
+            disabled={variant.stock === 0}
+        >
+            {variant.color.colorName} {variant.stock === 0 ? '(Agotado)' : ''}
+        </option>
+    ))}
+</select>
+
+
+                        {/* Mostrar aviso de stock bajo */}
+                        {lowStockWarning && (
+                            <p className="lowStockWarning">¡Quedan pocas unidades en stock!</p>
+                        )}
 
                         <button
                             className="addToCart"

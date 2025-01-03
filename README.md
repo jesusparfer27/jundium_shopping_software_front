@@ -8,10 +8,12 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
 
-## FALLOS LOGICA:
+## REMATES FUNCIONALES:
 
-LOGIN RECARGA REFORZADA
-PAGINA ADMIN
+MODALES PEDIDO REALIZADO
+HAY QUE RESUBIR LOS PRODUCTOS?
+PROFILEPAGE USER INFORMATION
+PONER EL PRODUCTCODE Y PRODUCTREFERENCE
 
 ## TAREAS DISEÑO:
 

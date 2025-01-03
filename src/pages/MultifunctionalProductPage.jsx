@@ -1,195 +1,220 @@
-import React, { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
-import '../css/pages/multifunctional_product_page.css';
-import { useNavigate } from 'react-router-dom';
-import ErrorImage from '../assets/error-image/error-image.jpg'; // Ajusta el path según la ubicación de tu imagen
+    import React, { useState, useEffect } from 'react';
+    import { NavLink } from 'react-router-dom';
+    import '../css/pages/multifunctional_product_page.css';
+    import { useNavigate } from 'react-router-dom';
+    import { useContext } from 'react';
+    import { ProductContext } from './admin_page/context/ProductContext';
+    import ErrorImage from '../assets/error-image/error-image.jpg'; // Ajusta el path según la ubicación de tu imagen
 
-export const MultifunctionalProductPage = () => {
-    const [likedProducts, setLikedProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const navigate = useNavigate();
-    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
+    export const MultifunctionalProductPage = () => {
+        const [likedProducts, setLikedProducts] = useState([]);
+        const [loading, setLoading] = useState(true);
+        const [error, setError] = useState(null);
+        const navigate = useNavigate();
+        const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
+        const {
+            hasDiscount,
+            renderPriceWithDiscount
+        } = useContext(ProductContext)
 
-    useEffect(() => {
-        const token = localStorage.getItem('authToken');
-        if (!token) {
-            setLoading(false);
-            return; // Usuario no loggeado
-        }
+        useEffect(() => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                setLoading(false);
+                return; // Usuario no loggeado
+            }
 
-        const fetchLikedProducts = async () => {
+            const fetchLikedProducts = async () => {
+                try {
+                    const headers = {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    };
+
+                    const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, { headers });
+                    if (!response.ok) {
+                        throw new Error('Error al obtener los productos de la wishlist');
+                    }
+
+                    const data = await response.json();
+                    if (data && data.items && Array.isArray(data.items)) {
+                        setLikedProducts(data.items);
+                    } else {
+                        throw new Error('No se encontraron productos en la wishlist');
+                    }
+                } catch (error) {
+                    setError(error.message);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            fetchLikedProducts();
+        }, []);
+
+        const handleRemoveFromWishlist = async (productId, variantId) => {
+            const token = localStorage.getItem('authToken');
+
+            if (!token) {
+                setError('Por favor, inicia sesión para eliminar productos de la wishlist.');
+                return;
+            }
+
+            if (!productId || !variantId) {
+                console.error('Falta productId o variantId:', { productId, variantId });
+                setError('No se pudo eliminar de la wishlist debido a un problema con los datos del producto.');
+                return;
+            }
+
             try {
-                const headers = {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                };
+                const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist/${productId}/${variantId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        variant_id: variantId,
+                    }),
+                });
 
-                const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, { headers });
                 if (!response.ok) {
-                    throw new Error('Error al obtener los productos de la wishlist');
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Error al eliminar de la wishlist');
                 }
 
                 const data = await response.json();
-                if (data && data.items && Array.isArray(data.items)) {
-                    setLikedProducts(data.items);
-                } else {
-                    throw new Error('No se encontraron productos en la wishlist');
-                }
+                setLikedProducts((prevProducts) => prevProducts.filter(item => item.variant_id !== variantId));
             } catch (error) {
-                setError(error.message);
-            } finally {
-                setLoading(false);
+                setError('Ocurrió un error al eliminar el producto de la wishlist.');
             }
         };
 
-        fetchLikedProducts();
-    }, []);
+        const addToCart = (productId, variantId) => {
+            navigate(`/products/${productId}?variant_id=${variantId}`);
+        };
 
-    const handleRemoveFromWishlist = async (productId, variantId) => {
-        const token = localStorage.getItem('authToken');
-
-        if (!token) {
-            setError('Por favor, inicia sesión para eliminar productos de la wishlist.');
-            return;
+        if (loading) {
+            return <div>Cargando productos...</div>;
         }
 
-        if (!productId || !variantId) {
-            console.error('Falta productId o variantId:', { productId, variantId });
-            setError('No se pudo eliminar de la wishlist debido a un problema con los datos del producto.');
-            return;
+        if (!localStorage.getItem('authToken')) {
+            return (
+                <>
+                    <section>
+                        <div className="container_errorPage">
+                            <div className="container_errorImage">
+                                <img className='errorImage_Left' src={ErrorImage} alt="Error" />
+                            </div>
+                            <div className="container_errorRedirection">
+                                <div className="block_errorRedirection">
+                                    <h1 className='errorText_errorPage'>Para entrar a esta sección debes de iniciar sesión</h1>
+                                    <h1 className='errorText_errorPage'>Empieza ahora y guarda los articulos que más te gusten</h1>
+                                    <div className="button_errorContainer">
+                                        <NavLink to="/" className='buttonError'>Ir a inicio</NavLink>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </>
+            );
         }
 
-        try {
-            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist/${productId}/${variantId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    product_id: productId,
-                    variant_id: variantId,
-                }),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al eliminar de la wishlist');
-            }
-
-            const data = await response.json();
-            setLikedProducts((prevProducts) => prevProducts.filter(item => item.variant_id !== variantId));
-        } catch (error) {
-            setError('Ocurrió un error al eliminar el producto de la wishlist.');
+        if (error) {
+            return <div>Error: {error}</div>;
         }
-    };
 
-    const addToCart = (productId, variantId) => {
-        navigate(`/products/${productId}?variant_id=${variantId}`);
-    };
-
-    if (loading) {
-        return <div>Cargando productos...</div>;
-    }
-
-    if (!localStorage.getItem('authToken')) {
         return (
-            <>
-                <section>
-                    <div className="container_errorPage">
-                        <div className="container_errorImage">
-                            <img className='errorImage_Left' src={ErrorImage} alt="Error" />
-                        </div>
-                        <div className="container_errorRedirection">
-                            <div className="block_errorRedirection">
-                                <h1 className='errorText_errorPage'>Para entrar a esta sección debes de iniciar sesión</h1>
-                                <h1 className='errorText_errorPage'>Empieza ahora y guarda los articulos que más te gusten</h1>
-                                <div className="button_errorContainer">
-                                    <NavLink to="/" className='buttonError'>Ir a inicio</NavLink>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </>
-        );
-    }
+            <section className="wishlistSection">
+                <div className={likedProducts.length > 0 ? "wishlistContainer" : "wishlistContainerEmpty"}>
+                    {likedProducts.length > 0 ? (
+                        likedProducts.map(item => {
+                            const { product_id, variant_id } = item;
+                            const { name, variants } = product_id; // No es necesario obtener 'price' aquí
 
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
+                            const variant = variants?.find(v => v.variant_id === variant_id);
+                            const imageUrl = variant?.showing_image;
+                            const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null;
+                            const selectedVariant = variants.find(variant => variant.variant_id === variant_id);
+                            const variantPrice = selectedVariant?.price || 0; // Precio base de la variante
+                            const hasDiscountApplied = selectedVariant?.discount > 0;
 
-    return (
-        <section className="wishlistSection">
-            <div className={likedProducts.length > 0 ? "wishlistContainer" : "wishlistContainerEmpty"}>
-                {likedProducts.length > 0 ? (
-                    likedProducts.map(item => {
-                        const { product_id, variant_id } = item;
-                        const { name, price, variants } = product_id;
+                            // Usamos renderPriceWithDiscount para obtener el precio final con descuento
+                            const priceToDisplay = renderPriceWithDiscount(selectedVariant);
 
-                        const variant = variants?.find(v => v.variant_id === variant_id);
-                        const imageUrl = variant?.showing_image;
-                        const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null;
-
-                        return (
-                            <div key={variant_id} className="wishlistItem">
-                                <div className="imageContainer">
-                                    {fullImageUrl ? (
-                                        <img src={fullImageUrl} alt={name} />
-                                    ) : (
-                                        <p>Imagen no disponible</p>
-                                    )}
-                                </div>
-
-                                <div className="detailsContainer">
-                                    <div className="removeItem_Wishlist">
-                                        <button className='removeItem_WishlistButton' onClick={() => handleRemoveFromWishlist(product_id._id, variant_id)}>
-                                            <span className="material-symbols-outlined">
-                                                close
-                                            </span>
-                                        </button>
+                            return (
+                                <div key={variant_id} className="wishlistItem">
+                                    <div className="imageContainer">
+                                        {fullImageUrl ? (
+                                            <img src={fullImageUrl} alt={name} />
+                                        ) : (
+                                            <p>Imagen no disponible</p>
+                                        )}
                                     </div>
-                                </div>
-                                <div className="productInfoRow">
-                                    <div className="productInfoColumn">
-                                        <div className="productName">{variant?.name}</div>
-                                        <div className="productPrice">${variant?.price ?? 'N/A'}</div>
-                                    </div>
-                                    <div className="addToCartButtonContainer">
-                                        <button className="addToCartButton" onClick={() => addToCart(product_id._id, variant_id)}>
-                                            <div className="spanLink_Container">
+
+                                    <div className="detailsContainer">
+                                        <div className="removeItem_Wishlist">
+                                            <button className='removeItem_WishlistButton' onClick={() => handleRemoveFromWishlist(product_id._id, variant_id)}>
                                                 <span className="material-symbols-outlined">
-                                                    visibility
+                                                    close
                                                 </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="productInfoRow">
+                                        <div className="productInfoColumn">
+                                            <div className="productName">{variant?.name}</div>
+                                            <div className="productPrice">
+                                                {hasDiscountApplied ? (
+                                                    <>
+                                                        <p className="textCard_Header discountedPrice">
+                                                            {priceToDisplay}
+                                                        </p>
+                                                        <p className="textCard_Header originalPrice">
+                                                            Antes: ${variantPrice.toFixed(2)}
+                                                        </p>
+                                                    </>
+                                                ) : (
+                                                    <p className="textCard_Header">${variantPrice.toFixed(2)}</p>
+                                                )}
                                             </div>
-                                        </button>
+                                        </div>
+                                        <div className="addToCartButtonContainer">
+                                            <button className="addToCartButton" onClick={() => addToCart(product_id._id, variant_id)}>
+                                                <div className="spanLink_Container">
+                                                    <span className="material-symbols-outlined">
+                                                        visibility
+                                                    </span>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })
+                    ) : (
+                        <section className='noWishlist'>
+                            <div className="container_errorPage">
+                                <div className="container_errorImage">
+                                    <img className='errorImage_Left' src={ErrorImage} alt="Error" />
+                                </div>
+                                <div className="container_errorRedirection">
+                                    <div className="block_errorRedirection">
+                                        <h1 className='errorText_errorPage'>Aun no tienes artículos en tu lista de deseos</h1>
+                                        <h1 className='errorText_errorPage'>Empieza ahora y guarda los articulos que más te gusten</h1>
+                                        <div className="button_errorContainer">
+                                            <NavLink to="/" className='buttonError'>Ir a inicio</NavLink>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        );
-                    })
-                ) : (
-                    <section className='noWishlist'>
-                    <div className="container_errorPage">
-                        <div className="container_errorImage">
-                            <img className='errorImage_Left' src={ErrorImage} alt="Error" />
-                        </div>
-                        <div className="container_errorRedirection">
-                            <div className="block_errorRedirection">
-                                <h1 className='errorText_errorPage'>Aun no tienes artículos en tu lista de deseos</h1>
-                                <h1 className='errorText_errorPage'>Empieza ahora y guarda los articulos que más te gusten</h1>
-                                <div className="button_errorContainer">
-                                    <NavLink to="/" className='buttonError'>Ir a inicio</NavLink>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                )}
-            </div>
-        </section>
-    );
-};
+                        </section>
+                    )}
+                </div>
+            </section>
+        );
+    };
 
-export default MultifunctionalProductPage;
+    export default MultifunctionalProductPage;

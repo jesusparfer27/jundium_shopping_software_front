@@ -201,7 +201,7 @@
 .containerSize_Display {
     display: grid;
     grid-template-columns: repeat(4, 1fr); /* Cuatro columnas de igual tamaño */
-    grid-auto-rows: 100%; /* Altura de cada fila al 20% del contenedor */
+    grid-auto-rows: repeat(4, 1fr); /* Altura de cada fila al 20% del contenedor */
     gap: 1rem; /* Espacio entre filas y columnas */
     width: 100%; /* Ajusta al tamaño completo del contenedor padre */
 }

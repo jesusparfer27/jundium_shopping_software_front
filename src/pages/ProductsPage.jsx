@@ -3,6 +3,7 @@ import { NavLink, useLocation, useParams } from 'react-router-dom';
 import { ModalContext } from '../components/modal-wishlist/ModalContext';
 import { MultifunctionalModal } from '../components/modal-wishlist/MultifunctionalModal';
 import { WishlistContext } from '../context/WishlistContext';
+import { ProductContext } from '../pages/admin_page/context/ProductContext'
 
 import '../css/pages/product_page.css';
 
@@ -13,6 +14,10 @@ import WinterImage from '../assets/home-sections/winter-session-home.jpg';
 
 export const ProductsPage = () => {
     const { activeModal, openModal } = useContext(ModalContext);
+    const {
+        hasDiscount,
+        renderPriceWithDiscount
+    } = useContext(ProductContext)
 
     const { id } = useParams();
     const [products, setProducts] = useState([]);
@@ -103,15 +108,18 @@ export const ProductsPage = () => {
                             products.map((product) => (
                                 <div key={`${product._id}-${product.selectedVariant.variant_id}`} className="productItemWrapper">
                                     <div className="productImageWrapper">
-                                        {/* <div className="overlayFade"></div> */}
                                         <NavLink
                                             to={`/products/${product._id}?variant_id=${product.selectedVariant.variant_id}`}
                                             className="productItem_ProductPage"
                                         >
                                             <img
-                                                src={product.selectedVariant?.showing_image
-                                                    ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${selectedVariant?.showing_image.find(img => img.endsWith('.jpg') || img.endsWith('.png')) || product.selectedVariant?.showing_image}`
-                                                    : "ruta/a/imagen/por/defecto.jpg"}
+                                                src={
+                                                    product.selectedVariant?.showing_image
+                                                        ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${selectedVariant?.showing_image.find(
+                                                            (img) => img.endsWith('.jpg') || img.endsWith('.png')
+                                                        ) || product.selectedVariant?.showing_image}`
+                                                        : "ruta/a/imagen/por/defecto.jpg"
+                                                }
                                                 alt={product.selectedVariant?.name || 'Producto sin nombre'}
                                                 className="productImage"
                                             />
@@ -127,12 +135,13 @@ export const ProductsPage = () => {
                                         </button>
                                     </div>
 
-                                    <div className='containerInfo_productPage'>
-                                        <h4 className='h4Products'>{product.selectedVariant?.name || 'Nombre no disponible'}</h4>
-                                        <p className='pProducts'>
-                                            ${((product.price || 0) - (product.discount || 0)).toFixed(2)}
-                                        </p>
+                                    <div className="containerInfo_productPage">
+                                        <h4 className="h4Products">{product.selectedVariant?.name || 'Nombre no disponible'}</h4>
 
+                                        {/* Renderizado del precio con o sin descuento */}
+                                        <div className="priceContainer">
+                                            {renderPriceWithDiscount(product.selectedVariant)}
+                                        </div>
                                     </div>
                                 </div>
                             ))

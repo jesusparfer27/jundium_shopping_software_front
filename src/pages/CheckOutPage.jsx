@@ -8,6 +8,7 @@ import { CartContext } from '../context/CartContext';
 import { WishlistContext } from '../context/WishlistContext';
 import { MultifunctionalModal } from '../components/modal-wishlist/MultifunctionalModal'
 import { useUser } from '../hooks/useUser';
+import { ProductContext } from './admin_page/context/ProductContext';
 import imageLogoBlackBackground from '../assets/mini-logos/mini-logo-black-background.png'
 
 export const CheckOutPage = () => {
@@ -17,17 +18,21 @@ export const CheckOutPage = () => {
     const navigate = useNavigate();
     const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
     const { activeMenu, openMenu } = useContext(HeaderContext);
+    const {
+        hasDiscount,
+        renderPriceWithDiscount
+    } = useContext(ProductContext)
 
-    const { 
+    const {
         handleAddToWishlist,
-     } = useContext(WishlistContext);
+    } = useContext(WishlistContext);
 
-    const { 
+    const {
         total,
         cartItems,
         handleQuantityChange,
         removeFromCart,
-     } = useContext(CartContext);
+    } = useContext(CartContext);
 
 
     useEffect(() => {
@@ -43,6 +48,21 @@ export const CheckOutPage = () => {
         }
 
     }, [user, navigate]);
+    
+
+    const checkStockAvailability = () => {
+        for (let item of cartItems) {
+            const variant = item.product_id.variants.find(v => v.variant_id === item.variant_id);
+            const size = variant.sizes.find(s => s.size === item.size);
+    
+            if (size && size.stock < item.quantity) {
+                openModal('modalOutOfStock'); // Abre el modal de stock insuficiente
+                return false; // Detener el checkout si no hay suficiente stock
+            }
+        }
+        return true; // Si todo está bien, continuar con el checkout
+    };
+   
 
     const handleCheckout = async () => {
         const token = localStorage.getItem('authToken');
@@ -53,8 +73,11 @@ export const CheckOutPage = () => {
         if (!user) {
             return <div>Inicia sesión para continuar con el proceso de pago.</div>;
         }
-        
-        console.log("User before checkout:", user); // Verificar valor de user
+    
+        if (!checkStockAvailability()) {
+            return; // Detener proceso si no hay stock suficiente
+        }
+        console.log("User before checkout:", user);
     
         const items = cartItems.map(item => ({
             product_id: item.product_id._id,
@@ -68,13 +91,14 @@ export const CheckOutPage = () => {
         const body = {
             items,
             total: total.price,
-            user_id: user._id,  // Asegúrate de que user tiene _id
-            status: 'Pending' // Asegurando que el status esté definido como 'Pending' si no se pasa explícitamente
+            user_id: user._id,
+            status: 'Pending'
         };
     
-        console.log("Request body:", body); // Para verificar que el cuerpo incluye user_id y status
+        console.log("Request body:", body);
     
         try {
+            // Realiza el pedido
             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/create-order`, {
                 method: 'POST',
                 headers: {
@@ -85,9 +109,53 @@ export const CheckOutPage = () => {
             });
     
             const data = await response.json();
+
     
             if (response.ok) {
                 console.log('Pedido creado:', data);
+            openModal('modalOrderSuccessful');
+
+            setTimeout(() => {
+                navigate('/');  // Redirige a la página principal
+            }, 3000);  // Espera 3 segundos
+
+    
+                // Actualiza el stock de los productos comprados
+                for (let item of items) {
+                    const { product_id, variant_id, quantity } = item;
+                    const variant = item.product_id.variants.find(v => v.variant_id === variant_id);
+                    const sizes = variant.sizes.find(s => s.size === item.size);
+    
+                    if (sizes && sizes.stock >= quantity) {
+                        const updatedSize = { ...sizes, stock: sizes.stock - quantity };
+    
+                        // Enviar la actualización de stock a la API
+                        const updateResponse = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/update-product-size`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                product_id,
+                                variant_id,
+                                size: item.size,
+                                stock: updatedSize.stock
+                            })
+                        });
+    
+                        if (!updateResponse.ok) {
+                            console.error(`Error al actualizar stock de tamaño ${item.size} para el producto ${product_id}`);
+                        } else {
+                            console.log(`Stock actualizado para el producto ${product_id}, tamaño ${item.size}`);
+                            logUpdatedStock(product_id, item.size, updatedSize.stock); // Mostrar el stock actualizado
+                        }
+                    } else {
+                        console.error(`No hay suficiente stock para el producto ${product_id} en la talla ${item.size}`);
+                    }
+                }
+    
+                // Navega al éxito o realiza otra acción
                 // navigate('/success');
             } else {
                 console.error('Error al crear el pedido:', data.message);
@@ -97,9 +165,15 @@ export const CheckOutPage = () => {
         }
     };
     
+    // Método para registrar el stock actualizado
+    const logUpdatedStock = (productId, size, stock) => {
+        console.log(`Stock restante del producto ${productId} para la talla ${size}: ${stock}`);
+    };
     
     
     
+
+
     const handleOpenSectionModal = (sectionId) => {
         openMenu(`modalInfo_CheckOut_${sectionId}`);
     };
@@ -131,6 +205,13 @@ export const CheckOutPage = () => {
                         );
                         const imageUrl = selectedVariant?.image ? selectedVariant?.showing_image : null;
                         const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null;
+                        const variantPrice = selectedVariant?.price || 0;
+                    
+                        // Usamos hasDiscount para verificar si hay descuento
+                        const hasDiscountApplied = selectedVariant?.discount > 0;
+                    
+                        // Usamos renderPriceWithDiscount para obtener el precio final con descuento
+                        const priceToDisplay = renderPriceWithDiscount(selectedVariant);
 
                         const adjustQuantity = (operation, product_id, variant_id, quantity) => {
                             let newQuantity = quantity;
@@ -172,13 +253,17 @@ export const CheckOutPage = () => {
 
                                     <div className="quantity-price">
                                         <div className="divCosts">
-                                            {selectedVariant && selectedVariant?.price ? (
-                                                <div className='groupCheckout_price'>
-                                                    <p>Precio:</p>
-                                                    <p>${selectedVariant.price}</p>
-                                                </div>
+                                        {hasDiscountApplied ? (
+                                                <>
+                                                    <p className="textCard_Header discountedPrice">
+                                                        {priceToDisplay}
+                                                    </p>
+                                                    {/* <p className="textCard_Header originalPrice">
+                                                        Antes: ${variantPrice.toFixed(2)}
+                                                    </p> */}
+                                                </>
                                             ) : (
-                                                <p>Precio no disponible</p>
+                                                <p className="textCard_Header">${variantPrice.toFixed(2)}</p>
                                             )}
                                         </div>
                                     </div>

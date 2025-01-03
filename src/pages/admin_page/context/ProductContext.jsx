@@ -193,6 +193,42 @@ export const ProductProvider = ({ children }) => {
     });
   };
 
+  // Nueva función para verificar descuentos
+  const hasDiscount = () => {
+    return variants.some((variant) => variant.discount > 0);
+};
+
+// Nueva función para renderizar precios con descuento
+const renderPriceWithDiscount = (variant) => {
+    if (variant.discount > 0) {
+        return (
+            <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                <span
+                    style={{
+                        textDecoration: "line-through",
+                        color: "darkgray",
+                        fontSize: "0.9rem",
+                    }}
+                >
+                    ${variant.originalPrice}
+                </span>
+                <span style={{ color: "black", fontWeight: "bold" }}>
+                    ${variant.price}
+                </span>
+                <span style={{ color: "red", fontSize: "0.8rem" }}>
+                    -{variant.discount}%
+                </span>
+            </div>
+        );
+    } else {
+        return (
+            <span style={{ color: "black", fontWeight: "bold" }}>
+                ${variant.price}
+            </span>
+        );
+    }
+};
+
     return (
         <ProductContext.Provider value={{
             generalProduct,
@@ -211,7 +247,9 @@ export const ProductProvider = ({ children }) => {
             productReference, setProductReference,
             productCode, setProductCode,
             handleOutOfStockChange,
-            calculateDiscountedPrice
+            calculateDiscountedPrice,
+            hasDiscount,
+            renderPriceWithDiscount
         }}>
             {children}
         </ProductContext.Provider>

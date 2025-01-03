@@ -2,26 +2,30 @@ import React, { useContext, useEffect, useState } from 'react';
 import { HeaderContext } from '../../context/HeaderContext';
 import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../../context/CartContext';
+import { ProductContext } from '../../pages/admin_page/context/ProductContext';
 import '../../css/components/header/cart.css';
 
 const CartContainer = () => {
     const { activeMenu, closeMenu } = useContext(HeaderContext);
     const navigate = useNavigate();
     const { VITE_IMAGES_BASE_URL, VITE_IMAGE } = import.meta.env;
-    
+    const {
+        hasDiscount,
+        renderPriceWithDiscount
+    } = useContext(ProductContext)
 
     const {
-        loading,
-        setErrorMessage,
-        errorMessage,
+        // loading,
+        // setErrorMessage,
+        // errorMessage,
         fetchCartItems,
-        setSelectedSize,
-        selectedVariant,
+        // setSelectedSize,
+        // selectedVariant,
         cartItems,
-        setCartItems,
+        // setCartItems,
         removeFromCart,
-        product,
-        setProduct
+        // product,
+        // setProduct
     } = useContext(CartContext);
 
     useEffect(() => {
@@ -67,7 +71,6 @@ const CartContainer = () => {
                         <div className={`cartItems ${cartItems.length >= 3 ? 'scrollableCartItems' : ''}`}>
                             {cartItems.map(item => {
                                 const { product_id, variant_id, quantity, size, colorName } = item;
-
                                 const name = product_id?.name || "Producto sin nombre";
                                 const variants = product_id?.variants || [];
                                 const selectedVariant = variants.find(variant => variant.variant_id === variant_id);
@@ -75,7 +78,11 @@ const CartContainer = () => {
                                 const imageUrl = selectedVariant?.image ? selectedVariant.image[0] : null;
                                 const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null;
 
-                                console.log(`Tamaño recibido para el carrito: ${size}`);
+                                // Usamos hasDiscount para verificar si hay descuento
+                                const hasDiscountApplied = selectedVariant?.discount > 0;
+
+                                // Usamos renderPriceWithDiscount para obtener el precio final con descuento
+                                const priceToDisplay = renderPriceWithDiscount(selectedVariant);
 
                                 return (
                                     <div key={item._id} className="cartItem">
@@ -88,10 +95,21 @@ const CartContainer = () => {
                                         </div>
                                         <div className="cartItemContent">
                                             <p className="textCard_Header">{selectedVariant?.name}</p>
-                                            <p className="textCard_Header">${variantPrice.toFixed(2)}</p>
+                                            {hasDiscountApplied ? (
+                                                <>
+                                                    <p className="textCard_Header discountedPrice">
+                                                        {priceToDisplay}
+                                                    </p>
+                                                    <p className="textCard_Header originalPrice">
+                                                        Antes: ${variantPrice.toFixed(2)}
+                                                    </p>
+                                                </>
+                                            ) : (
+                                                <p className="textCard_Header">${variantPrice.toFixed(2)}</p>
+                                            )}
                                             {quantity > 1 && <p className="textCard_Header">Cantidad: {quantity}</p>}
                                             <p className="textCard_Header">{colorName || 'No especificado'}</p>
-                                            <p className="textCard_Header">talla: {size || 'No especificado'}</p>
+                                            <p className="textCard_Header">Talla: {size || 'No especificado'}</p>
 
                                             <div className="submit-buttonProfile Cart">
                                                 <button onClick={() => {
@@ -108,6 +126,7 @@ const CartContainer = () => {
                             })}
 
                         </div>
+
                     </div>
 
                     <div className="fatherContainer_summary">

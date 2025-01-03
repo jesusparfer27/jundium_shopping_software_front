@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { HeaderContext } from '../context/HeaderContext';
 import { useUser } from '../hooks/useUser';
 import ProfileImage from '../components/profile-header/ProfileHeader';
+import { ProductContext } from './admin_page/context/ProductContext';
 import '../css/pages/profile.css';
 
 export const Profile = () => {
@@ -12,6 +13,9 @@ export const Profile = () => {
     const [isUserLoaded, setIsUserLoaded] = useState(false);
     const [isDirty, setIsDirty] = useState(false);
     const [saveStatus, setSaveStatus] = useState(null);
+
+    const { hasDiscount,
+        renderPriceWithDiscount } = useContext(ProductContext)
 
     const { user, setUser, loading, error, fetchUserDetails } = useUser();
     const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
@@ -26,7 +30,7 @@ export const Profile = () => {
             navigate('/error');
         }
     }, [navigate]);
-    
+
 
     // ?
     useEffect(() => {
@@ -440,8 +444,14 @@ export const Profile = () => {
 
                                     const variants = product_id?.variants || [];
                                     const selectedVariant = variants.find(variant => variant.variant_id === variant_id);
-                                    const imageUrl = selectedVariant?.showing_image 
+                                    const imageUrl = selectedVariant?.showing_image
                                     const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null;
+                                    const variantPrice = selectedVariant?.price || 0;
+                                    // Usamos hasDiscount para verificar si hay descuento
+                                    const hasDiscountApplied = selectedVariant?.discount > 0;
+
+                                    // Usamos renderPriceWithDiscount para obtener el precio final con descuento
+                                    const priceToDisplay = renderPriceWithDiscount(selectedVariant);
 
                                     return (
                                         <div key={item._id} className="wishlist-item">
@@ -451,7 +461,18 @@ export const Profile = () => {
                                                 <p>Imagen no disponible</p>
                                             )}
                                             <p>{selectedVariant?.name}</p>
-                                            <p>{selectedVariant?.price} $</p>
+                                            {hasDiscountApplied ? (
+                                                <>
+                                                    <p className="textCard_Header discountedPrice">
+                                                        {priceToDisplay}
+                                                    </p>
+                                                    <p className="textCard_Header originalPrice">
+                                                        Antes: ${variantPrice.toFixed(2)}
+                                                    </p>
+                                                </>
+                                            ) : (
+                                                <p className="textCard_Header">${variantPrice.toFixed(2)}</p>
+                                            )}
                                         </div>
                                     );
                                 })}
@@ -517,25 +538,25 @@ export const Profile = () => {
 export default Profile;
 
 // useEffect(() => {
-    //     const fetchOrderItems = async () => {
-    //         const token = localStorage.getItem('authToken');
-    //         if (!token) return;
+//     const fetchOrderItems = async () => {
+//         const token = localStorage.getItem('authToken');
+//         if (!token) return;
 
-    //         try {
-    //             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/orders`, {
-    //                 headers: {
-    //                     Authorization: `Bearer ${token}`,
-    //                 },
-    //             });
-    //             const data = await response.json();
-    //             setOrderItems(data);
-    //             console.log("Datos de los pedidos del usuario logueado:", data);
-    //         } catch (err) {
-    //             console.error('Error al cargar los pedidos:', err);
-    //         }
-    //     };
+//         try {
+//             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/orders`, {
+//                 headers: {
+//                     Authorization: `Bearer ${token}`,
+//                 },
+//             });
+//             const data = await response.json();
+//             setOrderItems(data);
+//             console.log("Datos de los pedidos del usuario logueado:", data);
+//         } catch (err) {
+//             console.error('Error al cargar los pedidos:', err);
+//         }
+//     };
 
-    //     fetchOrderItems();
-    // }, [VITE_API_BACKEND, VITE_BACKEND_ENDPOINT]);
+//     fetchOrderItems();
+// }, [VITE_API_BACKEND, VITE_BACKEND_ENDPOINT]);
 
 

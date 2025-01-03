@@ -67,6 +67,28 @@ export const MultifunctionalModal = () => {
                     </div>
                 </div>
             );
+        } else if (activeModal === 'modalOrderSuccessful') {
+            return (
+                <div className="multifunctionalModal_containerFather">
+                    <div className="miniLogo_modalContainer">
+                        <img src={MiniLogoTransparentBackground} className="miniLogo_transparentLogo" alt="Mini Logo" />
+                    </div>
+                    <div className="sectionContent">
+                        <p>¡Pedido realizado con éxito! Tu compra está siendo procesada.</p>
+                    </div>
+                </div>
+            );
+        } else if (activeModal === 'modalOutOfStock') {
+            return (
+                <div className="multifunctionalModal_containerFather">
+                    <div className="miniLogo_modalContainer">
+                        <img src={MiniLogoTransparentBackground} className="miniLogo_transparentLogo" alt="Mini Logo"></img>
+                    </div>
+                    <div className="sectionContent">
+                        <p>Lo siento, no hay suficiente stock para agregar más de este producto a tu carrito.</p>
+                    </div>
+                </div>
+            );
         }
         
         return null;
