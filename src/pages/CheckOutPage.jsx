@@ -114,10 +114,14 @@ export const CheckOutPage = () => {
           if (response.ok) {
             console.log('Pedido creado:', data);
             openModal('modalOrderSuccessful');
+
+            
+            await clearCart();
+            console.log('clearCart ejecutado');
       
             setTimeout(() => {
-              navigate('/');  // Redirige a la página principal
-            }, 3000);  // Espera 3 segundos
+              navigate('/');
+            }, 2000); 
       
             // Actualiza el stock de los productos comprados
             for (let item of items) {
@@ -153,9 +157,6 @@ export const CheckOutPage = () => {
                 console.error(`No hay suficiente stock para el producto ${product_id} en la talla ${item.size}`);
               }
             }
-      
-            await clearCart();
-            console.log('clearCart ejecutado');
       
           } else {
             console.error('Error al crear el pedido:', data.message);

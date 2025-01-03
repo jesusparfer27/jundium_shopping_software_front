@@ -5,6 +5,7 @@ const UserContext = createContext();
 export function UserProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [ data, setData ] = useState([])
     const [error, setError] = useState(null);
     const {VITE_API_BACKEND, VITE_BACKEND_ENDPOINT} = import.meta.env;
     const isFetched = useRef(false);
@@ -39,36 +40,6 @@ export function UserProvider({ children }) {
             return data;
         } catch (err) {
             console.error('Error loading wishlist:', err);
-        }
-    };
-
-    
-
-    const updateUserDetails = async (userData) => {
-        const token = localStorage.getItem('authToken');
-        if (!token) return;
-
-        try {
-            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/me/update`, {
-                method: 'PATCH',
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userData),
-            });
-            if (!response.ok) throw new Error('Error al actualizar los datos');
-
-            const updatedUser = await response.json();
-            if (updatedUser.token) {
-                localStorage.setItem('authToken', updatedUser.token);
-            }
-            setUser(updatedUser);
-            localStorage.setItem("user", JSON.stringify(updatedUser));
-
-        } catch (err) {
-            setError(err.message);
-            console.error('Error updating user details:', err);
         }
     };
 
@@ -136,11 +107,10 @@ export function UserProvider({ children }) {
     const handleFetchResponse = async (response) => {
         if (!response.ok) {
             if (response.status === 401) {
-                // Token inválido o expirado
                 alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('user');
-                window.location.href = '/login'; // Redirigir al login
+                window.location.href = '/login';
             } else {
                 const error = await response.json();
                 throw new Error(error.message || "Error en la solicitud.");
@@ -173,12 +143,14 @@ export function UserProvider({ children }) {
     const value = useMemo(() => ({
         user,
         loading,
+        setLoading,
         error,
         login,
         setUser,
         register,
         fetchUserDetails,
-        updateUserDetails,
+        data,
+        setData,
         fetchWishlistItems,
     }), [user, loading, error]);
 

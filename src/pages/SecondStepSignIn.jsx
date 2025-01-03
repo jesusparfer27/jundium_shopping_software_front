@@ -7,8 +7,8 @@ export const SecondStepSignIn = () => {
 
   const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Para confirmar contraseña
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); 
   const [isAccordionOpen, setIsAccordionOpen] = useState([false, false]);
 
   const [formData, setFormData] = useState({
@@ -19,7 +19,7 @@ export const SecondStepSignIn = () => {
     last_name: '',
     aceptar: false
   });
-  const [error, setError] = useState(''); // Estado para el mensaje de error
+  const [error, setError] = useState('');
 
   const toggleAccordion = (index) => {
     const updatedState = [...isAccordionOpen];
@@ -27,15 +27,16 @@ export const SecondStepSignIn = () => {
     setIsAccordionOpen(updatedState);
   };
 
-
   const handleChange = (e) => {
     const { id, value, type, checked } = e.target;
     setFormData({
       ...formData,
       [id]: type === 'checkbox' ? checked : value
     });
-    if (error) setError(''); // Limpia el error al cambiar cualquier campo
+    if (error) setError('');
+    console.log(formData);
   };
+  
 
   useEffect(() => {
     const savedEmail = localStorage.getItem('userEmail');
@@ -55,26 +56,23 @@ export const SecondStepSignIn = () => {
       setError('El correo electrónico no está definido. Vuelve al paso anterior.');
       return;
     }
-    // Validaciones básicas
+
     if (!password || !confirmPassword || !gender || !first_name || !last_name || !aceptar) {
       setError('Por favor, completa todos los campos y acepta la política de privacidad.');
       return;
     }
 
-    // Verificar si la contraseña es suficientemente fuerte
     if (password.length < 8) {
       setError('La contraseña debe tener al menos 8 caracteres.');
       return;
     }
 
-    // Verificar si las contraseñas coinciden
     if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden.');
       return;
     }
 
     try {
-      // Almacenar datos en la base de datos (o enviarlos al backend)
       const userData = { email: formData.email, password, gender, first_name, last_name };
       const registerResponse = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/register`, {
         method: 'POST',
@@ -86,7 +84,6 @@ export const SecondStepSignIn = () => {
         throw new Error('Error al registrar al usuario.');
       }
 
-      // Realizar inicio de sesión automático
       const loginResponse = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -98,17 +95,14 @@ export const SecondStepSignIn = () => {
       }
 
       const loginData = await loginResponse.json();
-      localStorage.setItem('authToken', loginData.token); // Almacena el token en localStorage
+      localStorage.setItem('authToken', loginData.token);
 
-      // Redirigir al perfil
       navigate('/profile');
     } catch (error) {
       console.error('Error en el registro o inicio de sesión automático:', error);
       setError('Hubo un problema al completar el registro. Intenta nuevamente.');
     }
   };
-
-
 
   const accordionData = [
     { titulo: 'Sección 1', contenido: 'Contenido de la sección 1' },
@@ -193,9 +187,9 @@ export const SecondStepSignIn = () => {
                 onChange={handleChange}
               >
                 <option value="">Seleccione...</option>
-                <option value="masculino">Masculino</option>
-                <option value="femenino">Femenino</option>
-                <option value="otro">Otro</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+                <option value="Otro">Otro</option>
               </select>
             </div>
             <div className="campo">

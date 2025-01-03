@@ -2,8 +2,8 @@ import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HeaderContext } from '../context/HeaderContext';
 import { useUser } from '../hooks/useUser';
-import ProfileImage from '../components/profile-header/ProfileHeader';
 import { ProductContext } from './admin_page/context/ProductContext';
+import ProfileImage from '../components/profile-header/ProfileHeader';
 import '../css/pages/profile.css';
 
 export const Profile = () => {
@@ -14,16 +14,14 @@ export const Profile = () => {
     const [isDirty, setIsDirty] = useState(false);
     const [saveStatus, setSaveStatus] = useState(null);
 
-    const { hasDiscount,
-        renderPriceWithDiscount } = useContext(ProductContext)
-
-    const { user, setUser, loading, error, fetchUserDetails } = useUser();
-    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
-    const navigate = useNavigate();
+    const { hasDiscount, renderPriceWithDiscount } = useContext(ProductContext)
+    const { user, setUser, loading, error, fetchUserDetails, setLoading, data, setData } = useUser();
     const { openMenu } = useContext(HeaderContext);
 
+    const navigate = useNavigate();
 
-    // SE QUEDA
+    const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
+
     useEffect(() => {
         const token = localStorage.getItem('authToken');
         if (!token) {
@@ -31,8 +29,23 @@ export const Profile = () => {
         }
     }, [navigate]);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const response = await fetchDataFromAPI();
+                setData(response);
+            } catch (error) {
+                console.error("Error al cargar datos:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    // ?
+        fetchData();
+    }, []); // Esto podría estar relacionado con la carga de datos de usuario
+
+
     useEffect(() => {
         const loadUser = async () => {
             const token = localStorage.getItem('authToken');
@@ -145,6 +158,9 @@ export const Profile = () => {
                 };
             }
 
+            console.log("Género del usuario:", user?.gender);
+
+
             if (name === 'country') {
                 return {
                     ...prevUser,
@@ -176,11 +192,17 @@ export const Profile = () => {
         });
     };
 
+
     const handleSaveChanges = async () => {
         const token = localStorage.getItem('authToken');
-        if (!token || loading || !isDirty) return;
 
-        console.log("Guardando cambios con los siguientes datos del usuario:", user);
+        console.log("Token en localStorage:", token);
+
+        if (!token || loading || !isDirty) {
+            return;
+        }
+
+        console.log("Datos que se enviarán:", user);
 
         try {
             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/me/update`, {
@@ -191,6 +213,7 @@ export const Profile = () => {
                 },
                 body: JSON.stringify(user),
             });
+
             if (!response.ok) throw new Error('Error al guardar los cambios');
 
             const updatedUser = await response.json();
@@ -241,7 +264,7 @@ export const Profile = () => {
                                     <label>Género</label>
                                     <select
                                         name="gender"
-                                        className='inputProfile'
+                                        className="inputProfile"
                                         value={user?.gender || ''}
                                         onChange={handleUserInfoChange}
                                     >
@@ -250,6 +273,9 @@ export const Profile = () => {
                                         <option value="Femenino">Femenino</option>
                                         <option value="Otro">Otro</option>
                                     </select>
+
+
+
                                 </div>
                                 <div className="input-field_profile">
                                     <label>Nombre</label>
@@ -430,6 +456,58 @@ export const Profile = () => {
 
                 </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 <div className="order-wishlist">
 
                     <div className="background-containerProfile">
@@ -447,10 +525,8 @@ export const Profile = () => {
                                     const imageUrl = selectedVariant?.showing_image
                                     const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null;
                                     const variantPrice = selectedVariant?.price || 0;
-                                    // Usamos hasDiscount para verificar si hay descuento
                                     const hasDiscountApplied = selectedVariant?.discount > 0;
 
-                                    // Usamos renderPriceWithDiscount para obtener el precio final con descuento
                                     const priceToDisplay = renderPriceWithDiscount(selectedVariant);
 
                                     return (
@@ -536,27 +612,5 @@ export const Profile = () => {
 };
 
 export default Profile;
-
-// useEffect(() => {
-//     const fetchOrderItems = async () => {
-//         const token = localStorage.getItem('authToken');
-//         if (!token) return;
-
-//         try {
-//             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/orders`, {
-//                 headers: {
-//                     Authorization: `Bearer ${token}`,
-//                 },
-//             });
-//             const data = await response.json();
-//             setOrderItems(data);
-//             console.log("Datos de los pedidos del usuario logueado:", data);
-//         } catch (err) {
-//             console.error('Error al cargar los pedidos:', err);
-//         }
-//     };
-
-//     fetchOrderItems();
-// }, [VITE_API_BACKEND, VITE_BACKEND_ENDPOINT]);
 
 
