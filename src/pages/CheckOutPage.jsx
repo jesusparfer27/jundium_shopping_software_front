@@ -32,6 +32,7 @@ export const CheckOutPage = () => {
         cartItems,
         handleQuantityChange,
         removeFromCart,
+        clearCart
     } = useContext(CartContext);
 
 
@@ -67,103 +68,104 @@ export const CheckOutPage = () => {
     const handleCheckout = async () => {
         const token = localStorage.getItem('authToken');
         if (!token) {
-            console.error('No se está recibiendo el token');
-            return;
+          console.error('No se está recibiendo el token');
+          return;
         }
         if (!user) {
-            return <div>Inicia sesión para continuar con el proceso de pago.</div>;
+          return <div>Inicia sesión para continuar con el proceso de pago.</div>;
         }
-    
+      
         if (!checkStockAvailability()) {
-            return; // Detener proceso si no hay stock suficiente
+          return; // Detener proceso si no hay stock suficiente
         }
         console.log("User before checkout:", user);
-    
+      
         const items = cartItems.map(item => ({
-            product_id: item.product_id._id,
-            variant_id: item.variant_id,
-            quantity: item.quantity,
-            price: item.price,
-            colorName: item.colorName,
-            size: item.size
+          product_id: item.product_id._id,
+          variant_id: item.variant_id,
+          quantity: item.quantity,
+          price: item.price,
+          colorName: item.colorName,
+          size: item.size,
         }));
-    
+      
         const body = {
-            items,
-            total: total.price,
-            user_id: user._id,
-            status: 'Pending'
+          items,
+          total: total.price,
+          user_id: user._id,
+          status: 'Pending',
         };
-    
+      
         console.log("Request body:", body);
-    
+      
         try {
-            // Realiza el pedido
-            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/create-order`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify(body)
-            });
-    
-            const data = await response.json();
-
-    
-            if (response.ok) {
-                console.log('Pedido creado:', data);
+          // Realiza el pedido
+          const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/create-order`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(body),
+          });
+      
+          const data = await response.json();
+      
+          if (response.ok) {
+            console.log('Pedido creado:', data);
             openModal('modalOrderSuccessful');
-
+      
             setTimeout(() => {
-                navigate('/');  // Redirige a la página principal
+              navigate('/');  // Redirige a la página principal
             }, 3000);  // Espera 3 segundos
-
-    
-                // Actualiza el stock de los productos comprados
-                for (let item of items) {
-                    const { product_id, variant_id, quantity } = item;
-                    const variant = item.product_id.variants.find(v => v.variant_id === variant_id);
-                    const sizes = variant.sizes.find(s => s.size === item.size);
-    
-                    if (sizes && sizes.stock >= quantity) {
-                        const updatedSize = { ...sizes, stock: sizes.stock - quantity };
-    
-                        // Enviar la actualización de stock a la API
-                        const updateResponse = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/update-product-size`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${token}`
-                            },
-                            body: JSON.stringify({
-                                product_id,
-                                variant_id,
-                                size: item.size,
-                                stock: updatedSize.stock
-                            })
-                        });
-    
-                        if (!updateResponse.ok) {
-                            console.error(`Error al actualizar stock de tamaño ${item.size} para el producto ${product_id}`);
-                        } else {
-                            console.log(`Stock actualizado para el producto ${product_id}, tamaño ${item.size}`);
-                            logUpdatedStock(product_id, item.size, updatedSize.stock); // Mostrar el stock actualizado
-                        }
-                    } else {
-                        console.error(`No hay suficiente stock para el producto ${product_id} en la talla ${item.size}`);
-                    }
+      
+            // Actualiza el stock de los productos comprados
+            for (let item of items) {
+              const { product_id, variant_id, quantity } = item;
+              const variant = item.product_id.variants.find(v => v.variant_id === variant_id);
+              const sizes = variant.sizes.find(s => s.size === item.size);
+      
+              if (sizes && sizes.stock >= quantity) {
+                const updatedSize = { ...sizes, stock: sizes.stock - quantity };
+      
+                // Enviar la actualización de stock a la API
+                const updateResponse = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/update-product-size`, {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify({
+                    product_id,
+                    variant_id,
+                    size: item.size,
+                    stock: updatedSize.stock,
+                  }),
+                });
+      
+                if (!updateResponse.ok) {
+                  console.error(`Error al actualizar stock de tamaño ${item.size} para el producto ${product_id}`);
+                } else {
+                  console.log(`Stock actualizado para el producto ${product_id}, tamaño ${item.size}`);
+                  logUpdatedStock(product_id, item.size, updatedSize.stock); // Mostrar el stock actualizado
                 }
-    
-                // Navega al éxito o realiza otra acción
-                // navigate('/success');
-            } else {
-                console.error('Error al crear el pedido:', data.message);
+              } else {
+                console.error(`No hay suficiente stock para el producto ${product_id} en la talla ${item.size}`);
+              }
             }
+      
+            await clearCart();
+            console.log('clearCart ejecutado');
+      
+          } else {
+            console.error('Error al crear el pedido:', data.message);
+          }
         } catch (error) {
-            console.error('Error en la solicitud:', error);
+          console.error('Error en la solicitud:', error);
         }
-    };
+      };
+      
+    
     
     // Método para registrar el stock actualizado
     const logUpdatedStock = (productId, size, stock) => {

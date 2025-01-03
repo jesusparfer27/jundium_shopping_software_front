@@ -21,6 +21,45 @@
 
         const { VITE_API_BACKEND, VITE_PRODUCTS_ENDPOINT, VITE_BACKEND_ENDPOINT } = import.meta.env
 
+        // Función para vaciar el carrito
+        const clearCart = async () => {
+            const token = localStorage.getItem('authToken');
+            const cartId = user.cartId;
+        
+            console.log('Iniciando clearCart...');
+            console.log('Token:', token, 'Cart ID:', cartId);
+        
+            if (!token || !cartId) {
+                console.error('Token o ID de carrito no encontrados');
+                return;
+            }
+        
+            try {
+                const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/cart/${cartId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+        
+                console.log('Respuesta del servidor:', response);
+        
+                const data = await response.json();
+                console.log('Datos recibidos:', data);
+        
+                if (response.ok) {
+                    console.log('Carrito eliminado');
+                } else {
+                    console.error('Error al eliminar el carrito:', data.message);
+                }
+            } catch (error) {
+                console.error('Error al realizar la solicitud de eliminación del carrito:', error);
+            }
+        };
+        
+          
+
         useEffect(() => {
             const storedCart = localStorage.getItem('cart');
             const storedUserId = localStorage.getItem('userId');
@@ -283,6 +322,7 @@
                 handleQuantityChange,
                 fetchCartItems,
                 setTotal,
+                clearCart,
                 selectedVariant,
                 selectedSize,
                 product,
