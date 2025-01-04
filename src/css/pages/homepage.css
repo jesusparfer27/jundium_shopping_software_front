@@ -187,14 +187,13 @@
 
 .nextButton {
     position: absolute;
-    top: 20%;
-    right: 10px;
+    top: 27%;
+    right: 80px;
     transform: translateY(-50%);
     z-index: 1;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: transparent;
     color: white;
     border: none;
-    border-radius: 50%;
     width: 70px;
     height: 70px;
     display: flex;
@@ -202,7 +201,11 @@
     justify-content: center;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    transform: translate(-20%, -10%); /* Para centrar usando el centro del botón */
+}
+
+.nextButton span {
+    font-size: 10rem;
+    color: white;
 }
 
 .scrollImage {
@@ -216,14 +219,15 @@
 }
 
 .nextButton:hover {
-    background-color: rgba(255, 255, 255, 0.8);
+    /* background-color: rgba(255, 255, 255, 0.8); */
     color: black;
 }
 
-.nextButton:active {
+/* .nextButton:active {
     cursor: grabbing;
-  }
+  } */
 
+  
   
 
 

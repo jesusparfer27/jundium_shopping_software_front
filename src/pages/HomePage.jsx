@@ -38,93 +38,8 @@ export const HomePage = () => {
     const [currentIndexAlternatives, setCurrentIndexAlternatives] = useState(0);
     const carouselRef = useRef(null);
 
-    const [isNextButton, setIsNextButton] = useState(true);
-    const containerRef = useRef(null);
-    const buttonRef = useRef(null);
-    const [isDragging, setIsDragging] = useState(false);
-
-    const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
-
-    const handleMouseMove = (e) => {
-        const container = containerRef.current;
-        const button = buttonRef.current;
-
-        if (container && button) {
-            const containerRect = container.getBoundingClientRect();
-
-            // Calcular las nuevas posiciones del botón
-            const newLeft = e.clientX - containerRect.left - button.offsetWidth / 2;
-            const newTop = e.clientY - containerRect.top - button.offsetHeight / 2;
-
-            // Aplicar restricciones para que el botón no salga del contenedor
-            const clampedLeft = Math.max(0, Math.min(newLeft, containerRect.width - button.offsetWidth));
-            const clampedTop = Math.max(0, Math.min(newTop, containerRect.height - button.offsetHeight));
-
-            // Actualizar la posición del botón
-            button.style.left = `${clampedLeft}px`;
-            button.style.top = `${clampedTop}px`;
-        }
-    };
-
-    const updateButtonPosition = () => {
-        if (containerRef.current) {
-            const containerRect = containerRef.current.getBoundingClientRect();
-            const centerX = containerRect.width / 2;
-            const centerY = containerRect.height / 2;
-
-            setButtonPosition({
-                x: centerX,
-                y: centerY,
-            });
-        }
-    };
-
-    const handleScroll = () => {
-        if (containerRef.current) {
-            const containerRect = containerRef.current.getBoundingClientRect();
-            const containerTop = containerRect.top;
-            const containerHeight = containerRect.height;
-    
-            // Obtener la mitad del contenedor
-            const containerMiddleY = containerTop + containerHeight / 2;
-            const windowHeight = window.innerHeight;
-            
-            // Ajustar la condición para cambiar entre Next y Prev
-            if (containerMiddleY > windowHeight / 2) {
-                setIsNextButton(false); // Cambiar a "Prev"
-            } else {
-                setIsNextButton(true); // Cambiar a "Next"
-            }
-        }
-    };
-    
-
-    useEffect(() => {
-        updateButtonPosition();
-        window.addEventListener('scroll', updateButtonPosition);
-
-        return () => {
-            window.removeEventListener('scroll', updateButtonPosition);
-        };
-    }, []);
-
-    const handlePrev = () => {
-        setCurrentIndexAlternatives((prevIndex) => {
-            // Si el índice actual es 0, vuelve al último elemento
-            const newIndex = prevIndex - 1 < 0 ? alternatives.length - 1 : prevIndex - 1;
-            return newIndex;
-        });
-    };
-
-    const handleNext = () => {
-        setCurrentIndexAlternatives((prevIndex) => (prevIndex + 1) % alternatives.length);
-    };
-
-    const handleMouseDown = () => setIsDragging(true);
-    const handleMouseUp = () => setIsDragging(false);
-
     const carouselTexts = [
-        "DESCUBRE NUESTRA COLECCIÓN DE INVIERNO 2025: ESTILO Y COMODIDAD EN CADA PRENDA.",
+        "DESCUBRE NUESTRA COLECCIÓN DE INVIERNO 2024: ESTILO Y COMODIDAD EN CADA PRENDA.",
         "PRIMAVERA EN TENDENCIA: RENUEVA TU GUARDARROPA CON COLORES VIBRANTES.",
         "VERANO A LA MODA: ¡ENCUENTRA TU LOOK PERFECTO PARA EL CALOR!",
         "ACCESORIOS IRRESISTIBLES: BOLSOS, ZAPATOS Y MÁS QUE COMPLEMENTAN TU OUTFIT.",
@@ -145,9 +60,9 @@ export const HomePage = () => {
     ];
 
     const seasonsData = [
-        { id: 1, name: "Verano 2025", image: SummerSeason, endpoint: "/products?collection=Summer%202025" },
-        { id: 2, name: "Primavera 2025", image: SpringSeason, endpoint: "/products?collection=Autumn%202025" },
-        { id: 3, name: "Invierno 2025", image: WinterSeason, endpoint: "/products?collection=Winter%202025" },
+        { id: 1, name: "Verano 2024", image: SummerSeason, endpoint: "/products?collection=Summer%202025" },
+        { id: 2, name: "Primavera 2024", image: SpringSeason, endpoint: "/products?collection=Autumn%202025" },
+        { id: 3, name: "Invierno 2024", image: WinterSeason, endpoint: "/products?collection=Winter%202025" },
     ];
 
     const alternatives = [
@@ -155,6 +70,22 @@ export const HomePage = () => {
         { id: 2, image: looksWoman, text: 'Explora los looks más elegantes.' },
         { id: 3, image: bagsWoman, text: 'Bolsos diseñados para cada ocasión.' },
     ];
+
+
+    const handleNext = () => {
+        // Añadir animación al contenedor
+        const container = document.getElementById('alternatives-container');
+        container.classList.add('slide-in-right');
+        
+        // Cambiar el índice para mostrar la siguiente alternativa
+        setCurrentIndexAlternatives((prevIndex) => (prevIndex + 1) % alternatives.length);
+      
+        // Después de la animación, quitar la clase para prepararlo para la siguiente vez
+        setTimeout(() => {
+          container.classList.remove('slide-in-right');
+        }, 1000); // 1000ms es el tiempo de duración de la animación
+      };
+      
 
     const { image, text } = alternatives[currentIndexAlternatives];
 
@@ -262,24 +193,12 @@ export const HomePage = () => {
 
     return (
         <>
-            <section
-                className="videoScrollContainer"
-                ref={containerRef}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseUp}
-            >
-                <div className="nextButton_Container">
-                    <button
-                        className={isNextButton ? "nextButton" : "prevButton"}
-                        ref={buttonRef}
-                        onClick={isNextButton ? handleNext : handlePrev}
-                        style={{
-                            position: "absolute",
-                            left: "0px",
-                        }}
-                    >
-                        {isNextButton ? "→" : "←"}
+            <section className="videoScrollContainer">
+                <div className="nextButton_Container" id="alternatives-container">
+                    <button className="nextButton" onClick={handleNext}>
+                        <span className="material-symbols-outlined">
+                            arrow_forward
+                        </span>
                     </button>
                 </div>
                 <div className="textsHero_container">
