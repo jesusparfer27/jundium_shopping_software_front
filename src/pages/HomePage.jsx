@@ -43,6 +43,8 @@ export const HomePage = () => {
     const buttonRef = useRef(null);
     const [isDragging, setIsDragging] = useState(false);
 
+    const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
+
     const handleMouseMove = (e) => {
         const container = containerRef.current;
         const button = buttonRef.current;
@@ -61,6 +63,19 @@ export const HomePage = () => {
             // Actualizar la posición del botón
             button.style.left = `${clampedLeft}px`;
             button.style.top = `${clampedTop}px`;
+        }
+    };
+
+    const updateButtonPosition = () => {
+        if (containerRef.current) {
+            const containerRect = containerRef.current.getBoundingClientRect();
+            const centerX = containerRect.width / 2;
+            const centerY = containerRect.height / 2;
+
+            setButtonPosition({
+                x: centerX,
+                y: centerY,
+            });
         }
     };
 
@@ -85,10 +100,11 @@ export const HomePage = () => {
     
 
     useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
+        updateButtonPosition();
+        window.addEventListener('scroll', updateButtonPosition);
 
         return () => {
-            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('scroll', updateButtonPosition);
         };
     }, []);
 
@@ -108,7 +124,7 @@ export const HomePage = () => {
     const handleMouseUp = () => setIsDragging(false);
 
     const carouselTexts = [
-        "DESCUBRE NUESTRA COLECCIÓN DE INVIERNO 2024: ESTILO Y COMODIDAD EN CADA PRENDA.",
+        "DESCUBRE NUESTRA COLECCIÓN DE INVIERNO 2025: ESTILO Y COMODIDAD EN CADA PRENDA.",
         "PRIMAVERA EN TENDENCIA: RENUEVA TU GUARDARROPA CON COLORES VIBRANTES.",
         "VERANO A LA MODA: ¡ENCUENTRA TU LOOK PERFECTO PARA EL CALOR!",
         "ACCESORIOS IRRESISTIBLES: BOLSOS, ZAPATOS Y MÁS QUE COMPLEMENTAN TU OUTFIT.",
@@ -129,9 +145,9 @@ export const HomePage = () => {
     ];
 
     const seasonsData = [
-        { id: 1, name: "Verano 2024", image: SummerSeason, endpoint: "/products?collection=Verano%202024" },
-        { id: 2, name: "Primavera 2024", image: SpringSeason, endpoint: "/products?collection=Primavera%202024" },
-        { id: 3, name: "Invierno 2024", image: WinterSeason, endpoint: "/products?collection=Invierno%202024" },
+        { id: 1, name: "Verano 2025", image: SummerSeason, endpoint: "/products?collection=Summer%202025" },
+        { id: 2, name: "Primavera 2025", image: SpringSeason, endpoint: "/products?collection=Autumn%202025" },
+        { id: 3, name: "Invierno 2025", image: WinterSeason, endpoint: "/products?collection=Winter%202025" },
     ];
 
     const alternatives = [
@@ -303,7 +319,7 @@ export const HomePage = () => {
 
             <section className="container_videoSession-2">
                 <div>
-                    <NavLink to="/video" className="videoLink">
+                    <NavLink to="/products" className="videoLink">
                         <div className="videoContentWrapper">
                             <video
                                 className="videoElement"
@@ -368,7 +384,7 @@ export const HomePage = () => {
 
             <section className="container_image_autumn stickyVideo">
                 <div>
-                    <NavLink to="/video" className="videoLink2">
+                    <NavLink to="/products" className="videoLink2">
                         <img className='imageAutumn'
                             style={{ transform: `scale(${scale})`, transition: 'transform 0.1s ease' }}
                             src={AutumnImage}
