@@ -1,11 +1,3 @@
-/* body,
-*::after,
-*::before {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-} */
-
 .myCustomClass {
     text-decoration: none;
     color: black;
@@ -140,13 +132,6 @@
     color: #fff;
 }
 
-
-
-
-
-
-
-
 .textsHero_container {
     position: absolute;
     top: 20%;
@@ -166,23 +151,6 @@
 .videoScrollContainer {
     position: sticky;
     top: 0;
-    /* height: 1000px; */
-    /* top: 0; */
-}
-
-
-.videoWrapper {
-    position: sticky;
-    top: 0;
-    overflow: hidden;
-    /* height: 100vh; */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.nextButton_Container {
-    /* z-index: 9999; */
 }
 
 .nextButton {
@@ -208,73 +176,14 @@
     color: white;
 }
 
-.scrollImage {
-    top: 0;
-    width: 100%;
-    height: 1000px;
-    object-fit: cover;
-    /* position: sticky; */
-    /* transform: scale(1, 0.5);  */
-    /* transform-origin: top; */
-}
-
 .nextButton:hover {
-    /* background-color: rgba(255, 255, 255, 0.8); */
     color: black;
-}
-
-/* .nextButton:active {
-    cursor: grabbing;
-  } */
-
-  
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 .textsHero_container p{
     font-size: 3rem;
     position: absolute;
 }
-
-/* .videoWrapper {
-    position: sticky; 
-    overflow: hidden;
-} */
-
-
-
-
-
 
 .itemImage {
     width: 100%;
@@ -289,23 +198,6 @@
     align-items: center;
     margin-bottom: -3rem;
 }
-
-/* .preloader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #ffffff;
-    z-index: 9999;
-}
-
-.images-loading {
-    display: none;
-} */
 
 .imageAutumn {
     object-fit: cover;
@@ -414,15 +306,6 @@
     z-index: 1;
 }
 
-@keyframes scroll {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(-100%);
-    }
-}
-
 .carousel:hover {
     animation-play-state: paused;
 }
@@ -517,6 +400,10 @@
     margin: 1rem 0;
 }
 
+.carruselTrack {
+    animation: scrollCarruselTrack 140s linear infinite;
+  }
+
 @keyframes scrollRightCarousel {
     0% {
       transform: translateX(0);
@@ -534,7 +421,75 @@
       transform: translateX(-520%);
     }
   }
-  
-  .carruselTrack {
-    animation: scrollCarruselTrack 140s linear infinite;
-  }
+
+  @keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInFromRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.nextButton_Container {
+    /* z-index: 9999; */
+}
+
+.videoWrapper {
+    position: relative;
+    overflow: hidden;
+    justify-content: center;
+    height: 1000px;
+    /* align-items: center; */
+    /* display: flex; */
+    /* top: 0; */
+}
+
+.scrollImage {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 1s ease-out, transform 1s ease-out;
+    position: absolute;
+}
+
+.textsHero_container {
+    z-index: 9998; /* Ajusta esto si necesitas otro contenido superpuesto */
+}
+
+.scrollImage.animate {
+    animation: slideInFromRight 1s ease-out;
+    z-index: 2;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* .scrollImage.hidden {
+    z-index: 0;
+    opacity: 0;
+    transform: translateX(-100%);
+} */

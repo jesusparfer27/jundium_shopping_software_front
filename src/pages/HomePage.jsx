@@ -2,8 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import '../css/pages/homepage.css';
 
-import PreloaderGif from '../assets/preloader-home/preloader-home.gif'
-
 import SeasonVideo from '../assets/home-sections/home-video-season.mp4';
 import AutumnImage from '../assets/home-sections/autumn-session-home.jpg';
 import VideoDiscounts from '../assets/home-sections/video-discounts.mp4'
@@ -11,9 +9,6 @@ import VideoDiscounts from '../assets/home-sections/video-discounts.mp4'
 import winterImage from '../assets/home-sections/winter-session-home.jpg';
 import looksWoman from '../assets/home-sections/looks_woman.jpg'
 import bagsWoman from '../assets/home-sections/bags_woman.jpg'
-
-
-import VideoGif from '../assets/video-gif-home/video-gif.gif'
 
 import WomanBags from '../assets/different-articles/example-bags-woman-home.jpg';
 import ManBags from '../assets/different-articles/example-bags-men-home.jpg';
@@ -33,9 +28,11 @@ export const HomePage = () => {
     const [scale, setScale] = useState(1);
     const [imagesLoaded, setImagesLoaded] = useState(false);
     const [imagesToLoad, setImagesToLoad] = useState(0);
+    const [animate, setAnimate] = useState(false); // Controla la animación
     const [imagesLoadedCount, setImagesLoadedCount] = useState(0);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [currentIndexAlternatives, setCurrentIndexAlternatives] = useState(0);
+    const [prevIndex, setPrevIndex] = useState(0);
     const carouselRef = useRef(null);
 
     const carouselTexts = [
@@ -73,22 +70,13 @@ export const HomePage = () => {
 
 
     const handleNext = () => {
-        // Añadir animación al contenedor
-        const container = document.getElementById('alternatives-container');
-        container.classList.add('slide-in-right');
-        
-        // Cambiar el índice para mostrar la siguiente alternativa
-        setCurrentIndexAlternatives((prevIndex) => (prevIndex + 1) % alternatives.length);
-      
-        // Después de la animación, quitar la clase para prepararlo para la siguiente vez
-        setTimeout(() => {
-          container.classList.remove('slide-in-right');
-        }, 1000); // 1000ms es el tiempo de duración de la animación
-      };
-      
+        setAnimate(true); // Activa la animación
+        setPrevIndex(currentIndexAlternatives); // Almacena el índice actual como el anterior
+        setCurrentIndexAlternatives((prevIndex) => (prevIndex + 1) % alternatives.length); // Calcula el siguiente índice
+    };
+
 
     const { image, text } = alternatives[currentIndexAlternatives];
-
 
     useEffect(() => {
         setImagesToLoad(categoriesData.length + seasonsData.length);
@@ -106,7 +94,6 @@ export const HomePage = () => {
 
 
     const extendedData = Array(20).fill([...categoriesData]).flat();
-    // const extendedDataCarousel = Array(8).fill([...carouselTexts]).flat();
 
     useEffect(() => {
         const totalItems = carouselTexts.length;
@@ -194,25 +181,33 @@ export const HomePage = () => {
     return (
         <>
             <section className="videoScrollContainer">
-                <div className="nextButton_Container" id="alternatives-container">
-                    <button className="nextButton" onClick={handleNext}>
-                        <span className="material-symbols-outlined">
-                            arrow_forward
-                        </span>
-                    </button>
-                </div>
-                <div className="textsHero_container">
-                    <p>{text}</p>
-                </div>
-                <div className="videoWrapper">
-                    <img
-                        className="scrollImage"
-                        src={image}
-                        alt="Imagen del Hero"
-                        loading="lazy"
-                    />
-                </div>
-            </section>
+        <div className="nextButton_Container" id="alternatives-container">
+            <button className="nextButton" onClick={handleNext}>
+                <span className="material-symbols-outlined">arrow_forward</span>
+            </button>
+        </div>
+        <div className="textsHero_container">
+            <p>{alternatives[currentIndexAlternatives].text}</p>
+        </div>
+        <div className="videoWrapper">
+            {/* Imagen actual */}
+            <img
+                className={`scrollImage ${animate ? "hidden" : ""}`}
+                src={alternatives[prevIndex].image}
+                alt="Imagen anterior"
+                loading="lazy"
+            />
+            {/* Imagen siguiente */}
+            <img
+                className={`scrollImage ${animate ? "animate" : "hidden"}`}
+                src={alternatives[currentIndexAlternatives].image}
+                alt="Imagen actual"
+                loading="lazy"
+                onAnimationEnd={() => setAnimate(false)} // Desactiva la animación después de completarse
+            />
+        </div>
+    </section>
+
 
             <section className="newCollections">
                 <h1 className='h1Style'>Echa un vistazo a los nuevos drops</h1>
@@ -251,16 +246,6 @@ export const HomePage = () => {
                                 <source src={SeasonVideo} type="video/mp4" />
                                 Tu navegador no soporta la reproducción de videos.
                             </video>
-                            {/* <div className="textOverlay">
-                                <div className="textOverlay">
-                                    <img
-                                        src={VideoGif}
-                                        alt="GIF animado"
-                                        className="gifElement"
-                                        style={{ animation: 'none', height: '100%', width: 'auto' }}
-                                    />
-                                </div>
-                            </div> */}
                         </div>
                     </NavLink>
                 </div>
@@ -268,7 +253,6 @@ export const HomePage = () => {
 
             <section className="carruselHome">
                 <div className="leftVideoContainer">
-                    {/* <p>Descubre nuestros productos destacados</p> */}
                     <video
                         className='videoCarousel'
                         autoPlay
@@ -323,7 +307,6 @@ export const HomePage = () => {
                         </div>
                     </div>
                 </div>
-                {/* <img src={PreloaderGif} alt="Cargando..." /> */}
             </div>
         </>
     );

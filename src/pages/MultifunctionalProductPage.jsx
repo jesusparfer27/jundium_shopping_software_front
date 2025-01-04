@@ -172,9 +172,9 @@
                                                         <p className="textCard_Header discountedPrice">
                                                             {priceToDisplay}
                                                         </p>
-                                                        <p className="textCard_Header originalPrice">
+                                                        {/* <p className="textCard_Header originalPrice">
                                                             Antes: ${variantPrice.toFixed(2)}
-                                                        </p>
+                                                        </p> */}
                                                     </>
                                                 ) : (
                                                     <p className="textCard_Header">${variantPrice.toFixed(2)}</p>
