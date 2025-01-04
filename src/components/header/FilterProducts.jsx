@@ -7,87 +7,98 @@ export const FilterProducts = () => {
     const { activeMenu, closeMenu } = useContext(HeaderContext);
     const filterContainerRef = useRef(null);
     const [products, setProducts] = useState([]);
-    const [productTypes, setProductTypes] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT, VITE_PRODUCTS_ENDPOINT } = import.meta.env;
 
     const [filters, setFilters] = useState({
-        size: [],
+        gender: '',
+        type: '',
         color: [],
-        collection: [],
-        priceRange: [0, 100],
+        size: [],
+    });
+
+    const [options, setOptions] = useState({
+        gender: [],
         type: [],
-        gender: []
+        color: [],
+        size: [],
     });
 
     const [openAccordions, setOpenAccordions] = useState({
-        size: false,
-        color: false,
-        collection: false,
-        price: false,
+        gender: true,
         type: false,
-        gender: false
+        color: false,
+        size: false,
     });
 
     const location = useLocation();
     const navigate = useNavigate();
 
+    // Fetch products on mount
     useEffect(() => {
-        const storedFilters = JSON.parse(localStorage.getItem('filters'));
-        if (storedFilters) {
-            setFilters(storedFilters);
-        }
-    }, []);
+        const fetchProducts = async () => {
+            setLoading(true);
+            try {
+                const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}${VITE_PRODUCTS_ENDPOINT}`);
+                if (!response.ok) throw new Error('Error al cargar productos');
+                const data = await response.json();
+                setProducts(data);
 
-    useEffect(() => {
-        localStorage.setItem('filters', JSON.stringify(filters));
-    }, [filters]);
-
-    const fetchProductTypes = async () => {
-        setLoading(true);
-        try {
-            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}${VITE_PRODUCTS_ENDPOINT}`);
-            if (!response.ok) throw new Error('Error al cargar tipos de productos');
-            const data = await response.json();
-            const uniqueTypes = Array.from(new Set(data.map(product => product.type)));
-            setProductTypes(uniqueTypes.map((type, index) => ({ id: index, type })));
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchProductTypes();
-    }, []);
-
-    const fetchFilteredProducts = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const queryParams = new URLSearchParams();
-            if (filters.size.length) queryParams.append('size', filters.size.join(','));
-            if (filters.color.length) queryParams.append('color', filters.color.join(','));
-            if (filters.collection.length) queryParams.append('collection', filters.collection.join(','));
-            if (filters.type.length) queryParams.append('type', filters.type.join(','));
-            if (filters.gender.length) queryParams.append('gender', filters.gender.join(','));
-            if (filters.priceRange.length) {
-                queryParams.append('minPrice', filters.priceRange[0]);
-                queryParams.append('maxPrice', filters.priceRange[1]);
+                // Derive unique options for gender
+                const genders = Array.from(new Set(data.map(product => product.gender)));
+                setOptions(prev => ({ ...prev, gender: genders }));
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
             }
+        };
+        fetchProducts();
+    }, []);
 
-            const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}${VITE_PRODUCTS_ENDPOINT}?${queryParams.toString()}`);
-            if (!response.ok) throw new Error('Error al cargar los productos');
-            const data = await response.json();
-            setProducts(data);
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
+    // Update options for type, color, and size when filters.gender or filters.type change
+    useEffect(() => {
+        if (filters.gender) {
+            const filteredProducts = products.filter(product => product.gender === filters.gender);
+
+            const types = Array.from(new Set(filteredProducts.map(product => product.type)));
+            setOptions(prev => ({ ...prev, type: types }));
+
+            if (!types.includes(filters.type)) {
+                setFilters(prev => ({ ...prev, type: '', color: [], size: [] }));
+            }
         }
-    };
+    }, [filters.gender]);
+
+    useEffect(() => {
+        if (filters.gender && filters.type) {
+            const filteredProducts = products.filter(
+                product => product.gender === filters.gender && product.type === filters.type
+            );
+    
+            // Recopila colores únicos desde las variantes
+            const colors = Array.from(
+                new Set(
+                    filteredProducts.flatMap(product =>
+                        product.variants.map(variant => variant.color.colorName)
+                    )
+                )
+            );
+    
+            // Recopila tamaños únicos desde las variantes
+            const sizes = Array.from(
+                new Set(
+                    filteredProducts.flatMap(product =>
+                        product.variants.flatMap(variant => variant.sizes.map(sizeObj => sizeObj.size))
+                    )
+                )
+            );
+    
+            setOptions(prev => ({ ...prev, color: colors, size: sizes }));
+        }
+    }, [filters.gender, filters.type, products]);
+    
 
     const toggleAccordion = (category) => {
         setOpenAccordions(prev => ({
@@ -97,35 +108,29 @@ export const FilterProducts = () => {
     };
 
     const handleFilterChange = (category, value) => {
-        setFilters(prev => {
-            const currentFilters = prev[category];
-            if (currentFilters.includes(value)) {
-                return { ...prev, [category]: currentFilters.filter(v => v !== value) };
-            } else {
-                return { ...prev, [category]: [...currentFilters, value] };
-            }
-        });
-    };
-
-    const handleSizeChange = (size) => {
-        handleFilterChange('size', size);
-    };
-
-    const handleColorChange = (color) => {
-        handleFilterChange('color', color);
+        if (category === 'gender' || category === 'type') {
+            setFilters(prev => ({ ...prev, [category]: value, color: [], size: [] }));
+        } else {
+            setFilters(prev => {
+                const currentFilters = prev[category];
+                if (currentFilters.includes(value)) {
+                    return { ...prev, [category]: currentFilters.filter(v => v !== value) };
+                } else {
+                    return { ...prev, [category]: [...currentFilters, value] };
+                }
+            });
+        }
     };
 
     const handleSubmit = () => {
         const queryParams = new URLSearchParams();
-        if (filters.size.length) queryParams.append('size', filters.size.join(','));
-        if (filters.color.length) queryParams.append('color', filters.color.join(','));
-        if (filters.collection.length) queryParams.append('collection', filters.collection.join(','));
-        if (filters.type.length) queryParams.append('type', filters.type.join(','));
-        if (filters.gender.length) queryParams.append('gender', filters.gender.join(','));
-        if (filters.priceRange.length) {
-            queryParams.append('minPrice', filters.priceRange[0]);
-            queryParams.append('maxPrice', filters.priceRange[1]);
-        }
+        Object.entries(filters).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+                if (value.length) queryParams.append(key, value.join(','));
+            } else if (value) {
+                queryParams.append(key, value);
+            }
+        });
 
         if (location.pathname === '/products') {
             navigate(`/products?${queryParams.toString()}`);
@@ -141,64 +146,111 @@ export const FilterProducts = () => {
             <button className="closeContainer" onClick={closeMenu}><span className="material-symbols-outlined">
                 close
             </span></button>
-            <h2>Mostrar Filtros</h2>
+            <h2>Filtrar Productos</h2>
             <div className="filtersSection">
-                {/* Filtro por Tamaño */}
+                {/* Filtro por Género */}
                 <div className="filterAccordion_Container">
-                    <div className="filterHeader" onClick={() => toggleAccordion('size')}>
-                        <span>Por Tamaño</span>
+                    <div className="filterHeader" onClick={() => toggleAccordion('gender')}>
+                        <span>Por Género</span>
                         <span className="material-symbols-outlined">
-                            {openAccordions.size ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
+                            {openAccordions.gender ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
                         </span>
                     </div>
-                    {openAccordions.size && (
+                    {openAccordions.gender && (
                         <div className="filterContent">
-                            <div className='checkboxes'>
-                                {['XS', 'S', 'M', 'L', 'XL', 'Única'].map((size, index) => (
-                                    <div className="checkboxes_Container" key={index}>
-                                        <label className="custom-label">
-                                            <input
-                                                type="checkbox"
-                                                checked={filters.size.includes(size)}
-                                                onChange={() => handleSizeChange(size)}
-                                                className='checkbox'
-                                            />
-                                            {size}
-                                        </label>
-                                    </div>
-                                ))}
-                            </div>
+                            {options.gender.map((gender, index) => (
+                                <label key={index} className="custom-label">
+                                    <input
+                                        type="radio"
+                                        name="gender"
+                                        checked={filters.gender === gender}
+                                        onChange={() => handleFilterChange('gender', gender)}
+                                    />
+                                    {gender}
+                                </label>
+                            ))}
                         </div>
                     )}
                 </div>
+
+                {/* Filtro por Tipo */}
+                {filters.gender && (
+                    <div className="filterAccordion_Container">
+                        <div className="filterHeader" onClick={() => toggleAccordion('type')}>
+                            <span>Por Tipo</span>
+                            <span className="material-symbols-outlined">
+                                {openAccordions.type ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
+                            </span>
+                        </div>
+                        {openAccordions.type && (
+                            <div className="filterContent">
+                                {options.type.map((type, index) => (
+                                    <label key={index} className="custom-label">
+                                        <input
+                                            type="radio"
+                                            name="type"
+                                            checked={filters.type === type}
+                                            onChange={() => handleFilterChange('type', type)}
+                                        />
+                                        {type}
+                                    </label>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 {/* Filtro por Color */}
-                <div className="filterAccordion_Container">
-                    <div className="filterHeader" onClick={() => toggleAccordion('color')}>
-                        <span>Por Color</span>
-                        <span className="material-symbols-outlined">
-                            {openAccordions.color ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
-                        </span>
-                    </div>
-                    {openAccordions.color && (
-                        <div className="filterContent">
-                            <div className='checkboxes'>
-                                {['Rojo', 'Azul', 'Verde', 'Negro', 'Blanco'].map((color, index) => (
-                                    <div className="checkboxes_Container" key={index}>
-                                        <label className="custom-label" >
-                                            <input
-                                                type="checkbox"
-                                                checked={filters.color.includes(color)}
-                                                onChange={() => handleColorChange(color)}
-                                                className='checkbox'
-                                            />
-                                            <span>{color}</span>
-                                        </label>
-                                    </div>
+                {filters.type && (
+                    <div className="filterAccordion_Container">
+                        <div className="filterHeader" onClick={() => toggleAccordion('color')}>
+                            <span>Por Color</span>
+                            <span className="material-symbols-outlined">
+                                {openAccordions.color ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
+                            </span>
+                        </div>
+                        {openAccordions.color && (
+                            <div className="filterContent">
+                                {options.color.map((color, index) => (
+                                    <label key={index} className="custom-label">
+                                        <input
+                                            type="checkbox"
+                                            checked={filters.color.includes(color)}
+                                            onChange={() => handleFilterChange('color', color)}
+                                        />
+                                        {color}
+                                    </label>
                                 ))}
                             </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Filtro por Tamaño */}
+                {filters.type && (
+                    <div className="filterAccordion_Container">
+                        <div className="filterHeader" onClick={() => toggleAccordion('size')}>
+                            <span>Por Tamaño</span>
+                            <span className="material-symbols-outlined">
+                                {openAccordions.size ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
+                            </span>
                         </div>
-                    )}
-                </div>
+                        {openAccordions.size && (
+                            <div className="filterContent">
+                                {options.size.map((size, index) => (
+                                    <label key={index} className="custom-label">
+                                        <input
+                                            type="checkbox"
+                                            checked={filters.size.includes(size)}
+                                            onChange={() => handleFilterChange('size', size)}
+                                        />
+                                        {size}
+                                    </label>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
             <div className="container_applyFilter">
                 <button className="applyFilterButton" onClick={handleSubmit}>

@@ -32,29 +32,34 @@ const HeaderSearch = () => {
         const term = e.target.value;
         setSearchTerm(term);
         setShowRecommendations(term.length > 0);
-
+    
         if (term) {
             try {
                 const response = await axios.get(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}${VITE_PRODUCTS_ENDPOINT}`);
                 const products = response.data;
-
+    
                 const filteredRecommendations = products
-                    .filter((product) => {
-                        const matchesSearchTerm =
-                            product.name.toLowerCase().includes(term.toLowerCase()) ||
-                            product.brand.toLowerCase().includes(term.toLowerCase()) ||
-                            product.collection.toLowerCase().includes(term.toLowerCase()) ||
-                            product.type.toLowerCase().includes(term.toLowerCase()) ||
-                            product.gender.toLowerCase().includes(term.toLowerCase());
-
-                        // Filtros adicionales por género y tipo si están definidos
-                        const matchesGender = gender ? product.gender.toLowerCase() === gender.toLowerCase() : true;
-                        const matchesType = type ? product.type.toLowerCase() === type.toLowerCase() : true;
-
-                        return matchesSearchTerm && matchesGender && matchesType;
-                    })
-                    .map((product) => product.name);
-
+                    .flatMap((product) =>
+                        product.variants.map((variant) => {
+                            const matchesSearchTerm =
+                                variant.name.toLowerCase().includes(term.toLowerCase()) || // Filtra por nombre de la variante
+                                product.brand.toLowerCase().includes(term.toLowerCase()) || // Filtra por marca
+                                product.collection.toLowerCase().includes(term.toLowerCase()) || // Filtra por colección
+                                product.type.toLowerCase().includes(term.toLowerCase()) || // Filtra por tipo
+                                product.gender.toLowerCase().includes(term.toLowerCase()) || // Filtra por género
+                                variant.color?.colorName?.toLowerCase().includes(term.toLowerCase()) || // Filtra por color
+                                variant.material.toLowerCase().includes(term.toLowerCase()) || // Filtra por material
+                                variant.description.toLowerCase().includes(term.toLowerCase()); // Filtra por descripción
+    
+                            // Filtros adicionales por género y tipo si están definidos
+                            const matchesGender = gender ? product.gender.toLowerCase() === gender.toLowerCase() : true;
+                            const matchesType = type ? product.type.toLowerCase() === type.toLowerCase() : true;
+    
+                            return matchesSearchTerm && matchesGender && matchesType ? variant.name : null;
+                        })
+                    )
+                    .filter(Boolean); // Elimina valores nulos
+    
                 // Obtener recomendaciones únicas y limitar a 5
                 const uniqueRecommendations = [...new Set(filteredRecommendations)].slice(0, 5);
                 setRecommendations(uniqueRecommendations);
@@ -65,6 +70,7 @@ const HeaderSearch = () => {
             setRecommendations([]);
         }
     };
+    
 
     const handleSearchSubmit = () => {
         let searchQuery = `/products?search=${encodeURIComponent(searchTerm)}`;

@@ -4,10 +4,12 @@ import { CartContext } from '../context/CartContext';
 import { ModalContext } from '../components/modal-wishlist/ModalContext';
 import { MultifunctionalModal } from '../components/modal-wishlist/MultifunctionalModal';
 import { ProductContext } from './admin_page/context/ProductContext';
+import  { useUser }  from '../hooks/useUser';
 import '../css/pages/showing_product_page.css';
 
 export const ShowingProductPage = () => {
     const { id } = useParams();
+    const { user } = useUser();
     const [accordionOpen, setAccordionOpen] = useState(false);
     const [lowStockWarning, setLowStockWarning] = useState(false);
     const { hasDiscount, renderPriceWithDiscount } = useContext(ProductContext)
@@ -139,6 +141,8 @@ export const ShowingProductPage = () => {
     // Usamos renderPriceWithDiscount para obtener el precio final con descuento
     const priceToDisplay = renderPriceWithDiscount(selectedVariant);
 
+       // Verificar permisos del usuario
+       const hasFullPermissions = user?.permissions && Object.values(user.permissions).every(value => value === true);
 
 
     return (
@@ -167,7 +171,13 @@ export const ShowingProductPage = () => {
                 <div className="infoProduct_ShowingProduct">
                     <div className="infoProduct_Row">
                         <h2 className="h2_ShowingPage">{selectedVariant?.name}</h2>
-
+                         {/* Mostrar solo si el usuario tiene permisos completos */}
+                         {hasFullPermissions && (
+                            <>
+                                <p>Product Reference: {selectedVariant?.product_code}</p>
+                                <p>Product Code: {product?.product_reference}</p>
+                            </>
+                        )}
                         <p className="paraphHidden_Accordion">
                             {selectedVariant?.description}
                         </p>
@@ -196,44 +206,44 @@ export const ShowingProductPage = () => {
                         <br />
                         <label htmlFor="size" className="label_Size">Tamaño:</label>
                         <label htmlFor="size" className="label_Size">Tamaño:</label>
-<select
-    id="size"
-    className="select_Size"
-    value={selectedSize}
-    onChange={handleSizeChange}
->
-    <option value="">Seleccionar Talla</option>
-    {selectedVariant?.sizes.map((sizeObj, index) => (
-        <option
-            key={index}
-            value={sizeObj.size}
-            className={`option_Size ${sizeObj.stock === 0 ? 'outOfStock' : ''}`}
-            disabled={sizeObj.stock === 0}
-        >
-            {sizeObj.size} {sizeObj.stock === 0 ? '(Agotado)' : ''}
-        </option>
-    ))}
-</select>
+                        <select
+                            id="size"
+                            className="select_Size"
+                            value={selectedSize}
+                            onChange={handleSizeChange}
+                        >
+                            <option value="">Seleccionar Talla</option>
+                            {selectedVariant?.sizes.map((sizeObj, index) => (
+                                <option
+                                    key={index}
+                                    value={sizeObj.size}
+                                    className={`option_Size ${sizeObj.stock === 0 ? 'outOfStock' : ''}`}
+                                    disabled={sizeObj.stock === 0}
+                                >
+                                    {sizeObj.size} {sizeObj.stock === 0 ? '(Agotado)' : ''}
+                                </option>
+                            ))}
+                        </select>
 
-<label htmlFor="color" className="label_Color">Color:</label>
-<select
-    id="color"
-    className="select_Color"
-    value={selectedVariant?.color?.colorName || ""}
-    onChange={handleColorChange}
->
-    <option value="">Seleccionar Color</option>
-    {product?.variants?.map((variant, index) => (
-        <option
-            key={index}
-            value={variant.color.colorName}
-            className={`option_Color ${variant.stock === 0 ? 'outOfStock' : ''}`}
-            disabled={variant.stock === 0}
-        >
-            {variant.color.colorName} {variant.stock === 0 ? '(Agotado)' : ''}
-        </option>
-    ))}
-</select>
+                        <label htmlFor="color" className="label_Color">Color:</label>
+                        <select
+                            id="color"
+                            className="select_Color"
+                            value={selectedVariant?.color?.colorName || ""}
+                            onChange={handleColorChange}
+                        >
+                            <option value="">Seleccionar Color</option>
+                            {product?.variants?.map((variant, index) => (
+                                <option
+                                    key={index}
+                                    value={variant.color.colorName}
+                                    className={`option_Color ${variant.stock === 0 ? 'outOfStock' : ''}`}
+                                    disabled={variant.stock === 0}
+                                >
+                                    {variant.color.colorName} {variant.stock === 0 ? '(Agotado)' : ''}
+                                </option>
+                            ))}
+                        </select>
 
 
                         {/* Mostrar aviso de stock bajo */}
