@@ -38,6 +38,75 @@ export const HomePage = () => {
     const [currentIndexAlternatives, setCurrentIndexAlternatives] = useState(0);
     const carouselRef = useRef(null);
 
+    const [isNextButton, setIsNextButton] = useState(true);
+    const containerRef = useRef(null);
+    const buttonRef = useRef(null);
+    const [isDragging, setIsDragging] = useState(false);
+
+    const handleMouseMove = (e) => {
+        const container = containerRef.current;
+        const button = buttonRef.current;
+
+        if (container && button) {
+            const containerRect = container.getBoundingClientRect();
+
+            // Calcular las nuevas posiciones del botón
+            const newLeft = e.clientX - containerRect.left - button.offsetWidth / 2;
+            const newTop = e.clientY - containerRect.top - button.offsetHeight / 2;
+
+            // Aplicar restricciones para que el botón no salga del contenedor
+            const clampedLeft = Math.max(0, Math.min(newLeft, containerRect.width - button.offsetWidth));
+            const clampedTop = Math.max(0, Math.min(newTop, containerRect.height - button.offsetHeight));
+
+            // Actualizar la posición del botón
+            button.style.left = `${clampedLeft}px`;
+            button.style.top = `${clampedTop}px`;
+        }
+    };
+
+    const handleScroll = () => {
+        if (containerRef.current) {
+            const containerRect = containerRef.current.getBoundingClientRect();
+            const containerTop = containerRect.top;
+            const containerHeight = containerRect.height;
+    
+            // Obtener la mitad del contenedor
+            const containerMiddleY = containerTop + containerHeight / 2;
+            const windowHeight = window.innerHeight;
+            
+            // Ajustar la condición para cambiar entre Next y Prev
+            if (containerMiddleY > windowHeight / 2) {
+                setIsNextButton(false); // Cambiar a "Prev"
+            } else {
+                setIsNextButton(true); // Cambiar a "Next"
+            }
+        }
+    };
+    
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
+    const handlePrev = () => {
+        setCurrentIndexAlternatives((prevIndex) => {
+            // Si el índice actual es 0, vuelve al último elemento
+            const newIndex = prevIndex - 1 < 0 ? alternatives.length - 1 : prevIndex - 1;
+            return newIndex;
+        });
+    };
+
+    const handleNext = () => {
+        setCurrentIndexAlternatives((prevIndex) => (prevIndex + 1) % alternatives.length);
+    };
+
+    const handleMouseDown = () => setIsDragging(true);
+    const handleMouseUp = () => setIsDragging(false);
+
     const carouselTexts = [
         "DESCUBRE NUESTRA COLECCIÓN DE INVIERNO 2024: ESTILO Y COMODIDAD EN CADA PRENDA.",
         "PRIMAVERA EN TENDENCIA: RENUEVA TU GUARDARROPA CON COLORES VIBRANTES.",
@@ -70,11 +139,6 @@ export const HomePage = () => {
         { id: 2, image: looksWoman, text: 'Explora los looks más elegantes.' },
         { id: 3, image: bagsWoman, text: 'Bolsos diseñados para cada ocasión.' },
     ];
-
-
-    const handleNext = () => {
-        setCurrentIndexAlternatives((prevIndex) => (prevIndex + 1) % alternatives.length);
-    };
 
     const { image, text } = alternatives[currentIndexAlternatives];
 
@@ -182,15 +246,29 @@ export const HomePage = () => {
 
     return (
         <>
-            <section className="videoScrollContainer">
+            <section
+                className="videoScrollContainer"
+                ref={containerRef}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+            >
                 <div className="nextButton_Container">
-                    <button className="nextButton" onClick={handleNext}>
-                        &#8594;
+                    <button
+                        className={isNextButton ? "nextButton" : "prevButton"}
+                        ref={buttonRef}
+                        onClick={isNextButton ? handleNext : handlePrev}
+                        style={{
+                            position: "absolute",
+                            left: "0px",
+                        }}
+                    >
+                        {isNextButton ? "→" : "←"}
                     </button>
                 </div>
                 <div className="textsHero_container">
-                        <p>{text}</p>
-                    </div>
+                    <p>{text}</p>
+                </div>
                 <div className="videoWrapper">
                     <img
                         className="scrollImage"
@@ -211,16 +289,16 @@ export const HomePage = () => {
             </section>
 
             <section className="carruselContainer_newCollections">
-                    <div
-                        className="carruselTrack"
-                        ref={carouselRef}
-                    >
-                        {[...carouselTexts, ...carouselTexts].map((text, index) => (
-                            <div className="carruselSlide" key={index}>
-                                <p className="carruselText">{text}</p>
-                            </div>
-                        ))}
-                    </div>
+                <div
+                    className="carruselTrack"
+                    ref={carouselRef}
+                >
+                    {[...carouselTexts, ...carouselTexts].map((text, index) => (
+                        <div className="carruselSlide" key={index}>
+                            <p className="carruselText">{text}</p>
+                        </div>
+                    ))}
+                </div>
             </section>
 
             <section className="container_videoSession-2">
@@ -312,7 +390,7 @@ export const HomePage = () => {
                 </div>
                 {/* <img src={PreloaderGif} alt="Cargando..." /> */}
             </div>
-            </>
+        </>
     );
 };
 
