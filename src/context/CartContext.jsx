@@ -68,7 +68,6 @@ export const CartProvider = ({ children }) => {
         const token = localStorage.getItem('authToken');
         if (!token) {
             setErrorMessage('Por favor, inicia sesión para añadir productos al carrito.');
-            // openModal('modalNeed_toLogin');
             return;
         }
 
@@ -152,7 +151,6 @@ export const CartProvider = ({ children }) => {
             return;
         }
 
-        // Mueve esta declaración antes de usar 'price'
         const price = selectedVariant?.price;
 
         console.log('Datos antes de añadir al carrito:', {
@@ -266,7 +264,6 @@ export const CartProvider = ({ children }) => {
         }
     };
 
-    // Dentro de fetchCartItems:
     const fetchCartItems = useCallback(async () => {
         if (!user) return;
     

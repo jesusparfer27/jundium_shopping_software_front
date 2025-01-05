@@ -1,4 +1,3 @@
-/* src/css/components/shared/closeButton.css */
 .closeContainer {
     background: none;
     border: none;
@@ -13,5 +12,5 @@
 }
 
 .closeContainer:hover {
-    color: #000; /* Cambia a negro en el hover */
+    color: #000;
 }

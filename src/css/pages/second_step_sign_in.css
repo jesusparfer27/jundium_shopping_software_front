@@ -38,17 +38,17 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* Centrado verticalmente */
+  justify-content: center;
   width: 100%;
 }
 
 .header, .registro-proceso, .informacion-adicional, .politica-privacidad, .boton-continuar {
-  width: 90%; /* Ajustado al 90% para todos los divs */
-  padding: 1rem 0; /* Padding general */
+  width: 90%;
+  padding: 1rem 0;
 }
 
 .registro-proceso {
-  padding: 0; /* Sin padding adicional */
+  padding: 0;
 }
 
 .informacion-adicional {
@@ -58,20 +58,20 @@
 }
 
 .passwordContainerSignIn {
-  position: relative; /* Permite que los hijos se posicionen respecto a este contenedor */
+  position: relative;
   width: 90%;
 }
 
 .password-validation {
   width: 100%;
-  padding-right: 3rem; /* Deja espacio para el botón */
+  padding-right: 3rem;
 }
 
 .togglePassword {
   position: absolute;
-  right: 1rem; /* Ajusta la posición del botón respecto al borde derecho del contenedor */
-  top: 50%; /* Centra verticalmente */
-  transform: translateY(-50%); /* Ajusta el centro real */
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
   background: none;
   border: none;
   cursor: pointer;
@@ -80,18 +80,18 @@
 }
 
 .togglePassword:hover {
-  color: #000; /* Cambia el color al pasar el mouse */
+  color: #000;
 }
 
 .togglePassword:hover {
-  color: #000; /* Cambia el color al pasar el mouse */
+  color: #000;
 }
 
 .input-password,
 .campos {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centrar los elementos en el eje horizontal */
+  align-items: center;
 }
 
 .input-password {
@@ -101,11 +101,11 @@
 }
 
 .inputSignUp_Header {
-  width: 100%; /* Ajustar el ancho a 90% para todos los campos */
+  width: 100%;
   
-  justify-content: center; /* Centrar contenido en el input/select */
-  padding: 0.7rem 1rem; /* Padding interno para la separación */
-  box-sizing: border-box; /* Incluye el padding en el tamaño total */
+  justify-content: center;
+  padding: 0.7rem 1rem;
+  box-sizing: border-box;
 }
 
 
@@ -122,27 +122,27 @@
 
 .campos {
   background-color: white;
-  width: 100%; /* Contenedor de campos al 100% */
+  width: 100%;
   padding-top: 2rem;
 }
 
 .campo {
   margin-bottom: 1.5rem;
-  width: 100%; /* 100% de ancho */
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centrar label en el centro de su contenedor */;
+  align-items: center;
 }
 
 .campo label {
-  width: 100%; /* El label ocupa todo el ancho del contenedor */
+  width: 100%;
   padding-bottom: .4rem;
 }
 
 .campo input,
 .campo select {
-  width: 90%; /* El input y select miden el 90% */
-  justify-content: center; /* Centrar contenido en el input/select */
+  width: 90%;
+  justify-content: center;
 }
 
 .campo select {
@@ -159,7 +159,7 @@
   text-align: center;
   width: 90%;
   display: flex;
-  justify-content: flex-end; /* Alinear botón a la derecha */
+  justify-content: flex-end;
 }
 
 .submit-button2 {
@@ -183,7 +183,6 @@
 
 }
 
-/* Estilos para el AccordionContainer */
 .accordion-container {
   display: flex;
   flex-direction: column;
@@ -197,7 +196,6 @@
   width: 90%;
 }
 
-/* Otros estilos específicos */
 .accordion-item {
   border-bottom: 1px solid #dcdcdc;
   padding: 10px;
@@ -212,9 +210,7 @@
 .checkbox-terms {
   margin-left: 3rem;
   width:  3%;
-  
 }
-
 
 .checkbox-terms:checked {
   position: relative;

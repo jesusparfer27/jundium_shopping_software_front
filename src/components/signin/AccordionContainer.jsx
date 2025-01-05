@@ -1,9 +1,9 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom'; // Importar useLocation
-import '../../css/components/signin/accordion.css'; // Importar estilos CSS para AccordionContainer
+import { useLocation } from 'react-router-dom';
+import '../../css/components/signin/accordion.css';
 
 const AccordionContainer = ({ isAccordionOpen = [], toggleAccordion }) => {
-    // Verificar que toggleAccordion sea una función para evitar errores
+    
     const handleToggle = (index) => {
         if (typeof toggleAccordion === 'function') {
             toggleAccordion(index);

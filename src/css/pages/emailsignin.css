@@ -29,7 +29,7 @@
     align-items: center;
     width: 100%;
     justify-content: center;
-    gap: 20px; /* Espacio entre el formulario y el botón */
+    gap: 20px;
 }
 
 .first-container {

@@ -7,8 +7,8 @@ import AutumnImage from '../assets/home-sections/autumn-session-home.jpg';
 import VideoDiscounts from '../assets/home-sections/video-discounts.mp4'
 
 import winterImage from '../assets/home-sections/winter-session-home.jpg';
-import looksWoman from '../assets/home-sections/looks_woman.jpg'
 import bagsWoman from '../assets/home-sections/bags_woman.jpg'
+import womanShoes from '../assets/home-sections/woman_shoes.jpg'
 
 import WomanBags from '../assets/different-articles/example-bags-woman-home.jpg';
 import ManBags from '../assets/different-articles/example-bags-men-home.jpg';
@@ -64,7 +64,7 @@ export const HomePage = () => {
 
     const alternatives = [
         { id: 1, image: winterImage, text: 'Descubre la nueva colección de invierno.' },
-        { id: 2, image: looksWoman, text: 'Explora los looks más elegantes.' },
+        { id: 2, image: womanShoes, text: 'Explora los looks más elegantes.' },
         { id: 3, image: bagsWoman, text: 'Bolsos diseñados para cada ocasión.' },
     ];
 

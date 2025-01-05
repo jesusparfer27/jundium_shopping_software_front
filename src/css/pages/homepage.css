@@ -455,18 +455,11 @@
     }
 }
 
-.nextButton_Container {
-    /* z-index: 9999; */
-}
-
 .videoWrapper {
     position: relative;
     overflow: hidden;
     justify-content: center;
     height: 1000px;
-    /* align-items: center; */
-    /* display: flex; */
-    /* top: 0; */
 }
 
 .scrollImage {
@@ -485,10 +478,3 @@
     opacity: 1;
     transform: translateX(0);
 }
-
-
-/* .scrollImage.hidden {
-    z-index: 0;
-    opacity: 0;
-    transform: translateX(-100%);
-} */

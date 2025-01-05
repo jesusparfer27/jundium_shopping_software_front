@@ -13,7 +13,6 @@ const ProfileImage = ({ initials, userName, isAdmin }) => {
                 <div className="backgroundPadding_Image">
                     <div className="profile-initials">{displayInitials}</div>
                 </div>
-                {/* <div className="user_name">{userName}</div> */}
             </div>
         </div>
     );

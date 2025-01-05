@@ -121,24 +121,8 @@ export const MultifunctionalModal = () => {
         }
     }, [fadeOut, closeModal]);
 
-    // const handleMouseEnter = () => {
-    //     setMouseOver(true);
-    //     setTimerActive(false);
-    //     setTimerStartTime(Date.now());
-    //     console.log('Mouse está encima del contenedor ModalWishlist');
-    // };
-
-    // const handleMouseLeave = () => {
-    //     setMouseOver(false);
-    //     setTimerActive(true);
-    //     console.log('Mouse ha salido del contenedor ModalWishlist');
-    // };
-
     return (
-        <div className={`multifunctionalModal ${activeModal ? 'active slideInVertical' : ''}${fadeOut ? 'fadeOut' : ''}`}
-            // onMouseEnter={handleMouseEnter}
-            // onMouseLeave={handleMouseLeave}
-        >
+        <div className={`multifunctionalModal ${activeModal ? 'active slideInVertical' : ''}${fadeOut ? 'fadeOut' : ''}`}>
             <div className="containerWishlist_Advice">
                 <div className="containerIcon_Wishlist"></div>
                 <div className="containerMessage_Wishlist">

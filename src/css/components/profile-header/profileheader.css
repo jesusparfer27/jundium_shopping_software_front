@@ -8,12 +8,6 @@
     padding-top: 30rem;
 }
 
-/* .backgroundPadding_imageContainer {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-} */
-
 .profile-initials {
     position: absolute;
     transform: translateY(-140%);
@@ -39,7 +33,6 @@
 .backgroundPadding_Image {
     position: relative;
     text-align: center;
-    /* margin-bottom: 9rem;     */
     width: 100%;
     display: flex;
     justify-content: center;

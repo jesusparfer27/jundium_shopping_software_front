@@ -33,7 +33,6 @@
     box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Aplicación de animaciones */
 .overlay.slideInHorizontalRightToLeft {
     animation: slideInHorizontalRightToLeft 0.3s ease-in-out forwards;
 }
@@ -157,7 +156,7 @@
 }
 
 .sizeButton.active, .colorButton.active {
-    background-color: #007bff;
+    background-color: black;
     color: white;
 }
 
@@ -181,7 +180,7 @@
 .removeFiltersButton {
     margin-top: 10px;
     padding: 10px;
-    background-color: #007bff;
+    background-color: black;
     color: white;
     border: none;
     border-radius: 5px;
@@ -189,7 +188,7 @@
 }
 
 .removeFiltersButton:hover {
-    background-color: #0056b3;
+    background-color: black;
 }
 
 .container_applyFilter {

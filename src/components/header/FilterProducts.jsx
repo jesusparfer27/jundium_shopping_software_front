@@ -35,7 +35,6 @@ export const FilterProducts = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    // Fetch products on mount
     useEffect(() => {
         const fetchProducts = async () => {
             setLoading(true);
@@ -45,7 +44,6 @@ export const FilterProducts = () => {
                 const data = await response.json();
                 setProducts(data);
 
-                // Derive unique options for gender
                 const genders = Array.from(new Set(data.map(product => product.gender)));
                 setOptions(prev => ({ ...prev, gender: genders }));
             } catch (err) {
@@ -57,7 +55,6 @@ export const FilterProducts = () => {
         fetchProducts();
     }, []);
 
-    // Update options for type, color, and size when filters.gender or filters.type change
     useEffect(() => {
         if (filters.gender) {
             const filteredProducts = products.filter(product => product.gender === filters.gender);
@@ -77,7 +74,6 @@ export const FilterProducts = () => {
                 product => product.gender === filters.gender && product.type === filters.type
             );
     
-            // Recopila colores únicos desde las variantes
             const colors = Array.from(
                 new Set(
                     filteredProducts.flatMap(product =>
@@ -86,7 +82,6 @@ export const FilterProducts = () => {
                 )
             );
     
-            // Recopila tamaños únicos desde las variantes
             const sizes = Array.from(
                 new Set(
                     filteredProducts.flatMap(product =>
