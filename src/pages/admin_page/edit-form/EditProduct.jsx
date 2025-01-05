@@ -4,7 +4,7 @@ import '../../../css/pages/admin.css'
 
 export const EditProduct = () => {
     const { generalProduct, setGeneralProduct, productReference, setProductReference } = useContext(ProductContext);
-    const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
+    const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env; 
 
     const handleChange = (e) => {
         const { id, value } = e.target;
