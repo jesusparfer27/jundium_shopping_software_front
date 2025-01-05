@@ -16,7 +16,8 @@ export const Variant = () => {
     generateProductCode,
     handleVariantChange,
     handleDeleteSize,
-    handleOutOfStockChange
+    handleOutOfStockChange,
+    handleDeleteVariant
   } = useContext(ProductContext);
 
   // const [variantCount, setVariantCount] = useState(0);
@@ -441,6 +442,13 @@ export const Variant = () => {
 
       <div className="container_ButtonSubmit">
         <div className="container_ButtonSubmitContainer">
+        <div className="submitEdition">
+            <button
+              className="submitCreateButton"
+              onClick={handleDeleteVariant}
+            > Eliminar Variantes
+            </button>
+          </div>
           <div className="submitEdition">
             <button className="submitCreateButton" onClick={addNewVariantForm}>
               Agregar Nueva Variante
@@ -448,7 +456,7 @@ export const Variant = () => {
           </div>
           <div className="submitEdition">
             <button
-              className="submitCreateButton"
+              className="submitCreateButton_submit"
               onClick={(event) => {
                 console.log("Selected Index:", selectedVariantIndex);
                 handleSubmit(event, selectedVariantIndex);

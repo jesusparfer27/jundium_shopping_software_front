@@ -26,16 +26,6 @@
     width: 90%;
 }
 
-/* .containerForPreviews {
-    display: grid;
-    grid-template-columns: repeat(4, 20%);
-    grid-template-rows: auto;
-    gap: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-} */
-
 .containerForPreviews {
     display: flex;
     flex-wrap: wrap;
@@ -54,7 +44,7 @@
     height: 200px;
     border: 1px dashed #ccc;
     border-radius: 5px;
-  }
+}
 
 .imagePreview {
     position: relative;
@@ -76,7 +66,7 @@
     object-fit: cover;
 }
 
-  .deleteImage_Button {
+.deleteImage_Button {
     position: absolute;
     top: 5px;
     right: 5px;
@@ -85,16 +75,7 @@
     border: none;
     border-radius: 50%;
     cursor: pointer;
-  }
-
-
-
-
-
-
-
-
-
+}
 
 .productForm {
     width: 100%;
@@ -126,8 +107,6 @@
     justify-content: center;
     padding-bottom: 10rem;
 }
-
-
 
 .accordionContainer.open {
     background-color: white;
@@ -174,7 +153,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center ;
+    align-items: center;
     gap: 1rem;
 }
 
@@ -184,7 +163,7 @@
 
 .sizeDisplay {
     list-style: none;
-    border: 1px solid black ;
+    border: 1px solid black;
     width: 100%;
     padding: 0;
     display: flex;
@@ -200,10 +179,10 @@
 
 .containerSize_Display {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* Cuatro columnas de igual tamaño */
-    grid-auto-rows: repeat(4, 1fr); /* Altura de cada fila al 20% del contenedor */
-    gap: 1rem; /* Espacio entre filas y columnas */
-    width: 100%; /* Ajusta al tamaño completo del contenedor padre */
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: repeat(4, 1fr);
+    gap: 1rem;
+    width: 100%;
 }
 
 .sizeSelected_Group .pSize_display {
@@ -217,14 +196,14 @@
     list-style: none;
     margin: 0;
     padding: 0;
-    display: contents; /* Para que el contenedor no influya en el grid */
+    display: contents;
 }
 
 .buttonSize_container {
     height: 100%;
 }
 
-.deleteSize_Button{
+.deleteSize_Button {
     height: 100px;
     width: 100px;
 }
@@ -235,14 +214,6 @@
     justify-content: center;
     align-items: center;
 }
-
-
-
-/* .containerFor_inputSize.sizeContainer_Button {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-} */
 
 .containerFor_inputSize {
     height: 100%;
@@ -278,10 +249,10 @@
 
 .introduceImageContainer {
     display: flex;
-    align-items: center; /* Centra verticalmente */
+    align-items: center;
     justify-content: center;
     text-align: center;
-    gap: 1rem; /* Espacio entre el label y el input */
+    gap: 1rem;
     width: 100%;
 }
 
@@ -292,41 +263,41 @@
     text-align: center;
     gap: 1rem;
     width: 50%;
-  }
+}
 
-  .inputImage {
+.inputImage {
     display: none;
 }
 
-  .labelImage {
-    background-color: #000; /* Cambia según tu diseño */
+.labelImage {
+    background-color: #000;
     width: 100%;
-    color: #fff; /* Cambia según tu diseño */
+    color: #fff;
     padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
     border: 1px solid black;
     transition: background-color 0.3s ease;
-  }
+}
 
-  .labelImage:hover {
+.labelImage:hover {
     background-color: transparent;
     border: 1px solid black;
     color: black;
-  }
+}
 
 .divForm_Column:last-child {
     padding-bottom: 3rem;
 }
 
 .divForm_Column input {
-    padding-left: 1rem; 
-  }
+    padding-left: 1rem;
+}
 
-  .divForm_Column select {
-    padding-left: 1rem; 
-  }
-  
+.divForm_Column select {
+    padding-left: 1rem;
+}
+
 .divForm_Column {
     width: 88%;
     gap: .6rem;
@@ -415,6 +386,16 @@ textarea {
     width: 100%;
 }
 
+.submitCreateButton_submit {
+    background-color: transparent;
+    color: black;
+    padding: 0.75rem 2rem;
+    border: 1px solid black;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    width: 100%;
+}
+
 .submitCreateButton:hover, .submitEditProductButton:hover {
     background-color: #D9D9D9;
     color: black;
@@ -426,29 +407,13 @@ textarea {
     margin-top: 0.5rem;
     width: 90%;
 }
-  
-  .imagePreview {
+
+.imagePreview {
     position: relative;
     display: inline-block;
-  }
-  
-  
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  .admin-nav {
+.admin-nav {
     display: flex;
     justify-content: space-around;
     margin-bottom: 1rem;

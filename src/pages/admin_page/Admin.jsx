@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 import ProfileHeader from '../../components/profile-header/ProfileHeader';
 import { useUser } from "../../hooks/useUser";
 import { Variant } from "./create-products/Variant";
 import { Product } from "./create-products/Product";
+
+import { ProductContext } from "./context/ProductContext";
 
 
 // Esto es AddVariants
@@ -26,6 +28,8 @@ export const Admin = () => {
     const [isAdmin, setIsAdmin] = useState(false);
     const [adminData, setAdminData] = useState(null);
     const [error, setError] = useState("");
+
+    const { resetProductState } = useContext(ProductContext)
 
     const fetchAdminData = async (token) => {
         try {
@@ -117,6 +121,7 @@ export const Admin = () => {
                     className={activeSection === "Add Product" ? "active" : ""}
                     onClick={() => {
                         console.log("Botón 'Crear Productos' clicado");
+                        resetProductState();
                         setActiveSection("Add Product");
                     }}
                 >
@@ -126,6 +131,7 @@ export const Admin = () => {
                     className={activeSection === "Add Variant" ? "active" : ""}
                     onClick={() => {
                         console.log("Botón 'Otras Opciones' clicado");
+                        resetProductState();
                         setActiveSection("Add Variant");
                     }}
                 >
@@ -135,6 +141,7 @@ export const Admin = () => {
                     className={activeSection === "Edit Product" ? "active" : ""}
                     onClick={() => {
                         console.log("Botón 'Otras Opciones' clicado");
+                        resetProductState();
                         setActiveSection("Edit Product");
                     }}
                 >

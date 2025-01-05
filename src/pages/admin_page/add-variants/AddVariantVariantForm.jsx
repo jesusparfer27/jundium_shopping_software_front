@@ -18,6 +18,7 @@ export const AddVariantVariantForm = () => {
     handleVariantChange,
     handleDeleteSize,
     handleOutOfStockChange,
+    handleDeleteVariant
     // calculateDiscountedPrice
   } = useContext(ProductContext);
 
@@ -462,6 +463,13 @@ export const AddVariantVariantForm = () => {
 
       <div className="container_ButtonSubmit">
         <div className="container_ButtonSubmitContainer">
+          <div className="submitEdition">
+            <button
+              className="submitCreateButton"
+              onClick={handleDeleteVariant}
+            > Eliminar Variantes
+            </button>
+          </div>
           <div className="submitEdition">
             <button className="submitCreateButton" onClick={addNewVariantForm}>
               Agregar Nueva Variante

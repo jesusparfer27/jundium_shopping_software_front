@@ -11,8 +11,3 @@ Currently, two official plugins are available:
 ## REMATES FUNCIONALES:
 
 PROFILEPAGE USER INFORMATION
-
-## REMATES DISEÑO 
-
-RESPONSIVE
-REMATES
