@@ -115,7 +115,7 @@ export const AddVariantProductForm = () => {
                                     value={productReference}
                                     onChange={handleChange}
                                 />
-                                <button onClick={handleSearchProductByReference}>Buscar Producto</button>
+                                <button className="submitCreateButton" onClick={handleSearchProductByReference}>Buscar Producto</button>
                             </div>
                         </div>
                     </div>

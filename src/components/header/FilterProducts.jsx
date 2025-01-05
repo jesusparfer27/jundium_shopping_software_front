@@ -161,7 +161,7 @@ export const FilterProducts = () => {
                             {options.gender.map((gender, index) => (
                                 <label key={index} className="custom-label">
                                     <input
-                                        type="radio"
+                                        type="checkbox"
                                         name="gender"
                                         checked={filters.gender === gender}
                                         onChange={() => handleFilterChange('gender', gender)}
@@ -187,7 +187,7 @@ export const FilterProducts = () => {
                                 {options.type.map((type, index) => (
                                     <label key={index} className="custom-label">
                                         <input
-                                            type="radio"
+                                            type="checkbox"
                                             name="type"
                                             checked={filters.type === type}
                                             onChange={() => handleFilterChange('type', type)}

@@ -18,8 +18,8 @@ const Header = () => {
     const [isProductsPage, setIsProductsPage] = useState(false);
 
     const news = [
-        { text: 'Promoción especial', link: '/promocion' },
-        { text: 'Descubre nuestras ofertas', link: '/ofertas' },
+        { text: 'Promoción especial', link: '/products' },
+        { text: 'Descubre nuestras ofertas', link: '/products' },
     ]
     const [activeNewsIndex, setActiveNewsIndex] = useState(0);
     const [isNewsVisible, setIsNewsVisible] = useState(true);

@@ -463,9 +463,8 @@ textarea {
 }
 
 .admin-nav button.active {
-    background: #007bff;
+    background: black;
     color: #fff;
-    border-color: #007bff;
 }
 
 .active {

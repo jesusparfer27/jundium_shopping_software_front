@@ -139,7 +139,7 @@ export const ProductsPage = () => {
                                         <h4 className="h4Products">{product.selectedVariant?.name || 'Nombre no disponible'}</h4>
 
                                         {/* Renderizado del precio con o sin descuento */}
-                                        <div className="priceContainer">
+                                        <div className="priceContainer_productPage">
                                             {renderPriceWithDiscount(product.selectedVariant)}
                                         </div>
                                     </div>

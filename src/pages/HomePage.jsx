@@ -36,7 +36,7 @@ export const HomePage = () => {
     const carouselRef = useRef(null);
 
     const carouselTexts = [
-        "DESCUBRE NUESTRA COLECCIÓN DE INVIERNO 2024: ESTILO Y COMODIDAD EN CADA PRENDA.",
+        "DESCUBRE NUESTRA COLECCIÓN DE INVIERNO 2025: ESTILO Y COMODIDAD EN CADA PRENDA.",
         "PRIMAVERA EN TENDENCIA: RENUEVA TU GUARDARROPA CON COLORES VIBRANTES.",
         "VERANO A LA MODA: ¡ENCUENTRA TU LOOK PERFECTO PARA EL CALOR!",
         "ACCESORIOS IRRESISTIBLES: BOLSOS, ZAPATOS Y MÁS QUE COMPLEMENTAN TU OUTFIT.",
@@ -57,9 +57,9 @@ export const HomePage = () => {
     ];
 
     const seasonsData = [
-        { id: 1, name: "Verano 2024", image: SummerSeason, endpoint: "/products?collection=Summer%202025" },
-        { id: 2, name: "Primavera 2024", image: SpringSeason, endpoint: "/products?collection=Autumn%202025" },
-        { id: 3, name: "Invierno 2024", image: WinterSeason, endpoint: "/products?collection=Winter%202025" },
+        { id: 1, name: "Verano 2025", image: SummerSeason, endpoint: "/products?collection=Summer%202025" },
+        { id: 2, name: "Primavera 2025", image: SpringSeason, endpoint: "/products?collection=Autumn%202025" },
+        { id: 3, name: "Invierno 2025", image: WinterSeason, endpoint: "/products?collection=Winter%202025" },
     ];
 
     const alternatives = [
@@ -181,32 +181,32 @@ export const HomePage = () => {
     return (
         <>
             <section className="videoScrollContainer">
-        <div className="nextButton_Container" id="alternatives-container">
-            <button className="nextButton" onClick={handleNext}>
-                <span className="material-symbols-outlined">arrow_forward</span>
-            </button>
-        </div>
-        <div className="textsHero_container">
-            <p>{alternatives[currentIndexAlternatives].text}</p>
-        </div>
-        <div className="videoWrapper">
-            {/* Imagen actual */}
-            <img
-                className={`scrollImage ${animate ? "hidden" : ""}`}
-                src={alternatives[prevIndex].image}
-                alt="Imagen anterior"
-                loading="lazy"
-            />
-            {/* Imagen siguiente */}
-            <img
-                className={`scrollImage ${animate ? "animate" : "hidden"}`}
-                src={alternatives[currentIndexAlternatives].image}
-                alt="Imagen actual"
-                loading="lazy"
-                onAnimationEnd={() => setAnimate(false)} // Desactiva la animación después de completarse
-            />
-        </div>
-    </section>
+                <div className="nextButton_Container" id="alternatives-container">
+                    <button className="nextButton" onClick={handleNext}>
+                        <span className="material-symbols-outlined">arrow_forward</span>
+                    </button>
+                </div>
+                <div className="textsHero_container">
+                <p key={currentIndexAlternatives}>{alternatives[currentIndexAlternatives].text}</p>
+                </div>
+                <div className="videoWrapper">
+                    {/* Imagen actual */}
+                    <img
+                        className={`scrollImage ${animate ? "hidden" : ""}`}
+                        src={alternatives[prevIndex].image}
+                        alt="Imagen anterior"
+                        loading="lazy"
+                    />
+                    {/* Imagen siguiente */}
+                    <img
+                        className={`scrollImage ${animate ? "animate" : "hidden"}`}
+                        src={alternatives[currentIndexAlternatives].image}
+                        alt="Imagen actual"
+                        loading="lazy"
+                        onAnimationEnd={() => setAnimate(false)} // Desactiva la animación después de completarse
+                    />
+                </div>
+            </section>
 
 
             <section className="newCollections">

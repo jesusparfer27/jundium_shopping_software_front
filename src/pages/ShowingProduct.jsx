@@ -4,7 +4,7 @@ import { CartContext } from '../context/CartContext';
 import { ModalContext } from '../components/modal-wishlist/ModalContext';
 import { MultifunctionalModal } from '../components/modal-wishlist/MultifunctionalModal';
 import { ProductContext } from './admin_page/context/ProductContext';
-import  { useUser }  from '../hooks/useUser';
+import { useUser } from '../hooks/useUser';
 import '../css/pages/showing_product_page.css';
 
 export const ShowingProductPage = () => {
@@ -141,8 +141,8 @@ export const ShowingProductPage = () => {
     // Usamos renderPriceWithDiscount para obtener el precio final con descuento
     const priceToDisplay = renderPriceWithDiscount(selectedVariant);
 
-       // Verificar permisos del usuario
-       const hasFullPermissions = user?.permissions && Object.values(user.permissions).every(value => value === true);
+    // Verificar permisos del usuario
+    const hasFullPermissions = user?.permissions && Object.values(user.permissions).every(value => value === true);
 
 
     return (
@@ -171,8 +171,8 @@ export const ShowingProductPage = () => {
                 <div className="infoProduct_ShowingProduct">
                     <div className="infoProduct_Row">
                         <h2 className="h2_ShowingPage">{selectedVariant?.name}</h2>
-                         {/* Mostrar solo si el usuario tiene permisos completos */}
-                         {hasFullPermissions && (
+                        {/* Mostrar solo si el usuario tiene permisos completos */}
+                        {hasFullPermissions && (
                             <>
                                 <p>Product Reference: {selectedVariant?.product_code}</p>
                                 <p>Product Code: {product?.product_reference}</p>
@@ -183,12 +183,9 @@ export const ShowingProductPage = () => {
                         </p>
                         {hasDiscountApplied ? (
                             <>
-                                <p className="textCard_Header discountedPrice">
+                                <p className="textCard_HeaderProduct discountedPriceProduct">
                                     {priceToDisplay}
                                 </p>
-                                {/* <p className="textCard_Header originalPrice">
-                                    Antes: ${variantPrice.toFixed(2)}
-                                </p> */}
                             </>
                         ) : (
                             <p className="textCard_Header">${variantPrice.toFixed(2)}</p>
@@ -199,12 +196,11 @@ export const ShowingProductPage = () => {
                         </button>
                         {accordionOpen && selectedVariant && (
                             <div className="accordionContent">
-                                <p>Materiales del producto: {selectedVariant.material}</p>
+                                <p>{selectedVariant.material}</p>
                             </div>
                         )}
 
                         <br />
-                        <label htmlFor="size" className="label_Size">Tamaño:</label>
                         <label htmlFor="size" className="label_Size">Tamaño:</label>
                         <select
                             id="size"
@@ -247,9 +243,9 @@ export const ShowingProductPage = () => {
 
 
                         {/* Mostrar aviso de stock bajo */}
-                        {lowStockWarning && (
-                            <p className="lowStockWarning">¡Quedan pocas unidades en stock!</p>
-                        )}
+                        <p className={`lowStockWarning ${lowStockWarning ? 'visible' : 'hidden'}`}>
+                            ¡Quedan pocas unidades en stock!
+                        </p>
 
                         <button
                             className="addToCart"

@@ -12,10 +12,6 @@ Currently, two official plugins are available:
 
 PROFILEPAGE USER INFORMATION
 
-## TAREAS DISEÑO:
-
-HERO ANIMADO 
-
 ## REMATES DISEÑO 
 
 RESPONSIVE

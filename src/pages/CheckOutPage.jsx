@@ -186,7 +186,7 @@ export const CheckOutPage = () => {
             <div className="left-column">
                 <div className="infoAboutChanges">
                     <img src={imageLogoBlackBackground} className="black-box"></img>
-                    <div className="white-box">Texto neutro</div>
+                    <div className="white-box">Resumen de compra</div>
                 </div>
 
                 <div className="cartPrev">

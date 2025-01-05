@@ -15,17 +15,9 @@ const CartContainer = () => {
     } = useContext(ProductContext)
 
     const {
-        // loading,
-        // setErrorMessage,
-        // errorMessage,
         fetchCartItems,
-        // setSelectedSize,
-        // selectedVariant,
         cartItems,
-        // setCartItems,
         removeFromCart,
-        // product,
-        // setProduct
     } = useContext(CartContext);
 
     useEffect(() => {
@@ -78,10 +70,8 @@ const CartContainer = () => {
                                 const imageUrl = selectedVariant?.image ? selectedVariant.image[0] : null;
                                 const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null;
 
-                                // Usamos hasDiscount para verificar si hay descuento
                                 const hasDiscountApplied = selectedVariant?.discount > 0;
 
-                                // Usamos renderPriceWithDiscount para obtener el precio final con descuento
                                 const priceToDisplay = renderPriceWithDiscount(selectedVariant);
 
                                 return (
@@ -100,9 +90,6 @@ const CartContainer = () => {
                                                     <p className="textCard_Header discountedPrice">
                                                         {priceToDisplay}
                                                     </p>
-                                                    {/* <p className="textCard_Header originalPrice">
-                                                        Antes: ${variantPrice.toFixed(2)}
-                                                    </p> */}
                                                 </>
                                             ) : (
                                                 <p className="textCard_Header">${variantPrice.toFixed(2)}</p>

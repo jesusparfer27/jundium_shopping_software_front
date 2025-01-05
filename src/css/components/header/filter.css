@@ -108,14 +108,17 @@
     padding: 10px;
     width: 100%;
     display: flex;
+    gap: 1rem;
 }
 
 .custom-label {
     width: auto;
     display: flex;
     justify-content: center;
+    align-items: center;
     padding-left: 0;
-    gap: 1rem;
+    gap: .5rem;
+    font-size: 16px;
 }
 
 .inputCheckbox_Container {
