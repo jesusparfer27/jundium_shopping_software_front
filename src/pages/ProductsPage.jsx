@@ -123,7 +123,7 @@ export const ProductsPage = () => {
                                                 alt={product.selectedVariant?.name || 'Producto sin nombre'}
                                                 className="productImage"
                                             />
-                                        </NavLink>
+                                        </NavLink> 
 
                                         <button
                                             onClick={() => handleAddToWishlist(product._id, product.selectedVariant.variant_id)}
