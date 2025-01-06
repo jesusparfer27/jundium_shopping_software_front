@@ -10,7 +10,7 @@ import { MultifunctionalModal } from '../components/modal-wishlist/Multifunction
 import { useUser } from '../hooks/useUser';
 import { ProductContext } from './admin_page/context/ProductContext';
 import imageLogoBlackBackground from '../assets/mini-logos/mini-logo-black-background.png'
-
+ 
 export const CheckOutPage = () => {
     const [expandedSections, setExpandedSections] = useState({});
     const { user } = useUser();
