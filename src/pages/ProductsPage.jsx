@@ -7,31 +7,19 @@ import { ProductContext } from '../pages/admin_page/context/ProductContext'
 
 import '../css/pages/product_page.css';
 
-// import AutumnImage from '../assets/home-sections/autumn-session-home.jpg';
-// import SpringImage from '../assets/season-images-product_page/example-spring-season.jpg';
-// import SummerImage from '../assets/season-images-product_page/example-summer-season.jpg';
 import WinterImage from '../assets/home-sections/winter-session-home.jpg';
 
 export const ProductsPage = () => {
     const { activeModal, openModal } = useContext(ModalContext);
-    const {
-        hasDiscount,
-        renderPriceWithDiscount
-    } = useContext(ProductContext)
+    const { hasDiscount, renderPriceWithDiscount } = useContext(ProductContext);
 
     const { id } = useParams();
+    const { name } = useParams();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [errorMessage, setErrorMessage] = useState("");
 
-    const {
-        handleAddToWishlist,
-        selectedVariant,
-        setSelectedVariant,
-        product,
-        setProduct
-    } = useContext(WishlistContext);
+    const { handleAddToWishlist, selectedVariant, setSelectedVariant, product, setProduct } = useContext(WishlistContext);
 
     const { VITE_API_BACKEND, VITE_PRODUCTS_ENDPOINT, VITE_BACKEND_ENDPOINT, VITE_IMAGES_BASE_URL, VITE_IMAGE } = import.meta.env;
 
@@ -44,24 +32,28 @@ export const ProductsPage = () => {
     const collectionParam = searchParams.get('collection');
     const variantIdParam = searchParams.get('variant_id');
 
+    // Función para obtener los productos
     const fetchProducts = async () => {
         setLoading(true);
         setError(null);
-
+    
         try {
             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}${VITE_PRODUCTS_ENDPOINT}`);
             if (!response.ok) throw new Error('Error al cargar los productos');
             const data = await response.json();
-
+    
             const filteredProducts = data.filter(product => {
                 const genderMatch = !genderParam || product.gender === genderParam;
                 const typeMatch = !typeParam || product.type === typeParam;
                 const collectionMatch = !collectionParam || product.collection === collectionParam;
-                const nameMatch = !searchTerm || product.selectedVariant?.name.toLowerCase().includes(searchTerm.toLowerCase());
+                // Filtra los productos por nombre de la variante
+                const nameMatch = !searchTerm || product.variants.some(variant => 
+                    variant.name.toLowerCase().includes(searchTerm.toLowerCase())
+                );
 
                 return genderMatch && typeMatch && collectionMatch && nameMatch;
             });
-
+    
             const productsWithVariants = filteredProducts.flatMap(product =>
                 product.variants.map(variant => ({
                     ...product,
@@ -70,7 +62,7 @@ export const ProductsPage = () => {
                     discount: variant.discount || product.discount,
                 }))
             );
-
+    
             setProducts(productsWithVariants);
         } catch (err) {
             setError(err.message);
@@ -89,7 +81,6 @@ export const ProductsPage = () => {
 
     if (loading) return <div className="loading">Cargando productos...</div>;
     if (error) return <div className="error">Error al cargar productos: {error}</div>;
-
 
     return (
         <>
@@ -113,12 +104,11 @@ export const ProductsPage = () => {
                                             className="productItem_ProductPage"
                                         >
                                             <img
-                                                src={
-                                                    product.selectedVariant?.showing_image
-                                                        ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${selectedVariant?.showing_image.find(
-                                                            (img) => img.endsWith('.jpg') || img.endsWith('.png')
-                                                        ) || product.selectedVariant?.showing_image}`
-                                                        : "ruta/a/imagen/por/defecto.jpg"
+                                                src={product.selectedVariant?.showing_image
+                                                    ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${selectedVariant?.showing_image.find(
+                                                        (img) => img.endsWith('.jpg') || img.endsWith('.png')
+                                                    ) || product.selectedVariant?.showing_image}`
+                                                    : "ruta/a/imagen/por/defecto.jpg"
                                                 }
                                                 alt={product.selectedVariant?.name || 'Producto sin nombre'}
                                                 className="productImage"

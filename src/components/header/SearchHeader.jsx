@@ -32,47 +32,65 @@ const HeaderSearch = () => {
         const term = e.target.value;
         setSearchTerm(term);
         setShowRecommendations(term.length > 0);
-    
+
         if (term) {
             try {
                 const response = await axios.get(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}${VITE_PRODUCTS_ENDPOINT}`);
                 const products = response.data;
-    
+
+                // Usamos un Set para almacenar los nombres únicos
+                const uniqueProductNames = new Set();
+
                 const filteredRecommendations = products
                     .flatMap((product) =>
-                        product.variants.map((variant) => {
-                            const matchesSearchTerm =
-                                variant.name.toLowerCase().includes(term.toLowerCase()) || // Filtra por nombre de la variante
-                                product.brand.toLowerCase().includes(term.toLowerCase()) || // Filtra por marca
-                                product.collection.toLowerCase().includes(term.toLowerCase()) || // Filtra por colección
-                                product.type.toLowerCase().includes(term.toLowerCase()) || // Filtra por tipo
-                                product.gender.toLowerCase().includes(term.toLowerCase()) || // Filtra por género
-                                variant.color?.colorName?.toLowerCase().includes(term.toLowerCase()) || // Filtra por color
-                                variant.material.toLowerCase().includes(term.toLowerCase()) || // Filtra por material
-                                variant.description.toLowerCase().includes(term.toLowerCase()); // Filtra por descripción
-    
-                            // Filtros adicionales por género y tipo si están definidos
-                            const matchesGender = gender ? product.gender.toLowerCase() === gender.toLowerCase() : true;
-                            const matchesType = type ? product.type.toLowerCase() === type.toLowerCase() : true;
-    
-                            return matchesSearchTerm && matchesGender && matchesType ? variant.name : null;
-                        })
+                        product.variants
+                            .filter((variant) => {
+                                const matchesSearchTerm =
+                                    variant.name.toLowerCase().includes(term.toLowerCase()) ||
+                                    product.brand.toLowerCase().includes(term.toLowerCase()) ||
+                                    product.collection.toLowerCase().includes(term.toLowerCase()) ||
+                                    product.type.toLowerCase().includes(term.toLowerCase()) ||
+                                    product.gender.toLowerCase().includes(term.toLowerCase()) ||
+                                    variant.color?.colorName?.toLowerCase().includes(term.toLowerCase()) ||
+                                    variant.material.toLowerCase().includes(term.toLowerCase()) ||
+                                    variant.description.toLowerCase().includes(term.toLowerCase());
+
+                                const matchesGender = gender ? product.gender.toLowerCase() === gender.toLowerCase() : true;
+                                const matchesType = type ? product.type.toLowerCase() === type.toLowerCase() : true;
+
+                                return matchesSearchTerm && matchesGender && matchesType;
+                            })
+                            .map((variant) => {
+                                // Si el nombre ya está en el Set, lo omitimos
+                                if (uniqueProductNames.has(variant.name)) {
+                                    return null;  // Omite este item
+                                }
+
+                                uniqueProductNames.add(variant.name);  // Añade el nombre al Set
+
+                                return {
+                                    name: variant.name,
+                                    productId: product._id,
+                                    variantId: variant.variant_id,
+                                };
+                            })
                     )
-                    .filter(Boolean); // Elimina valores nulos
-    
-                // Obtener recomendaciones únicas y limitar a 5
-                const uniqueRecommendations = [...new Set(filteredRecommendations)].slice(0, 5);
-                setRecommendations(uniqueRecommendations);
+                    .filter(Boolean);  // Filtra los valores nulos (cuando se omiten elementos)
+
+                setRecommendations(filteredRecommendations.slice(0, 5)); // Limitar a 5 recomendaciones
             } catch (error) {
                 console.error('Error fetching product recommendations:', error);
             }
         } else {
-            setRecommendations([]);
+            setRecommendations([]); // Limpiar recomendaciones si no hay término de búsqueda
         }
     };
-    
+
+
 
     const handleSearchSubmit = () => {
+        if (searchTerm.trim() === "") return; // Evitar la búsqueda vacía
+
         let searchQuery = `/products?search=${encodeURIComponent(searchTerm)}`;
 
         if (gender) {
@@ -83,9 +101,9 @@ const HeaderSearch = () => {
             searchQuery += `&type=${encodeURIComponent(type)}`;
         }
 
-        navigate(searchQuery);
-
+        navigate(searchQuery); // Navegar solo cuando el usuario decide hacer la búsqueda
     };
+
 
     const handleLinkClick = () => {
         openMenu(null);
@@ -135,15 +153,23 @@ const HeaderSearch = () => {
                         <div className="searchRecomendation_flexColumn"></div>
                         <div className="searchRecomendation_flexColumn">
                             <span>Para explorar...</span>
-                            <ul className='groupList_searchesRecomendations'>
+                            <ul className="groupList_searchesRecomendations">
                                 {recommendations.map((rec, index) => (
-                                    <li className='recomendSearches' key={index}>
-                                        <NavLink className="searchRecommendation_Navlink" to={`/products?search=${encodeURIComponent(rec)}`} onClick={handleLinkClick}> <span className="material-symbols-outlined">
-                                            search
-                                        </span>{rec}</NavLink>
+                                    <li className="recomendSearches" key={index}>
+                                        <NavLink
+                                            className="searchRecommendation_Navlink"
+                                            to={`/products?search=${encodeURIComponent(rec.name)}`}
+                                            onClick={handleLinkClick}
+                                        >
+                                            <span className="material-symbols-outlined">search</span>
+                                            {rec.name}
+                                        </NavLink>
+
                                     </li>
                                 ))}
                             </ul>
+
+
                         </div>
                     </div>
                 </div>

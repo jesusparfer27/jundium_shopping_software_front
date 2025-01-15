@@ -4,7 +4,6 @@ import "../../../css/pages/admin.css";
 
 export const AddVariantVariantForm = () => {
   const {
-    // generalProduct,
     productReference,
     setProductReference,
     variants,
@@ -19,7 +18,6 @@ export const AddVariantVariantForm = () => {
     handleDeleteSize,
     handleOutOfStockChange,
     handleDeleteVariant
-    // calculateDiscountedPrice
   } = useContext(ProductContext);
 
   const [sizes, setSizes] = useState([]);
@@ -76,7 +74,7 @@ export const AddVariantVariantForm = () => {
     const updatedVariants = variants.map((variant) => ({
       ...variant,
       product_code: generateProductCode(),
-      originalPrice: variant.originalPrice || variant.price,  // Asegúrate de que este campo esté presente
+      originalPrice: variant.originalPrice || variant.price,
     }));
 
     try {
@@ -90,10 +88,10 @@ export const AddVariantVariantForm = () => {
           console.log('Imagen de portada a agregar:', variant.showing_image_file);
 
           const formData = new FormData();
-          formData.append("imageFolders", JSON.stringify(["public", "images"])); // Ejemplo de cómo añadirlo
+          formData.append("imageFolders", JSON.stringify(["public", "images"]));
 
           variant.imageFiles.forEach((file) => {
-            console.log('Archivo agregado al formData:', file); // Depuración por archivo
+            console.log('Archivo agregado al formData:', file);
             formData.append("file", file);
           });
 
@@ -102,7 +100,6 @@ export const AddVariantVariantForm = () => {
             formData.append("showing_image", variant.showing_image_file);
           }
 
-          // Aquí puedes depurar el formData antes de enviarlo
           for (let pair of formData.entries()) {
             console.log(pair[0] + ': ' + pair[1]);
           }
@@ -122,15 +119,9 @@ export const AddVariantVariantForm = () => {
       }
 
       const formData = new FormData();
-      // formData.append("generalProduct", JSON.stringify(generalProduct));
       formData.append("variants", JSON.stringify(updatedVariants));
 
-      // console.log('generalProduct:', generalProduct);
       console.log('updatedVariants:', updatedVariants);
-
-      // for (let pair of formData.entries()) {
-      //   console.log(pair[0] + ': ' + pair[1]);
-      // }
 
       const response = await fetch(
         `${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/add-variant/${productReference}`,
@@ -139,14 +130,11 @@ export const AddVariantVariantForm = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
-          body: formData,  // No pongas Content-Type aquí, FormData lo establece automáticamente
+          body: formData,
         }
       );
 
       console.log("esto es productReference", productReference)
-
-
-      // console.log('Respuesta de la API:', response);
 
       if (!response.ok) throw new Error("Error al crear el producto.");
       console.log("Producto creado con éxito.");

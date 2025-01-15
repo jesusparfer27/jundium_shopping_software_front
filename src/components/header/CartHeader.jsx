@@ -12,21 +12,21 @@ const CartContainer = () => {
     const {
         hasDiscount,
         renderPriceWithDiscount
-    } = useContext(ProductContext)
+    } = useContext(ProductContext) // Llama al contexto de productos para manejar descuentos y precios
 
     const {
         fetchCartItems,
         cartItems,
         removeFromCart,
-    } = useContext(CartContext);
+    } = useContext(CartContext); // Accede al contexto del carrito para obtener los productos y eliminarlos
 
     useEffect(() => {
-        fetchCartItems();
-    }, [fetchCartItems]);
+        fetchCartItems(); // Al cargar el componente, obtiene los productos del carrito
+    }, [fetchCartItems]); // Se ejecuta solo cuando `fetchCartItems` cambia
 
     const handleCheckout = () => {
-        closeMenu()
-        navigate('/check-out');
+        closeMenu() // Cierra el menú de carrito
+        navigate('/check-out'); // Redirige al usuario a la página de pago
     };
 
     console.log('Productos actualmente en el carrito:', cartItems);
@@ -38,7 +38,7 @@ const CartContainer = () => {
                     <button className="closeContainerCart_noOptions" onClick={closeMenu}><span className="material-symbols-outlined">
                         close
                     </span></button>
-                    <div className="emptyCart">
+                     <div className="emptyCart"> {/*  Muestra mensaje y redirige al usuario si el carrito está vacío  */}
 
                         <div className="emptyCartMessage">
                             <p>No hay elementos en su carrito.</p>
@@ -59,16 +59,16 @@ const CartContainer = () => {
                         </div>
                     </div>
 
-                    <div className={`cartItems ${cartItems.length >= 3 ? 'scrollableCartItems' : ''}`}>
+                     <div className={`cartItems ${cartItems.length >= 3 ? 'scrollableCartItems' : ''}`}> {/* Si el carrito tiene 3 o más items, agrega scroll */}
                         <div className={`cartItems ${cartItems.length >= 3 ? 'scrollableCartItems' : ''}`}>
-                            {cartItems.map(item => {
-                                const { product_id, variant_id, quantity, size, colorName } = item;
-                                const name = product_id?.name || "Producto sin nombre";
-                                const variants = product_id?.variants || [];
-                                const selectedVariant = variants.find(variant => variant.variant_id === variant_id);
-                                const variantPrice = selectedVariant?.price || 0;
-                                const imageUrl = selectedVariant?.image ? selectedVariant.image[0] : null;
-                                const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null;
+                            {cartItems.map(item => { // Mapea los productos del carrito
+                                const { product_id, variant_id, quantity, size, colorName } = item; // Desestructura la información del producto
+                                const name = product_id?.name || "Producto sin nombre"; // Obtiene el nombre del producto
+                                const variants = product_id?.variants || []; // Obtiene las variantes del producto
+                                const selectedVariant = variants.find(variant => variant.variant_id === variant_id); // Encuentra la variante seleccionada
+                                const variantPrice = selectedVariant?.price || 0; // Obtiene el precio de la variante
+                                const imageUrl = selectedVariant?.image ? selectedVariant.image[0] : null; // Obtiene la URL de la imagen
+                                const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null; // Crea la URL completa de la imagen
 
                                 const hasDiscountApplied = selectedVariant?.discount > 0;
 
@@ -119,11 +119,11 @@ const CartContainer = () => {
                     <div className="fatherContainer_summary">
                         <div className="cartSummary">
                             <p>Mi Selección</p>
-                            <p>Total: ${cartItems.reduce((acc, item) => {
+                            <p>Total: ${cartItems.reduce((acc, item) => { // Calcula el total del carrito
                                 const selectedVariant = item.product_id?.variants.find(variant => variant.variant_id === item.variant_id);
                                 const variantPrice = selectedVariant?.price || 0;
                                 const quantity = item.quantity || 1;
-                                return acc + (variantPrice * quantity);
+                                return acc + (variantPrice * quantity); // Suma el precio de cada producto por su cantidad
                             }, 0).toFixed(2)}</p>
                         </div>
                     </div>

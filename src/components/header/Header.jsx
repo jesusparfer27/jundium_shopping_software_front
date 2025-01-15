@@ -50,6 +50,12 @@ const Header = () => {
         setIsNewsVisible(false);
     };
 
+        // Cambiar el onClick del botón de búsqueda para navegar a "/products"
+    const handleSearchClick = () => {
+            navigate('/products');  // Navegar al endpoint /products
+            openMenu('searchBar');  // Abrir el menú de búsqueda
+        };
+
     return (
         <>
             <header className="headerMainContainer">
@@ -80,7 +86,7 @@ const Header = () => {
                             </button>
                         </div>
                         <div className="headerSearch">
-                            <button className="button headerButton" onClick={() => openMenu('searchBar')}>
+                            <button className="button headerButton" onClick={handleSearchClick}>
                                 <span className="material-symbols-outlined">search</span>
                                 <h3 className="h3Style">Buscar</h3>
                             </button>

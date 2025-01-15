@@ -1,3 +1,6 @@
+// Importo las funciones de HeaderContext para la animación del Modal
+// Si el usuario ha interactuado con un case en específico el Modal contendrá el texto del case seleccionado
+
 import React, { useContext } from 'react';
 import { HeaderContext } from '../../context/HeaderContext';
 import '../../css/components/checkout/checkout_component.css';
@@ -20,6 +23,7 @@ export const Modal = () => {
         }
     };
 
+    // Define al contenedor modalInfo_CheckOut la función del contexto activeMenu para recibir el layout con opacity 
     return (
         <>
             <div

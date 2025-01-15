@@ -5,6 +5,9 @@ import { useUser } from '../../hooks/useUser';
 import logoJundiumWhite from '../../assets/logos/jundium_white_letters.png'
 import logoJundiumBlack from '../../assets/logos/jundium_black_letters.png'
 
+
+// Usa useLocation en el contenedor footer y con isHomeOrWomenCollection
+// defino que ruta me interesa para que reciban unos estilos u otros
 const Footer = () => {
     const location = useLocation();
     const isHomeOrWomenCollection = location.pathname === '/' || location.pathname === '/woman-collection';
@@ -19,6 +22,7 @@ const Footer = () => {
     const loggedUserEmail = loggedUser.email || '';
     console.log('Usuario desde useUser:', user);
 
+    // handleInputChange sirve para formatear los valores del input
     const handleInputChange = (e) => {
         const newValue = e.target.value;
         setEmail(newValue);
@@ -30,7 +34,7 @@ const handleSubscribe = async () => {
     console.log("Función handleSubscribe llamada");
     console.log(localStorage.getItem('user'));
 
-    
+    // si no hay un correo muestra el mensaje
     if (!email) {
         setMessage(
             <span>
@@ -43,6 +47,7 @@ const handleSubscribe = async () => {
     console.log("Email ingresado:", email);
     console.log("Usuario logueado con correo:", user.email);
 
+    // exige un usuario loggeado
     if (!loggedUser && !user) {
         setMessage(
           <span>
@@ -52,6 +57,7 @@ const handleSubscribe = async () => {
         return;
       }
       
+    // exige un usuario creado
     if (email !== loggedUserEmail) {
         setMessage(
             <span>
@@ -62,36 +68,45 @@ const handleSubscribe = async () => {
     }
     console.log(loggedUserEmail)
 
+    // Si el usuario se encuentro loggeado recibe el token del localStorage
     try {
         const token = localStorage.getItem('authToken');
         
         console.log("Usuario logueado detectado con token:", token);
         console.log("Correo enviado al parámetro:", email);
 
+        //  Envía la info el input al la ruta de mi API con el endpoint /newsletter y el método POST
         const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/newsletter`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
+            // Convierte el body de la solicitud en un String
             body: JSON.stringify({ email })
         });
 
+        // El resultado lo convierte a json
         const result = await response.json();
         if (response.ok && result.success) {
             setMessage("Éxito al suscribirse a la newsletter");
+            // depuracióon por si ha habido un error en la subscripción
         } else {
             setMessage(result.message || "Error en la suscripción.");
         }
+        // depuracióon por si ha habido un error durante el proceso de la subscripción
     } catch (error) {
         setMessage("Error al suscribir a la newsletter.");
         console.error("Error al suscribir a la newsletter:", error);
     }
 };
 
+    // Llama a un logo u otro dependiendo de en que ruta se encuentre el footer
     const logoSrc = isHomeOrWomenCollection ? logoJundiumBlack : logoJundiumWhite;
 
     return (
+        // Si la ruta es la definida en isHomeOrWomenCollection recibirá footer-light
+        //  y de lo contrario footer-dark
         <footer className={isHomeOrWomenCollection ? 'footer-light' : 'footer-dark'}>
             <div className="footerSuperior">
                 <div className="footerLinksContainer">
@@ -128,6 +143,7 @@ const handleSubscribe = async () => {
                             type="text"
                             className={`input_subscribeNewsletter ${isInputActive ? 'active' : ''}`}
                             placeholder="Introduce tu correo electrónico"
+                            // Se agrega el valor al estado email
                             value={email}
                             onChange={handleInputChange}
                         />

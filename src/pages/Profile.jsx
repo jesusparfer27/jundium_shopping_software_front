@@ -43,7 +43,7 @@ export const Profile = () => {
         };
 
         fetchData();
-    }, []); // Esto podría estar relacionado con la carga de datos de usuario
+    }, []);
 
 
     useEffect(() => {
@@ -456,58 +456,6 @@ export const Profile = () => {
 
                 </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 <div className="order-wishlist">
 
                     <div className="background-containerProfile">
@@ -542,9 +490,6 @@ export const Profile = () => {
                                                     <p className="textCard_Header discountedPrice">
                                                         {priceToDisplay}
                                                     </p>
-                                                    {/* <p className="textCard_Header originalPrice">
-                                                        Antes: ${variantPrice.toFixed(2)}
-                                                    </p> */}
                                                 </>
                                             ) : (
                                                 <p className="textCard_Header">${variantPrice.toFixed(2)}</p>

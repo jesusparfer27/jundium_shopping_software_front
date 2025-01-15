@@ -4,26 +4,18 @@ import "../../../css/pages/admin.css";
 
 export const EditVariant = () => {
   const {
-    // generalProduct,
     variants,
     setVariants,
-    // validateData,
     addNewVariantForm,
     handleDeleteImageInput,
     handleShowImageUpload,
     handleImageUpload,
-    // generateProductReference,
-    // generateProductCode,
-    // handleVariantChange,
     handleOutOfStockChange,
     handleDeleteSize,
     productCode,
     setProductCode,
     calculateDiscountedPrice,
   } = useContext(ProductContext);
-
-  // const [variantCount, setVariantCount] = useState(0);
-  // const [fileNames, setFileNames] = useState([]);
 
   const [sizes, setSizes] = useState([]);
   const [error, setError] = useState("");
@@ -112,15 +104,15 @@ export const EditVariant = () => {
       }
 
       const url = `${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/edit-variant-data/${productCode}`;
-      console.log("URL de la solicitud:", url); // Log de la URL
+      console.log("URL de la solicitud:", url);
 
       const response = await fetch(url, {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json", // JSON payload
+          "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
-        body: JSON.stringify({ variants: updatedVariants }), // Enviar como JSON
+        body: JSON.stringify({ variants: updatedVariants }),
       });
 
       if (!response.ok) throw new Error("Error al actualizar la variante.");
@@ -148,14 +140,11 @@ export const EditVariant = () => {
         updatedVariant[id] = value;
       }
 
-      // Lógica para actualizar el precio cuando se cambia el descuento
       if (id === "discount") {
         const discountValue = parseFloat(value);
         if (discountValue > 0) {
-          // Si el descuento es mayor que 0, calculamos el precio con descuento
           updatedVariant.price = calculateDiscountedPrice(updatedVariant.originalPrice, discountValue);
         } else {
-          // Si el descuento es 0, volvemos al precio original
           updatedVariant.price = updatedVariant.originalPrice;
         }
       }
