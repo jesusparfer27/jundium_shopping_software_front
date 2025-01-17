@@ -12,6 +12,7 @@ export const MultifunctionalModal = () => {
     const [timerStartTime, setTimerStartTime] = useState(Date.now());
 
     const renderContent = () => {
+        // Renderiza el contenido del modal según el valor de `activeModal`.
         if (activeModal === 'modalNeed_toLogin') {
             return (
                 <div className="multifunctionalModal_containerFather">
@@ -95,6 +96,7 @@ export const MultifunctionalModal = () => {
     };
 
     useEffect(() => {
+        // Configura un temporizador para iniciar la animación de desvanecimiento (`fadeOut`) después de 500 ms si el modal no está siendo interactuado.
         if (activeModal !== 'multifunctionalModal') {
             setFadeOut(false);
             setTimerActive(true);
@@ -113,6 +115,7 @@ export const MultifunctionalModal = () => {
     }, [activeModal, timerActive, timerStartTime, mouseOver]);
 
     useEffect(() => {
+        // Cierra el modal automáticamente después de que termine la animación de desvanecimiento (`fadeOut`).
         if (fadeOut) {
             const timer = setTimeout(() => {
                 closeModal();

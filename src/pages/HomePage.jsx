@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import '../css/pages/homepage.css';
 
+// Importación de recursos multimedia (videos, imágenes)
 import SeasonVideo from '../assets/home-sections/home-video-season.mp4';
 import AutumnImage from '../assets/home-sections/autumn-session-home.jpg';
 import VideoDiscounts from '../assets/home-sections/video-discounts.mp4'
@@ -24,16 +25,17 @@ import SpringSeason from '../assets/new-season/spring-season-square-home.jpg';
 import WinterSeason from '../assets/new-season/winter-season-square-home.jpg';
 
 export const HomePage = () => {
+    // Estados para controlar la animación, desplazamiento y carga de imágenes
     const [offset, setOffset] = useState(0);
     const [scale, setScale] = useState(1);
-    const [imagesLoaded, setImagesLoaded] = useState(false);
+    const [imagesLoaded, setImagesLoaded] = useState(false); // Controla la animación de las imágenes
     const [imagesToLoad, setImagesToLoad] = useState(0);
     const [animate, setAnimate] = useState(false); // Controla la animación
     const [imagesLoadedCount, setImagesLoadedCount] = useState(0);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [currentIndexAlternatives, setCurrentIndexAlternatives] = useState(0);
     const [prevIndex, setPrevIndex] = useState(0);
-    const carouselRef = useRef(null);
+    const carouselRef = useRef(null); // Referencia al carrusel
 
     const carouselTexts = [
         "DESCUBRE NUESTRA COLECCIÓN DE INVIERNO 2025: ESTILO Y COMODIDAD EN CADA PRENDA.",
@@ -45,7 +47,7 @@ export const HomePage = () => {
         "TU ESENCIA, TU ESTILO: ENCUENTRA LA MODA QUE TE DEFINE.",
     ];
 
-    const categoriesData = [
+    const categoriesData = [ /* Datos de categorías de productos */ 
         { id: 1, name: "Bolsos de Mujer", image: WomanBags, type: "bolso", gender: "mujer" },
         { id: 2, name: "Bolsos de Hombre", image: ManBags, type: "bolso", gender: "hombre" },
         { id: 3, name: "Camisetas de Mujer", image: WomanTshirts, type: "camiseta", gender: "mujer" },
@@ -56,19 +58,19 @@ export const HomePage = () => {
         { id: 8, name: "Zapatos de Hombre", image: ManShoes, type: "zapatillas", gender: "hombre" }
     ];
 
-    const seasonsData = [
+    const seasonsData = [ /* Datos de estaciones y colecciones */
         { id: 1, name: "Verano 2025", image: SummerSeason, endpoint: "/products?collection=Summer%202025" },
         { id: 2, name: "Primavera 2025", image: SpringSeason, endpoint: "/products?collection=Autumn%202025" },
         { id: 3, name: "Invierno 2025", image: WinterSeason, endpoint: "/products?collection=Winter%202025" },
     ];
 
-    const alternatives = [
+    const alternatives = [ /* Alternativas para imágenes y textos en la sección principal */
         { id: 1, image: winterImage, text: 'Descubre la nueva colección de invierno.' },
         { id: 2, image: womanShoes, text: 'Explora los looks más elegantes.' },
         { id: 3, image: bagsWoman, text: 'Bolsos diseñados para cada ocasión.' },
     ];
 
-
+    // Función para manejar la animación entre las alternativas de imágenes
     const handleNext = () => {
         setAnimate(true); // Activa la animación
         setPrevIndex(currentIndexAlternatives); // Almacena el índice actual como el anterior
@@ -78,15 +80,17 @@ export const HomePage = () => {
 
     const { image, text } = alternatives[currentIndexAlternatives];
 
+    // Efecto para actualizar la cantidad de imágenes que se deben cargar
     useEffect(() => {
-        setImagesToLoad(categoriesData.length + seasonsData.length);
+        setImagesToLoad(categoriesData.length + seasonsData.length); // Suma de imágenes
     }, []);
 
+    // Función para manejar la carga de imágenes y actualizar el estado de imágenes cargadas
     const handleImageLoad = () => {
         setImagesLoadedCount((prevCount) => {
             const newCount = prevCount + 1;
             if (newCount === imagesToLoad) {
-                setImagesLoaded(true);
+                setImagesLoaded(true); // Cuando todas las imágenes se hayan cargado
             }
             return newCount;
         });
@@ -96,41 +100,53 @@ export const HomePage = () => {
     const extendedData = Array(20).fill([...categoriesData]).flat();
 
     useEffect(() => {
+        // Calcula el número total de elementos en el carrusel
         const totalItems = carouselTexts.length;
-
+    
+        // Establece un intervalo que actualiza el índice actual del carrusel cada 3 segundos
         const interval = setInterval(() => {
             setCurrentIndex((prevIndex) => {
+                // Si el índice actual es igual al total de elementos, reinicia al inicio del carrusel
                 if (prevIndex === totalItems) {
                     if (carouselRef.current) {
+                        // Desactiva la transición para que el salto al inicio sea instantáneo
                         carouselRef.current.style.transition = "none";
-                        return 0;
                     }
+                    return 0; // Reinicia al primer elemento
                 }
+    
+                // Si no es el último elemento, aplica una transición suave para el desplazamiento
                 if (carouselRef.current) {
                     carouselRef.current.style.transition = "transform 1s ease-in-out";
                 }
+    
+                // Incrementa el índice actual, asegurándose de que no supere el total de elementos (ciclo continuo)
                 return (prevIndex + 1) % totalItems;
             });
-        }, 3000);
-
+        }, 3000); // Cambia cada 3 segundos
+    
+        // Limpia el intervalo cuando el componente se desmonta o se actualiza
         return () => clearInterval(interval);
-    }, [carouselTexts.length]);
+    }, [carouselTexts.length]); // Ejecuta este efecto cada vez que cambie la longitud de `carouselTexts`
+    
 
 
+    // Efecto para manejar el desplazamiento y aplicar la escala al hacer scroll
     useEffect(() => {
         const handleScroll = () => {
             const offsetY = window.scrollY;
-            const newScale = 1 + (offsetY > 100 ? (offsetY - 100) / 7000 : 0);
+            const newScale = 1 + (offsetY > 100 ? (offsetY - 100) / 7000 : 0); // Escala que depende del desplazamiento
             setScale(newScale);
         };
 
         window.addEventListener('scroll', handleScroll);
 
         return () => {
-            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('scroll', handleScroll); // Elimina el evento cuando el componente se desmont
         };
     }, []);
 
+    // Elimina el evento cuando el componente se desmonta
     const renderCategories = (data) => (
         data.map((category) => (
             <NavLink
@@ -154,7 +170,7 @@ export const HomePage = () => {
         ))
     );
 
-
+    // Función para renderizar las estaciones de productos (ej. verano, primavera)
     const renderSeasons = (data) => (
         data.map((season) => (
             <NavLink
@@ -180,6 +196,7 @@ export const HomePage = () => {
 
     return (
         <>
+         {/* Sección de video y alternancia de imágenes con texto */}
             <section className="videoScrollContainer">
                 <div className="nextButton_Container" id="alternatives-container">
                     <button className="nextButton" onClick={handleNext}>
@@ -213,11 +230,12 @@ export const HomePage = () => {
                 <h1 className='h1Style'>Echa un vistazo a los nuevos drops</h1>
                 <div className="newDropsHome_Container">
                     <div className="newDropsHome">
-                        {renderCategories(categoriesData)}
+                        {renderCategories(categoriesData)} {/* Renderiza las categorías de productos */}
                     </div>
                 </div>
             </section>
 
+            {/* Carrusel de textos */}
             <section className="carruselContainer_newCollections">
                 <div
                     className="carruselTrack"
@@ -231,6 +249,7 @@ export const HomePage = () => {
                 </div>
             </section>
 
+            {/* Video promocional */}
             <section className="container_videoSession-2">
                 <div>
                     <NavLink to="/products" className="videoLink">
@@ -251,6 +270,7 @@ export const HomePage = () => {
                 </div>
             </section>
 
+            {/* Carrusel de productos */}
             <section className="carruselHome">
                 <div className="leftVideoContainer">
                     <video
@@ -285,6 +305,7 @@ export const HomePage = () => {
                 </div>
             </section>
 
+            {/* Imagen de otoño con escalado */}
             <section className="container_image_autumn stickyVideo">
                 <div>
                     <NavLink to="/products" className="videoLink2">
@@ -298,12 +319,13 @@ export const HomePage = () => {
                 </div>
             </section>
 
+            {/* Sección de temporada */}
             <div className="newCollections lastSection">
                 <div className="newCollections_Container">
                     <h1 className='h1Style'>Echa un vistazo a la nueva temporada</h1>
                     <div className="newCollections_Block">
                         <div className="newDropsHome2">
-                            {renderSeasons(seasonsData)}
+                            {renderSeasons(seasonsData)} {/* Renderiza las estaciones */}
                         </div>
                     </div>
                 </div>

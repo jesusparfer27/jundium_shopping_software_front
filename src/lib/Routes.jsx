@@ -16,51 +16,20 @@ import { ErrorPage } from "../pages/ErrorPage";
 // Crear las rutas
 const router = createBrowserRouter([
     {
-        path: '/',
+        path: '/', // Ruta raíz que carga la aplicación principal
         element: <App />,
-        errorElement: <ErrorPage />, // Agregar aquí la página de error
+        errorElement: <ErrorPage />, // Página de error por defecto
         children: [
-            {
-                index: true,
-                element: <HomePage />
-            },
-            {
-                path: '/products', // Aquí se agrega el parámetro de categoría
-                element: <ProductsPage />
-            },
-            {
-                path: '/products/:id',
-                element: <ShowingProductPage />
-            },
-            {
-                path: '/check-out',
-                element: <CheckOutPage />
-            },
-            {
-                path: '/email-validation',
-                element: <EmailSignIn />
-            },
-            {
-                path: '/profile',
-                element: <Profile />
-            },
-            {
-                path: '/email-validation-2',
-                element: <SecondStepSignIn />
-            },
-            {
-                path: '/admin',
-                element: <Admin />
-            },
-            {
-                path: '/wish-list',
-                element: <MultifunctionalProductPage />
-            },
-            {
-                path: '/error',
-                element: <ErrorPage />,
-                errorElement: <ErrorPage />,
-            }
+            { index: true, element: <HomePage /> }, // Página principal
+            { path: '/products', element: <ProductsPage /> }, // Página de productos
+            { path: '/products/:id', element: <ShowingProductPage /> }, // Página de detalles del producto
+            { path: '/check-out', element: <CheckOutPage /> }, // Página de checkout
+            { path: '/email-validation', element: <EmailSignIn /> }, // Página de inicio de sesión por email
+            { path: '/profile', element: <Profile /> }, // Página del perfil de usuario
+            { path: '/email-validation-2', element: <SecondStepSignIn /> }, // Página de segunda validación de email
+            { path: '/admin', element: <Admin /> }, // Página de administración
+            { path: '/wish-list', element: <MultifunctionalProductPage /> }, // Página de lista de deseos
+            { path: '/error', element: <ErrorPage />, errorElement: <ErrorPage /> }, // Página de error personalizada
         ]
     }
 ]);

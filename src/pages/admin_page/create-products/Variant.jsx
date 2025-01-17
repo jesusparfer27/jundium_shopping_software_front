@@ -2,7 +2,9 @@ import React, { useState, useEffect, useContext } from "react";
 import { ProductContext } from "../context/ProductContext";
 import "../../../css/pages/admin.css";
 
+// Este componente maneja la visualización y edición de variantes de un producto en la página de administración.
 export const Variant = () => {
+   // Extraemos funciones y datos del contexto global que gestiona los productos y sus variantes.
   const {
     generalProduct,
     variants,
@@ -20,23 +22,21 @@ export const Variant = () => {
     handleDeleteVariant
   } = useContext(ProductContext);
 
-  // const [variantCount, setVariantCount] = useState(0);
-  // const [fileNames, setFileNames] = useState([]);
-
-  const [sizes, setSizes] = useState([]);
-  const [error, setError] = useState("");
-  const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
-  const [stock, setStock] = useState("");
-  const [activeAccordion, setActiveAccordion] = useState(null);
-  const [currentSize, setCurrentSize] = useState("");
-  const [showImage, setShowImage] = useState("")
+  const [sizes, setSizes] = useState([]); // Controla las tallas de variantes.
+  const [error, setError] = useState(""); // Maneja errores en formularios.
+  const [selectedVariantIndex, setSelectedVariantIndex] = useState(0); // Controla el índice de la variante seleccionada.
+  const [stock, setStock] = useState(""); // Controla el stock para cada variante.
+  const [activeAccordion, setActiveAccordion] = useState(null); // Abre o cierra el acordeón.
+  const [currentSize, setCurrentSize] = useState(""); // Controla el tamaño ingresado.
+  const [showImage, setShowImage] = useState("") // Muestra la imagen seleccionada.
 
   const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
 
   useEffect(() => {
-    localStorage.setItem("variants", JSON.stringify(variants));
+    localStorage.setItem("variants", JSON.stringify(variants)); // Guarda las variantes en localStorage cada vez que cambian.
   }, [variants]);
 
+  // Agrega una talla y stock a una variante.
   const handleAddSize = (index) => {
     if (!currentSize.trim()) {
       alert("Por favor, ingrese una talla válida.");
@@ -69,17 +69,18 @@ export const Variant = () => {
     setStock("");
   };
 
+  // Envía los datos del producto y sus variantes al backend.
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateData()) return;
 
-    const productReference = generateProductReference();
+    const productReference = generateProductReference(); // Genera referencia única del producto.
     generalProduct.product_reference = productReference;
 
     const updatedVariants = variants.map((variant) => ({
       ...variant,
-      product_code: generateProductCode(),
+      product_code: generateProductCode(), // Genera códigos únicos por variante.
     }));
 
     try {
@@ -113,11 +114,6 @@ export const Variant = () => {
       formData.append("generalProduct", JSON.stringify(generalProduct));
       formData.append("variants", JSON.stringify(updatedVariants));
 
-      // for (const pair of formData.entries()) {
-      //   console.log(`${pair[0]}:`, pair[1]);
-      // }
-
-
       const response = await fetch(
         `${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/create-product`,
         {
@@ -129,7 +125,6 @@ export const Variant = () => {
         }
       );
 
-
       if (!response.ok) throw new Error("Error al crear el producto.");
       console.log("Producto creado con éxito.");
     } catch (error) {
@@ -137,6 +132,7 @@ export const Variant = () => {
     }
   };
 
+  // Guarda URLs de imágenes subidas al backend.
   const handleSaveImageUrlsToBackend = async (files) => {
     const formData = new FormData();
     files.forEach((file) => formData.append("images", file));

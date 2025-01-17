@@ -41,10 +41,10 @@ export const HeaderProvider = ({ children }) => {
         menuOpen,
         activeMenu,
         overlayVisible,
-        toggleMenu,
-        closeMenu,
-        openMenu,
-        setMenuOpen,
+        toggleMenu, // Alternar menú abierto/cerrado
+        closeMenu,  // Cerrar el menú y restablecer estados
+        openMenu,   // Abrir un menú específico
+        setMenuOpen, // Permite modificar el estado del menú
         handleOverlayClick, // Función para cerrar el menú al hacer clic en la superposición
     };
 

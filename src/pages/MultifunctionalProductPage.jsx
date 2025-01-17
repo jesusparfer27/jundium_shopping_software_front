@@ -4,19 +4,21 @@
     import { useNavigate } from 'react-router-dom';
     import { useContext } from 'react';
     import { ProductContext } from './admin_page/context/ProductContext';
-    import ErrorImage from '../assets/error-image/error-image.jpg'; // Ajusta el path según la ubicación de tu imagen
+    import ErrorImage from '../assets/error-image/error-image.jpg'; 
 
+    // Componente principal para la página de productos multifuncionales
     export const MultifunctionalProductPage = () => {
-        const [likedProducts, setLikedProducts] = useState([]);
-        const [loading, setLoading] = useState(true);
-        const [error, setError] = useState(null);
-        const navigate = useNavigate();
-        const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
-        const {
-            hasDiscount,
-            renderPriceWithDiscount
-        } = useContext(ProductContext)
+        // Estados locales
+        const [likedProducts, setLikedProducts] = useState([]); // Lista de productos favoritos
+        const [loading, setLoading] = useState(true); // Estado de carga
+        const [error, setError] = useState(null); // Estado para manejar errores
+        const navigate = useNavigate(); // Hook para redireccionar
+        const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env; // Variables de entorno
 
+        // Contexto para lógica adicional relacionada con los productos
+        const { hasDiscount, renderPriceWithDiscount } = useContext(ProductContext)
+
+        // Efecto para obtener productos de la wishlist al cargar el componente
         useEffect(() => {
             const token = localStorage.getItem('authToken');
             if (!token) {
@@ -24,6 +26,7 @@
                 return; // Usuario no loggeado
             }
 
+            // Función para obtener los productos favoritos del usuario
             const fetchLikedProducts = async () => {
                 try {
                     const headers = {
@@ -31,27 +34,30 @@
                         'Content-Type': 'application/json',
                     };
 
+                    // Petición para obtener la wishlist
                     const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist`, { headers });
                     if (!response.ok) {
                         throw new Error('Error al obtener los productos de la wishlist');
                     }
 
                     const data = await response.json();
+                    // Verificar si hay datos en la respuesta
                     if (data && data.items && Array.isArray(data.items)) {
-                        setLikedProducts(data.items);
+                        setLikedProducts(data.items); // Actualizar lista de productos
                     } else {
                         throw new Error('No se encontraron productos en la wishlist');
                     }
                 } catch (error) {
                     setError(error.message);
                 } finally {
-                    setLoading(false);
+                    setLoading(false); // Finalizar carga
                 }
             };
 
             fetchLikedProducts();
         }, []);
 
+        // Función para eliminar un producto de la wishlist
         const handleRemoveFromWishlist = async (productId, variantId) => {
             const token = localStorage.getItem('authToken');
 
@@ -67,6 +73,7 @@
             }
 
             try {
+                // Petición para eliminar el producto
                 const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/wishlist/${productId}/${variantId}`, {
                     method: 'DELETE',
                     headers: {
@@ -85,20 +92,24 @@
                 }
 
                 const data = await response.json();
+                // Actualizar lista local eliminando el producto
                 setLikedProducts((prevProducts) => prevProducts.filter(item => item.variant_id !== variantId));
             } catch (error) {
                 setError('Ocurrió un error al eliminar el producto de la wishlist.');
             }
         };
 
+        // Función para redireccionar al usuario al detalle de un producto
         const addToCart = (productId, variantId) => {
             navigate(`/products/${productId}?variant_id=${variantId}`);
         };
 
+        // Renderizar vista de carga
         if (loading) {
             return <div>Cargando productos...</div>;
         }
 
+        // Vista si el usuario no ha iniciado sesión
         if (!localStorage.getItem('authToken')) {
             return (
                 <>
@@ -122,10 +133,12 @@
             );
         }
 
+        // Vista si ocurre un error
         if (error) {
             return <div>Error: {error}</div>;
         }
 
+        // Renderizar productos de la wishlist
         return (
             <section className="wishlistSection">
                 <div className={likedProducts.length > 0 ? "wishlistContainer" : "wishlistContainerEmpty"}>

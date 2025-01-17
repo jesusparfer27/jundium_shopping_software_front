@@ -7,21 +7,27 @@ import ProfileImage from '../components/profile-header/ProfileHeader';
 import '../css/pages/profile.css';
 
 export const Profile = () => {
-    const [wishlistItems, setWishlistItems] = useState([]);
-    const [orderItems, setOrderItems] = useState([]);
-    const [isAccordionOpen, setIsAccordionOpen] = useState(false);
-    const [isUserLoaded, setIsUserLoaded] = useState(false);
-    const [isDirty, setIsDirty] = useState(false);
-    const [saveStatus, setSaveStatus] = useState(null);
+    // Estados locales para manejar datos y comportamiento del componente
+    const [wishlistItems, setWishlistItems] = useState([]); // Lista de artículos en la lista de deseos
+    const [orderItems, setOrderItems] = useState([]); // Lista de pedidos
+    const [isAccordionOpen, setIsAccordionOpen] = useState(false); // Controla el estado del acordeón
+    const [isUserLoaded, setIsUserLoaded] = useState(false); // Indica si los datos del usuario se cargaron
+    const [isDirty, setIsDirty] = useState(false); // Indica si hay cambios pendientes de guardar
+    const [saveStatus, setSaveStatus] = useState(null); // Estado del guardado de cambios
 
-    const { hasDiscount, renderPriceWithDiscount } = useContext(ProductContext)
+    // Acceso al contexto de productos
+    const { hasDiscount, renderPriceWithDiscount } = useContext(ProductContext);
+    // Acceso al contexto de usuario
     const { user, setUser, loading, error, fetchUserDetails, setLoading, data, setData } = useUser();
+    // Acceso al contexto del header
     const { openMenu } = useContext(HeaderContext);
 
+    // Navegación programática
     const navigate = useNavigate();
 
     const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
 
+    // Redirige al usuario si no hay un token de autenticación
     useEffect(() => {
         const token = localStorage.getItem('authToken');
         if (!token) {
@@ -29,6 +35,7 @@ export const Profile = () => {
         }
     }, [navigate]);
 
+    // Carga de datos desde la API
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -45,7 +52,7 @@ export const Profile = () => {
         fetchData();
     }, []);
 
-
+    // Carga inicial de los detalles del usuario
     useEffect(() => {
         const loadUser = async () => {
             const token = localStorage.getItem('authToken');
@@ -56,14 +63,14 @@ export const Profile = () => {
                 setIsUserLoaded(true);
             } catch (err) {
                 console.error('Error fetching user data:', err);
-                openMenu('login');
+                openMenu('login'); // Abre el menú de login en caso de error
             }
         };
 
         loadUser();
     }, [user, fetchUserDetails, openMenu]);
 
-
+    // Función para obtener los artículos de la lista de deseos
     const fetchWishlistItems = useCallback(async () => {
         if (!user) return;
 
@@ -94,10 +101,12 @@ export const Profile = () => {
         }
     }, [VITE_API_BACKEND, VITE_BACKEND_ENDPOINT, user]);
 
+    // Llama a la función de carga de wishlist al montar el componente
     useEffect(() => {
         fetchWishlistItems();
     }, [fetchWishlistItems]);
 
+    // Navegación a diferentes páginas
     const handleNavigateToWishlist = () => {
         navigate('/wish-list');
     };
@@ -110,9 +119,11 @@ export const Profile = () => {
         navigate('/products');
     };
 
+    // Obtiene los primeros 2 artículos visibles de la wishlist
     const visibleItems = wishlistItems.slice(0, 2);
     const remainingCount = wishlistItems.length - 2;
 
+    // Maneja errores en la carga de usuario
     useEffect(() => {
         if (error) {
             console.error('Error fetching user data:', error);
@@ -120,13 +131,15 @@ export const Profile = () => {
         }
     }, [error, openMenu]);
 
+    // Actualiza los datos del usuario en el estado
     const handleUserInfoChange = (e) => {
         const { name, value, checked, type } = e.target;
-        setIsDirty(true);
+        setIsDirty(true); // Marca como datos modificados
 
         console.log(`Cambio en el campo: ${name} -> Valor: ${type === 'checkbox' ? checked : value}`);
 
         setUser((prevUser) => {
+            // Manejo de campos anidados como preferencias de contacto
             if (name.startsWith('contact_preferences')) {
                 const contactType = name.split('.')[1];
                 return {
@@ -138,6 +151,7 @@ export const Profile = () => {
                 };
             }
 
+            // Manejo de la fecha de nacimiento
             if (name.startsWith('birth_date')) {
                 const datePart = name.split('.')[1];
                 return {
@@ -185,6 +199,7 @@ export const Profile = () => {
                 };
             }
 
+            // Actualización directa de otros campos
             return {
                 ...prevUser,
                 [name]: value
@@ -217,20 +232,21 @@ export const Profile = () => {
             if (!response.ok) throw new Error('Error al guardar los cambios');
 
             const updatedUser = await response.json();
-            console.log('Datos de usuario actualizados:', updatedUser);
+            console.log('Datos de usuario actualizados:', updatedUser); 
 
-            localStorage.setItem('user', JSON.stringify(updatedUser));
+            localStorage.setItem('user', JSON.stringify(updatedUser));  // Actualiza localStorage
 
             setUser(updatedUser);
             setIsDirty(false);
             setSaveStatus({ success: true, message: 'Cambios guardados exitosamente' });
-            await fetchUserDetails();
+            await fetchUserDetails(); // Refresca los datos del usuario
         } catch (err) {
             console.error('Error al guardar cambios:', err);
             setSaveStatus({ success: false, message: 'Hubo un error al guardar los cambios' });
         }
     };
 
+    // Cierra sesión del usuario
     const handleLogout = () => {
         localStorage.removeItem("user");
         localStorage.removeItem('authToken');
@@ -242,6 +258,7 @@ export const Profile = () => {
     console.log("Usuario logeado:", user);
     console.log("Nombre del usuario logeado:", user?.first_name);
 
+    // Verifica si el usuario es administrador
     const isAdmin = user?.permissions &&
         user.permissions.manage_users &&
         user.permissions.manage_products &&

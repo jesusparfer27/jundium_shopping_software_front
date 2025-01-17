@@ -13,41 +13,46 @@ import '../../css/components/header/header.css';
 
 const Header = () => {
     const { activeMenu, openMenu } = useContext(HeaderContext);
-    const location = useLocation();
-    const navigate = useNavigate();
+    const location = useLocation(); // Obtiene la ubicación actual de la URL
+    const navigate = useNavigate(); // Obtiene la función para navegar a otras páginas
     const [isProductsPage, setIsProductsPage] = useState(false);
 
+    // Define un array con noticias que se mostrarán en el header
     const news = [
         { text: 'Promoción especial', link: '/products' },
         { text: 'Descubre nuestras ofertas', link: '/products' },
     ]
-    const [activeNewsIndex, setActiveNewsIndex] = useState(0);
-    const [isNewsVisible, setIsNewsVisible] = useState(true);
+    const [activeNewsIndex, setActiveNewsIndex] = useState(0); // Estado para mantener el índice de la noticia activa
+    const [isNewsVisible, setIsNewsVisible] = useState(true); // Estado para manejar si la barra de noticias es visible
 
+    // Efecto que actualiza el estado isProductsPage cuando cambiamos de ruta
     useEffect(() => {
-        setIsProductsPage(location.pathname === '/products');
-    }, [location.pathname]);
+        setIsProductsPage(location.pathname === '/products'); // Verifica si la ruta actual es "/products"
+    }, [location.pathname]); // Se ejecuta cada vez que cambia la URL
 
+    // Efecto que cambia la noticia activa cada 3 segundos si la barra de noticias está visible
     useEffect(() => {
         if (isNewsVisible) {
             const interval = setInterval(() => {
-                setActiveNewsIndex((prevIndex) => (prevIndex + 1) % news.length);
+                setActiveNewsIndex((prevIndex) => (prevIndex + 1) % news.length); // Cambia la noticia activa
             }, 3000);
-            return () => clearInterval(interval);
+            return () => clearInterval(interval); // Limpia el intervalo cuando se oculta la barra de noticias
         }
-    }, [isNewsVisible]);
+    }, [isNewsVisible]); // Este efecto depende de si la barra de noticias es visible
 
+    // Función para manejar el clic en el botón de login
     const handleLoginClick = () => {
         const token = localStorage.getItem('authToken');
         if (!token) {
-            openMenu('login');
+            openMenu('login'); // Si no hay token, abre el menú de login
         } else {
-            navigate('/profile');
+            navigate('/profile'); // Si hay token, navega a la página del perfil
         }
     };
 
+    // Función para cerrar la barra de noticias
     const removeHeaderNews = () => {
-        setIsNewsVisible(false);
+        setIsNewsVisible(false); // Cambia el estado para ocultar la barra de noticias
     };
 
         // Cambiar el onClick del botón de búsqueda para navegar a "/products"

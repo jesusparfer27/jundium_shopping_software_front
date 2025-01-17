@@ -18,16 +18,17 @@ const categoriesData = [
 ];
 
 const HeaderSearch = () => {
-    const { activeMenu, openMenu } = useContext(HeaderContext);
-    const searchRef = useRef(null);
-    const navigate = useNavigate();
-    const [searchTerm, setSearchTerm] = useState('');
-    const [gender, setGender] = useState('');
-    const [type, setType] = useState('');
-    const [showRecommendations, setShowRecommendations] = useState(false);
-    const [recommendations, setRecommendations] = useState([]);
-    const { VITE_API_BACKEND, VITE_PRODUCTS_ENDPOINT, VITE_BACKEND_ENDPOINT } = import.meta.env;
+    const { activeMenu, openMenu } = useContext(HeaderContext); // Contexto para manejar el estado del menú.
+    const searchRef = useRef(null); // Referencia para el contenedor de búsqueda.
+    const navigate = useNavigate(); // Navegación programática.
+    const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda.
+    const [gender, setGender] = useState(''); // Filtro de género.
+    const [type, setType] = useState(''); // Filtro de tipo de producto.
+    const [showRecommendations, setShowRecommendations] = useState(false); // Mostrar recomendaciones.
+    const [recommendations, setRecommendations] = useState([]); // Lista de recomendaciones.
+    const { VITE_API_BACKEND, VITE_PRODUCTS_ENDPOINT, VITE_BACKEND_ENDPOINT } = import.meta.env; // Variables de entorno.
 
+    // Manejar cambios en el input de búsqueda.
     const handleSearch = async (e) => {
         const term = e.target.value;
         setSearchTerm(term);
@@ -38,13 +39,13 @@ const HeaderSearch = () => {
                 const response = await axios.get(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}${VITE_PRODUCTS_ENDPOINT}`);
                 const products = response.data;
 
-                // Usamos un Set para almacenar los nombres únicos
-                const uniqueProductNames = new Set();
+                const uniqueProductNames = new Set(); // Almacena nombres únicos.
 
                 const filteredRecommendations = products
                     .flatMap((product) =>
                         product.variants
                             .filter((variant) => {
+                                // Filtrar variantes por término, género y tipo.
                                 const matchesSearchTerm =
                                     variant.name.toLowerCase().includes(term.toLowerCase()) ||
                                     product.brand.toLowerCase().includes(term.toLowerCase()) ||
@@ -61,7 +62,7 @@ const HeaderSearch = () => {
                                 return matchesSearchTerm && matchesGender && matchesType;
                             })
                             .map((variant) => {
-                                // Si el nombre ya está en el Set, lo omitimos
+                                // Evitar recomendaciones duplicadas.
                                 if (uniqueProductNames.has(variant.name)) {
                                     return null;  // Omite este item
                                 }

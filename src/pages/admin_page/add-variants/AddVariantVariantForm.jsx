@@ -3,6 +3,7 @@ import { ProductContext } from "../context/ProductContext";
 import "../../../css/pages/admin.css";
 
 export const AddVariantVariantForm = () => {
+  // Extrae valores y funciones del contexto para manejar variantes del producto
   const {
     productReference,
     setProductReference,
@@ -20,6 +21,7 @@ export const AddVariantVariantForm = () => {
     handleDeleteVariant
   } = useContext(ProductContext);
 
+  // Estados locales para manejar tallas, errores, índice de variante seleccionada, etc.
   const [sizes, setSizes] = useState([]);
   const [error, setError] = useState("");
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
@@ -30,10 +32,12 @@ export const AddVariantVariantForm = () => {
   const [showImage, setShowImage] = useState("")
   const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
 
+  // Guarda las variantes en localStorage cada vez que se actualizan.
   useEffect(() => {
     localStorage.setItem("variants", JSON.stringify(variants));
   }, [variants]);
 
+  // Agrega una nueva talla y su stock a una variante específica.
   const handleAddSize = (index) => {
     if (!currentSize.trim()) {
       alert("Por favor, ingrese una talla válida.");
@@ -62,13 +66,17 @@ export const AddVariantVariantForm = () => {
       return updatedVariants;
     });
 
+    // Limpia los campos después de agregar la talla
     setCurrentSize("");
     setStock("");
   };
 
+
+  // Envía los datos del formulario al backend y maneja la carga de imágenes.
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Valida los datos antes de enviar
     if (!validateData()) return;
 
     const updatedVariants = variants.map((variant) => ({
@@ -78,11 +86,13 @@ export const AddVariantVariantForm = () => {
     }));
 
     try {
+      // Procesa cada variante y maneja la subida de imágenes
       for (let i = 0; i < updatedVariants.length; i++) {
         const variant = updatedVariants[i];
 
         console.log("Datos de la variante antes de enviar:", variant);
 
+        // Si hay imágenes, las sube al backend
         if (variant.imageFiles?.length || variant.showing_image_file) {
           console.log('Imágenes a agregar:', variant.imageFiles);
           console.log('Imagen de portada a agregar:', variant.showing_image_file);
@@ -106,6 +116,7 @@ export const AddVariantVariantForm = () => {
 
           const uploadedImageUrls = await handleSaveImageUrlsToBackend(formData);
 
+          // Actualiza las URLs de las imágenes en la variante
           variant.image = uploadedImageUrls.filter((url, index) => index < variant.imageFiles.length);
           variant.showing_image = uploadedImageUrls.find((url, index) => index === variant.imageFiles.length);
 
@@ -118,6 +129,7 @@ export const AddVariantVariantForm = () => {
         console.log(`Esto es variant.showing_image ${i + 1}`, variant.showing_image);
       }
 
+      // Envía las variantes actualizadas al backend
       const formData = new FormData();
       formData.append("variants", JSON.stringify(updatedVariants));
 
@@ -144,6 +156,7 @@ export const AddVariantVariantForm = () => {
     }
   };
 
+  // Carga las variantes guardadas desde localStorage al montar el componente.
   useEffect(() => {
     const storedVariants = localStorage.getItem("variants");
     if (storedVariants) {
@@ -151,7 +164,7 @@ export const AddVariantVariantForm = () => {
     }
   }, []);
 
-
+  // Envía imágenes al backend y devuelve sus URLs.
   const handleSaveImageUrlsToBackend = async (files) => {
     const formData = new FormData();
     files.forEach((file) => formData.append("images", file));
@@ -172,6 +185,7 @@ export const AddVariantVariantForm = () => {
 
       const data = await response.json();
 
+      // Retorna las rutas procesadas de las imágenes
       return data.imagePaths.map((path) => {
         const parts = path.split("\\");
         const fileName = parts[parts.length - 1];

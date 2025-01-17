@@ -11,27 +11,27 @@ import CollectionsSectionHeader from '../../assets/season-images-product_page/ex
 import DiscountSectionHeader from '../../assets/season-images-product_page/example-summer-season.jpg';
 
 const HeaderMenu = () => {
-    const { activeMenu, closeMenu, setMenuOpen } = useContext(HeaderContext);
-    const sideMenuRef = useRef(null);
-    const location = useLocation();
-    const [showGenderSection, setShowGenderSection] = useState('');
-    const [isClosing, setIsClosing] = useState(false);
-    const [isClickable, setIsClickable] = useState(true);
-    const [color, setColor] = useState('transparent');
-    const [sectionImage, setSectionImage] = useState('');
+    const { activeMenu, closeMenu, setMenuOpen } = useContext(HeaderContext); // Contexto para manejar el estado del menú.
+    const sideMenuRef = useRef(null); // Referencia al menú lateral.
+    const location = useLocation(); // Obtiene la ruta actual.
+    const [showGenderSection, setShowGenderSection] = useState(''); // Estado para mostrar la sección seleccionada.
+    const [isClosing, setIsClosing] = useState(false); // Controla la animación de cierre del menú.
+    const [isClickable, setIsClickable] = useState(true); // Deshabilita clics durante animaciones.
+    const [color, setColor] = useState('transparent'); // Cambia el color de fondo dinámicamente.
+    const [sectionImage, setSectionImage] = useState(''); // Establece la imagen de la sección.
 
     useEffect(() => {
-        setMenuOpen(false);
+        setMenuOpen(false); // Cierra el menú al cambiar de ruta.
     }, [location.pathname, setMenuOpen]);
 
     const handleGenderClick = (gender) => {
-        if (!isClickable) return;
-        setShowGenderSection((prev) => (prev === gender ? '' : gender));
+        if (!isClickable) return; // Previene acciones si el menú no es clickeable.
+        setShowGenderSection((prev) => (prev === gender ? '' : gender)); // Alterna entre mostrar y ocultar la sección seleccionada.
 
         switch (gender) {
             case 'Hombre':
-                setColor('#FFFFFF');
-                setSectionImage(ManSectionHeader);
+                setColor('#FFFFFF'); // Establece el color de fondo.
+                setSectionImage(ManSectionHeader); // Asocia la imagen.
                 break;
             case 'Mujer':
                 setColor('#FFFFFF');
@@ -53,19 +53,19 @@ const HeaderMenu = () => {
     };
 
     const handleCloseMenu = () => {
-        setIsClosing(true);
-        setIsClickable(false);
+        setIsClosing(true); // Inicia la animación de cierre.
+        setIsClickable(false); // Deshabilita clics durante el cierre.
         setTimeout(() => {
-            closeMenu();
-            setIsClosing(false);
-            setIsClickable(true);
+            closeMenu(); // Cierra el menú después de la animación.
+            setIsClosing(false); // Resetea la animación.
+            setIsClickable(true); // Habilita los clics nuevamente.
         }, 300);
     };
 
     const handleLinkClick = () => {
-        setMenuOpen(false);
-        handleCloseMenu();
-        window.scrollTo(0, 0);
+        setMenuOpen(false); // Cierra el menú al hacer clic en un enlace.
+        handleCloseMenu(); // Llama al cierre del menú con animación.
+        window.scrollTo(0, 0); // Lleva la página al inicio.
     };
 
     return (

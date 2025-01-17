@@ -3,8 +3,10 @@ import { ProductContext } from "../context/ProductContext";
 import '../../../css/pages/admin.css'
 
 export const Product = () => {
+    // Usa el contexto ProductContext para acceder y actualizar los datos del producto general.
     const { generalProduct, setGeneralProduct } = useContext(ProductContext);
 
+    // Maneja los cambios en los campos del formulario y actualiza el estado del producto general.
     const handleChange = (e) => {
         const { id, value } = e.target;
         console.log(`Cambiando ${id}: ${value}`);
@@ -14,10 +16,12 @@ export const Product = () => {
         }));
     };
 
+    // Guarda el estado del producto general en localStorage cada vez que se actualiza.
     useEffect(() => {
         localStorage.setItem("generalProduct", JSON.stringify(generalProduct));
     }, [generalProduct]);
 
+    // Renderiza el formulario para crear un producto con campos como género, marca, colección y tipo.
     return (
         <div className="createProductContainer">
             <div className="createProduct">

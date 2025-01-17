@@ -2,9 +2,12 @@ import React, { createContext, useState, useContext, useEffect, useCallback } fr
 import { ModalContext } from '../components/modal-wishlist/ModalContext';
 import { useUser } from '../hooks/useUser';
 
+// Contexto para gestionar el estado global del carrito
 export const CartContext = createContext();
 
+// Proveedor del contexto del carrito
 export const CartProvider = ({ children }) => {
+    // Manejo del estado del carrito, usuario, productos y mensajes de error
     const [total, setTotal] = useState({ price: 0, verySpenses: 0, endingPrice: 0 });
     const [cartItems, setCartItems] = useState([]);
     const [userId, setUserId] = useState(null);
@@ -24,6 +27,7 @@ export const CartProvider = ({ children }) => {
 
     // Función para vaciar el carrito
     const clearCart = async () => {
+         // Elimina todos los productos del carrito del usuario autenticado
         const token = localStorage.getItem('authToken');
         if (!token) {
             console.error('Token no disponible');
@@ -52,7 +56,7 @@ export const CartProvider = ({ children }) => {
         }
     };
 
-
+    // Actualiza los datos del carrito desde el almacenamiento local
     useEffect(() => {
         const storedCart = localStorage.getItem('cart');
         const storedUserId = localStorage.getItem('userId');
@@ -64,7 +68,9 @@ export const CartProvider = ({ children }) => {
         }
     }, []);
 
+    // Cambia la cantidad de un producto en el carrito
     const handleQuantityChange = async (productId, variantId, newQuantity) => {
+        // Actualiza la cantidad de un producto específico
         const token = localStorage.getItem('authToken');
         if (!token) {
             setErrorMessage('Por favor, inicia sesión para añadir productos al carrito.');
@@ -100,7 +106,9 @@ export const CartProvider = ({ children }) => {
         }
     };
 
+    // Calcula el precio total del carrito
     const calculateTotalPrice = useCallback(() => {
+        // Suma los precios de los productos multiplicados por sus cantidades
         const totalPrice = cartItems.reduce((sum, item) => {
 
             if (
@@ -124,11 +132,14 @@ export const CartProvider = ({ children }) => {
         }));
     }, [cartItems]);
 
+    // Actualiza el total cada vez que cambian los artículos del carrito
     useEffect(() => {
         calculateTotalPrice();
     }, [cartItems]);
 
+    // Obtiene el ID del usuario desde el token JWT
     const getUserIdFromToken = (token) => {
+        // Decodifica el token para extraer el ID del usuario
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
             return payload.id;
@@ -138,7 +149,9 @@ export const CartProvider = ({ children }) => {
         }
     };
 
+    // Añade un producto al carrito
     const handleAddToCart = async () => {
+        // Valida y envía el producto seleccionado al backend para agregarlo al carrito
         const token = localStorage.getItem('authToken');
         if (!token) {
             setErrorMessage('Por favor, inicia sesión para añadir productos al carrito.');
@@ -217,8 +230,9 @@ export const CartProvider = ({ children }) => {
     };
 
 
-
+    // Elimina un producto del carrito
     const removeFromCart = async (productId, variantId) => {
+        // Elimina un producto específico o disminuye su cantidad
         if (!productId || !variantId) {
             console.error('Faltan el ID del producto o de la variante');
             return;
@@ -264,7 +278,9 @@ export const CartProvider = ({ children }) => {
         }
     };
 
+    // Obtiene los productos del carrito desde el backend
     const fetchCartItems = useCallback(async () => {
+        // Realiza una solicitud para obtener los artículos del carrito del usuario autenticado
         if (!user) return;
     
         try {
@@ -292,13 +308,16 @@ export const CartProvider = ({ children }) => {
     useEffect(() => {
         fetchCartItems();
     }, [fetchCartItems]);
-    
+
+    // Registra los cambios en el carrito
     useEffect(() => {
         console.log('Artículos en el carrito:', cartItems);
     }, [cartItems]);
 
 
+    // Obtiene el total del carrito
     const getTotal = () => {
+        // Calcula el total de precios multiplicados por las cantidades
         return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
     };
 
@@ -327,4 +346,5 @@ export const CartProvider = ({ children }) => {
     );
 };
 
+// Hook personalizado para acceder al contexto del carrito
 export const useCart = () => useContext(CartContext);

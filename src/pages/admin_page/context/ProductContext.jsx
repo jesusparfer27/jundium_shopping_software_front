@@ -1,11 +1,14 @@
 import { createContext, useState } from "react";
 
+// Contexto para compartir información de productos en toda la aplicación.
 export const ProductContext = createContext();
 
+// Proveedor para manejar el estado global de los productos y variantes.
 export const ProductProvider = ({ children }) => {
   const [productReference, setProductReference] = useState("");
   const [productCode, setProductCode] = useState("")
 
+  // Estados principales para la referencia, código, datos generales del producto y variantes.
   const [generalProduct, setGeneralProduct] = useState({
     collection: "",
     brand: "",
@@ -56,13 +59,14 @@ export const ProductProvider = ({ children }) => {
     ]);
   };
 
+  // Calcula el precio con descuento basado en el precio original y el descuento.
   const calculateDiscountedPrice = (originalPrice, discount) => {
     if (!originalPrice || !discount) return "0.00"; // Retorna como cadena para consistencia
     const discountedPrice = originalPrice - (originalPrice * discount) / 100;
     return discountedPrice.toFixed(2); // Mantiene siempre dos decimales como cadena
   };
 
-
+  // Valida los datos generales del producto y sus variantes antes de enviarlos.
   const validateData = () => {
     if (!generalProduct.collection || !generalProduct.brand) {
       console.error("Faltan datos del producto.");
@@ -77,6 +81,7 @@ export const ProductProvider = ({ children }) => {
     return true;
   };
 
+  // Actualiza el estado para reflejar cambios en el atributo "out_of_stock" de una variante.
   const handleOutOfStockChange = (e, sizeIndex, variantIndex) => {
     const { checked } = e.target;
 
@@ -97,8 +102,7 @@ export const ProductProvider = ({ children }) => {
     });
   };
 
-
-
+  // Agrega un formulario para una nueva variante al estado de variantes.
   const addNewVariantForm = () => {
     setVariants((prevVariants) => [
       ...prevVariants,
@@ -117,6 +121,7 @@ export const ProductProvider = ({ children }) => {
     ]);
   };
 
+  // Elimina una imagen de una variante específica.
   const handleDeleteImageInput = (variantIndex, imageIndex) => {
     const updatedVariants = [...variants];
     updatedVariants[variantIndex].image = updatedVariants[
@@ -125,6 +130,7 @@ export const ProductProvider = ({ children }) => {
     setVariants(updatedVariants);
   };
 
+  // Muestra la imagen seleccionada por el usuario para una variante específica.
   const handleShowImageUpload = (e, index) => {
     const file = e.target.files[0];
     console.log(`Esto es file en handleShowImageUpload ${index + 1}, ${file}`)
@@ -142,11 +148,10 @@ export const ProductProvider = ({ children }) => {
     }
   };
 
+  // Almacena imágenes seleccionadas por el usuario en una variante específica.
   const handleImageUpload = (e, index) => {
     const files = Array.from(e.target.files);
     console.log(`esto son los files de handleImageUpload", ${index + 1}, ${files}`)
-
-
 
     setVariants((prevVariants) => {
       const updatedVariants = [...prevVariants];
@@ -159,6 +164,7 @@ export const ProductProvider = ({ children }) => {
     });
   };
 
+  // Genera un código único para el producto.
   const generateProductReference = () => {
     const code =
       "PROD-" + Math.random().toString(36).substr(2, 9).toUpperCase();
@@ -166,6 +172,7 @@ export const ProductProvider = ({ children }) => {
     return code;
   };
 
+  // Similar a la anterior, genera otro código único para el producto.
   const generateProductCode = () => {
     const code =
       "PROD-" + Math.random().toString(36).substr(2, 9).toUpperCase();
@@ -173,6 +180,7 @@ export const ProductProvider = ({ children }) => {
     return code;
   };
 
+  // Maneja los cambios en los atributos de una variante específica.
   const handleVariantChange = (e, index) => {
     const { id, value } = e.target;
 
@@ -209,8 +217,7 @@ export const ProductProvider = ({ children }) => {
     });
   };
 
-
-
+  // Elimina un tamaño específico de una variante.
   const handleDeleteSize = (sizeToRemove, index) => {
     setVariants((prevVariants) => {
       const updatedVariants = [...prevVariants];

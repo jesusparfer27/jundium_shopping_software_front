@@ -6,6 +6,7 @@ export const EditProduct = () => {
     const { generalProduct, setGeneralProduct, productReference, setProductReference } = useContext(ProductContext);
     const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env; 
 
+    // Maneja los cambios en los campos del formulario y actualiza el estado correspondiente
     const handleChange = (e) => {
         const { id, value } = e.target;
     
@@ -19,12 +20,12 @@ export const EditProduct = () => {
         }
     };
     
-
+    // Guarda los cambios en el producto en localStorage cuando generalProduct cambia
     useEffect(() => {
         localStorage.setItem("generalProduct", JSON.stringify(generalProduct));
     }, [generalProduct]);
 
-
+    // Busca un producto en el backend usando la referencia ingresada
     const handleSearchProductByReference = async () => {
 
         if (!productReference.trim()) {
@@ -56,6 +57,7 @@ export const EditProduct = () => {
         }
     };
 
+    // Envía los cambios al backend para actualizar los datos generales del producto
     const handleSubmit = async (e) => {
         e.preventDefault();
     

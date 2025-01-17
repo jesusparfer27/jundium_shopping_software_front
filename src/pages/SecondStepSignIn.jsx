@@ -5,12 +5,19 @@ import AccordionContainer from '../components/signin/AccordionContainer';
 
 export const SecondStepSignIn = () => {
 
+  // Importar variables de entorno para manejar las rutas del backend.
   const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env
-  const navigate = useNavigate();
+
+  const navigate = useNavigate(); // Hook para redirigir entre rutas.
+
+  // Estados para manejar la visibilidad de las contraseñas.
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false); 
+
+  // Estado para manejar la apertura y cierre de los acordeones.
   const [isAccordionOpen, setIsAccordionOpen] = useState([false, false]);
 
+  // Estado para almacenar los datos del formulario.
   const [formData, setFormData] = useState({
     password: '',
     confirmPassword: '',
@@ -19,25 +26,29 @@ export const SecondStepSignIn = () => {
     last_name: '',
     aceptar: false
   });
+
+  // Estado para almacenar y mostrar errores al usuario.
   const [error, setError] = useState('');
 
+  // Función para alternar la visibilidad de los acordeones.
   const toggleAccordion = (index) => {
     const updatedState = [...isAccordionOpen];
     updatedState[index] = !updatedState[index];
     setIsAccordionOpen(updatedState);
   };
 
+  // Manejar cambios en los campos del formulario.
   const handleChange = (e) => {
     const { id, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [id]: type === 'checkbox' ? checked : value
+      [id]: type === 'checkbox' ? checked : value // Actualizar según el tipo de input.
     });
-    if (error) setError('');
-    console.log(formData);
+    if (error) setError(''); // Limpiar error al editar campos.
+    console.log(formData); // Verificar cambios en los datos del formulario.
   };
   
-
+  // Cargar el email guardado en localStorage al montar el componente.
   useEffect(() => {
     const savedEmail = localStorage.getItem('userEmail');
     if (!savedEmail) {
@@ -47,11 +58,12 @@ export const SecondStepSignIn = () => {
     }
   }, []);
 
+  // Validar y enviar los datos del formulario.
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password, confirmPassword, gender, first_name, last_name, aceptar } = formData;
 
-
+    // Validaciones básicas de los campos del formulario.
     if (!email) {
       setError('El correo electrónico no está definido. Vuelve al paso anterior.');
       return;
@@ -73,7 +85,10 @@ export const SecondStepSignIn = () => {
     }
 
     try {
+      // Preparar los datos del usuario para el registro.
       const userData = { email: formData.email, password, gender, first_name, last_name };
+
+      // Llamar al endpoint para registrar al usuario.
       const registerResponse = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -84,6 +99,7 @@ export const SecondStepSignIn = () => {
         throw new Error('Error al registrar al usuario.');
       }
 
+      // Llamar al endpoint para iniciar sesión automáticamente.
       const loginResponse = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -94,9 +110,11 @@ export const SecondStepSignIn = () => {
         throw new Error('Error al iniciar sesión automáticamente.');
       }
 
+      // Guardar el token de autenticación en localStorage.
       const loginData = await loginResponse.json();
       localStorage.setItem('authToken', loginData.token);
 
+      // Redirigir al perfil del usuario.
       navigate('/profile');
     } catch (error) {
       console.error('Error en el registro o inicio de sesión automático:', error);
@@ -104,6 +122,7 @@ export const SecondStepSignIn = () => {
     }
   };
 
+  // Datos de los acordeones.
   const accordionData = [
     { titulo: 'Sección 1', contenido: 'Contenido de la sección 1' },
     { titulo: 'Sección 2', contenido: 'Contenido de la sección 2' }

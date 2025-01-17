@@ -2,7 +2,9 @@ import React, { useState, useEffect, useContext } from "react";
 import { ProductContext } from "../context/ProductContext";
 import "../../../css/pages/admin.css";
 
+// Componente para editar variantes de productos.
 export const EditVariant = () => {
+  // Se extraen métodos y estados globales desde ProductContext.
   const {
     variants,
     setVariants,
@@ -17,20 +19,23 @@ export const EditVariant = () => {
     calculateDiscountedPrice,
   } = useContext(ProductContext);
 
-  const [sizes, setSizes] = useState([]);
-  const [error, setError] = useState("");
-  const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
-  const [stock, setStock] = useState("");
-  const [activeAccordion, setActiveAccordion] = useState(null);
-  const [currentSize, setCurrentSize] = useState("");
-  const [showImage, setShowImage] = useState("")
+  // Estados locales para manejar diferentes partes del formulario.
+  const [sizes, setSizes] = useState([]); // Lista de tallas.
+  const [error, setError] = useState(""); // Mensaje de error.
+  const [selectedVariantIndex, setSelectedVariantIndex] = useState(0); // Índice de la variante seleccionada.
+  const [stock, setStock] = useState(""); // Valor del stock.
+  const [activeAccordion, setActiveAccordion] = useState(null); // Acordeón activo.
+  const [currentSize, setCurrentSize] = useState(""); // Talla actual ingresada.
+  const [showImage, setShowImage] = useState(""); // Imagen a mostrar.
 
   const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
 
+  // Efecto para guardar variantes en localStorage cuando cambian.
   useEffect(() => {
     localStorage.setItem("variants", JSON.stringify(variants));
   }, [variants]);
 
+  // Agrega una nueva talla y su stock a la variante seleccionada.
   const handleAddSize = (index) => {
     if (!currentSize.trim()) {
       alert("Por favor, ingrese una talla válida.");
@@ -59,10 +64,12 @@ export const EditVariant = () => {
       return updatedVariants;
     });
 
+    // Reinicia los campos después de agregar la talla.
     setCurrentSize("");
     setStock("");
   };
 
+  // Maneja el envío del formulario para actualizar variantes.
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -73,9 +80,11 @@ export const EditVariant = () => {
     try {
       console.log("Datos antes de enviar:", updatedVariants);
 
+      // Recorre cada variante para procesar imágenes y otros campos antes de enviarlas.
       for (let i = 0; i < updatedVariants.length; i++) {
         const variant = updatedVariants[i];
 
+        // Carga imágenes al backend si están disponibles.
         if (variant.imageFiles?.length || variant.showing_image_file) {
           const formData = new FormData();
 
@@ -90,7 +99,7 @@ export const EditVariant = () => {
           variant.image = uploadedImageUrls.filter((url, index) => index < variant.imageFiles.length);
           variant.showing_image = uploadedImageUrls.find((url, index) => index === variant.imageFiles.length);
 
-          delete variant.imageFiles;
+          delete variant.imageFiles; // Elimina las propiedades temporales de imágenes.
           delete variant.showing_image_file;
         }
 
@@ -98,14 +107,17 @@ export const EditVariant = () => {
         console.log(`Esto es variant.showing_image ${i + 1}, ${variant.showing_image}`);
       }
 
+      // Verifica que el código de producto no esté vacío.
       if (!productCode.trim()) {
         alert("Por favor, ingrese una referencia de producto válida.");
         return;
       }
 
+      // Construye la URL para actualizar las variantes.
       const url = `${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/edit-variant-data/${productCode}`;
       console.log("URL de la solicitud:", url);
 
+      // Realiza la solicitud PUT al backend.
       const response = await fetch(url, {
         method: "PUT",
         headers: {
@@ -122,9 +134,7 @@ export const EditVariant = () => {
     }
   };
 
-
-
-
+  // Cambia los valores de las propiedades de una variante.
   const handleVariantChange = (e, index) => {
     const { id, value } = e.target;
 
@@ -140,6 +150,7 @@ export const EditVariant = () => {
         updatedVariant[id] = value;
       }
 
+      // Recalcula el precio si se modifica el descuento.
       if (id === "discount") {
         const discountValue = parseFloat(value);
         if (discountValue > 0) {
@@ -153,7 +164,7 @@ export const EditVariant = () => {
     });
   };
 
-
+  // Busca productos en el backend por código de producto.
   const handleSearchProductByCode = async () => {
     if (!productCode || typeof productCode !== "string" || !productCode.trim()) {
       alert("Por favor, ingrese una referencia de producto válida.");
@@ -199,6 +210,7 @@ export const EditVariant = () => {
     }
   };
 
+  // Guarda las URLs de imágenes en el backend.
   const handleSaveImageUrlsToBackend = async (files) => {
     const formData = new FormData();
     files.forEach((file) => formData.append("images", file));

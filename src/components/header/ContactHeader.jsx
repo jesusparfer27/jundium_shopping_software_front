@@ -6,25 +6,25 @@ import '../../css/components/header/contact.css'
 
 const ContactContainer = () => {
     const { activeMenu, closeMenu } = useContext(HeaderContext);
-    const contactContainerRef = useRef(null);
+    const contactContainerRef = useRef(null); // Crea una referencia al contenedor de contacto para manipularlo si es necesario
     const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env
 
-    const { user } = useUser()
+    const { user } = useUser() // Obtiene el usuario autenticado a través de un hook customizado
     console.log(user)
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState({ // Establece el estado inicial del formulario
         name: '',
         email: '',
         content: ''
     });
-    const [statusMessage, setStatusMessage] = useState('');
+    const [statusMessage, setStatusMessage] = useState(''); // Estado para manejar los mensajes de éxito o error
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        const { name, value } = e.target; // Obtiene el nombre y valor del campo modificado
+        setFormData({ ...formData, [name]: value }); // Actualiza el estado del formulario
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async (e) => { 
+        e.preventDefault(); // Previene el comportamiento predeterminado del formulario (recarga de página)
         if (!user) {
             setStatusMessage('Usuario no autenticado.');
             return;
@@ -33,14 +33,15 @@ const ContactContainer = () => {
         try {
             const token = localStorage.getItem('authToken');
 
+            // Realiza la solicitud POST para enviar el formulario al backend
             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/support/email`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}` // Envia el token en los encabezados de la solicitud
                 },
                 body: JSON.stringify({
-                    user_id: user,
+                    user_id: user, // Incluye el ID del usuario autenticado
                     name: formData.name,
                     email: formData.email,
                     content: formData.content
@@ -48,11 +49,11 @@ const ContactContainer = () => {
             });
             console.log(formData)
 
-            if (response.ok) {
+            if (response.ok) { // Si la respuesta del servidor es exitosa
                 setStatusMessage('Tu mensaje se envió correctamente.');
-                setFormData({ name: '', email: '', content: '' });
+                setFormData({ name: '', email: '', content: '' }); // Limpia el formulario después de enviarlo
             } else {
-                const errorData = await response.json();
+                const errorData = await response.json(); // Obtiene el mensaje de error del servidor
                 setStatusMessage(`Error al enviar mensaje: ${errorData.message}`);
             }
         } catch (error) {
@@ -71,13 +72,13 @@ const ContactContainer = () => {
                     <div className="contactContainer_responsiveHeaderContainer">
                         <button className="closeContainer_responsive" onClick={closeMenu}><span className="material-symbols-outlined">
                             close
-                        </span></button>
-                        <h2 className='h2Container_contact'>Contáctenos</h2>
+                         </span></button> {/* Botón para cerrar el menú de contacto */}
+                         <h2 className='h2Container_contact'>Contáctenos</h2> {/* Título del formulario de contacto */}
                     </div>
                 </div>
                 <div className="headerContactContainer">
                     <div className='borderContact'>
-                        <div className="contactList">
+                         <div className="contactList"> {/* Lista con métodos de contacto (teléfono, email, dirección) */}
                             <div className="contactItem">
                                 <span className="material-symbols-outlined">phone</span>
                                 <a href="tel:1234567890">Teléfono: 123-456-7890</a>
@@ -99,9 +100,9 @@ const ContactContainer = () => {
                             <input
                                 type="text"
                                 name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                required
+                                value={formData.name} // Vincula el campo con el estado
+                                onChange={handleChange} // Llama a `handleChange` cada vez que cambia el valor
+                                required // Hace el campo obligatorio
                                 className='inputContact'
                             />
                             <label htmlFor="email">email</label>
@@ -120,9 +121,9 @@ const ContactContainer = () => {
                                 value={formData.content}
                                 onChange={handleChange}
                                 required></textarea>
-                            <button type="submit" className="submitContact_pageButton" onClick={handleSubmit}>Enviar</button>
+                             <button type="submit" className="submitContact_pageButton" onClick={handleSubmit}>Enviar</button> {/* Botón para enviar el formulario */}
                         </form>
-                        {statusMessage && <p className="statusMessage">{statusMessage}</p>}
+                         {statusMessage && <p className="statusMessage">{statusMessage}</p>} {/* Muestra el mensaje de estado (éxito o error) */}
                     </div>
                 </div>
             </div>

@@ -3,14 +3,19 @@ import { useLocation } from 'react-router-dom';
 import '../../css/components/signin/accordion.css';
 
 const AccordionContainer = ({ isAccordionOpen = [], toggleAccordion }) => {
+    // Componente que renderiza un grupo de elementos de acordeón con la funcionalidad
+    // de abrir/cerrar basándose en el índice y el estado proporcionado.
     
     const handleToggle = (index) => {
+        // Función que ejecuta la lógica para alternar el estado del acordeón cuando se hace clic.
         if (typeof toggleAccordion === 'function') {
             toggleAccordion(index);
         }
     };
 
     const isEmailValidationRoute = location.pathname === '/email-validation-2';
+    // Variable que verifica si la ruta actual es '/email-validation-2' 
+    // para aplicar un estilo específico al contenedor.
 
     return (
         <div  className={`accordion-container ${isEmailValidationRoute ? 'email-validation-padding' : ''}`}>

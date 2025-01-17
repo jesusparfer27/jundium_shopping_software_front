@@ -4,17 +4,19 @@ import { ProductContext } from "../context/ProductContext";
 import '../../../css/pages/admin.css'
 
 export const AddVariantProductForm = () => {
+    // Obtiene valores del contexto ProductContext
     const { generalProduct, setGeneralProduct, productReference, setProductReference } = useContext(ProductContext);
 
+    // Estados locales para manejar variantes y el producto seleccionado
     const [variants, setVariants] = useState([]);
     const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
     const [currentVariant, setCurrentVariant] = useState({});
 
-    const navigate = useNavigate();
+    const navigate = useNavigate(); // Hook para navegación
     const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
 
+    // Función para buscar un producto por su referencia
     const handleSearchProductByReference = async () => {
-
         if (!productReference.trim()) {
             alert("Por favor, ingrese una referencia de producto válida.");
             return;
@@ -44,21 +46,23 @@ export const AddVariantProductForm = () => {
         }
     };
     
-    
+    // Función para manejar cambios en el campo de referencia del producto
     const handleChange = (e) => {
         setProductReference(e.target.value);
     };
 
-
+    // Efecto para guardar el producto general en el localStorage cuando cambia
     useEffect(() => {
         localStorage.setItem("generalProduct", JSON.stringify(generalProduct));
     }, [generalProduct]);
 
+    // Función para manejar el envío del formulario de añadir variantes
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         const formData = new FormData();
-        
+
+        // Añade todos los datos del producto general al formulario
         Object.keys(generalProduct).forEach((key) => {
             formData.append(key, generalProduct[key]);
         });
@@ -79,15 +83,16 @@ export const AddVariantProductForm = () => {
                 throw new Error("Error al crear el producto.");
             }
 
-            const data = await response.json();
+            const data = await response.json(); // Parseo de la respuesta
             console.log("Producto creado con éxito:", data);
 
-            navigate("/admin");
+            navigate("/admin"); // Redirige a la página de administración
         } catch (err) {
             console.error("Error en la creación del producto:", err);
         }
     };
     
+    // Efecto para actualizar el producto actual basado en la variante seleccionada
     useEffect(() => {
         if (variants.length > 0) {
             setCurrentVariant(variants[selectedVariantIndex]);
@@ -124,12 +129,3 @@ export const AddVariantProductForm = () => {
         </div>
     );
 };
-
-
-    // useEffect(() => {
-    //     const timer = setTimeout(() => {
-    //         setGeneralProduct((prev) => ({ ...prev, new_arrival: false }));
-    //     }, 7 * 24 * 60 * 60 * 1000);
-
-    //     return () => clearTimeout(timer);
-    // }, []);

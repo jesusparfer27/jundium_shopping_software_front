@@ -70,14 +70,14 @@ const CartContainer = () => {
                                 const imageUrl = selectedVariant?.image ? selectedVariant.image[0] : null; // Obtiene la URL de la imagen
                                 const fullImageUrl = imageUrl ? `${VITE_IMAGES_BASE_URL}${VITE_IMAGE}${imageUrl}` : null; // Crea la URL completa de la imagen
 
-                                const hasDiscountApplied = selectedVariant?.discount > 0;
+                                const hasDiscountApplied = selectedVariant?.discount > 0; // Verifica si hay descuento en la variante
 
-                                const priceToDisplay = renderPriceWithDiscount(selectedVariant);
+                                const priceToDisplay = renderPriceWithDiscount(selectedVariant); {/* Calcula el precio con descuento */}
 
                                 return (
-                                    <div key={item._id} className="cartItem">
-                                        <div className="cartItemImage">
-                                            {fullImageUrl ? (
+                                    <div key={item._id} className="cartItem"> 
+                                         <div className="cartItemImage"> 
+                                            {fullImageUrl ? ( // Muestra la imagen del producto si está disponible
                                                 <img src={fullImageUrl} alt={name} />
                                             ) : (
                                                 <p>Imagen no disponible</p>
@@ -85,23 +85,23 @@ const CartContainer = () => {
                                         </div>
                                         <div className="cartItemContent">
                                             <p className="textCard_Header">{selectedVariant?.name}</p>
-                                            {hasDiscountApplied ? (
+                                            {hasDiscountApplied ? ( // Si la variante tiene descuento, muestra el precio con descuento
                                                 <>
                                                     <p className="textCard_Header discountedPrice">
                                                         {priceToDisplay}
                                                     </p>
                                                 </>
                                             ) : (
-                                                <p className="textCard_Header">${variantPrice.toFixed(2)}</p>
+                                                <p className="textCard_Header">${variantPrice.toFixed(2)}</p> // Si no tiene descuento, muestra el precio normal
                                             )}
                                             {quantity > 1 && <p className="textCard_Header">Cantidad: {quantity}</p>}
                                             <p className="textCard_Header">{colorName || 'No especificado'}</p>
                                             <p className="textCard_Header">Talla: {size || 'No especificado'}</p>
 
                                             <div className="submit-buttonProfile Cart">
-                                                <button onClick={() => {
+                                                <button onClick={() => { // Al hacer clic en "Eliminar", elimina el producto del carrito
                                                     if (product_id?._id && variant_id) {
-                                                        removeFromCart(product_id._id, variant_id);
+                                                        removeFromCart(product_id._id, variant_id); // Llama a la función `removeFromCart` con los IDs correspondientes
                                                     } else {
                                                         console.error('Faltan el ID del producto o de la variante:', item);
                                                     }

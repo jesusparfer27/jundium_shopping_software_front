@@ -14,33 +14,36 @@ const LoginContainer = () => {
 
     const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
 
+    // Maneja la navegación y cierre del menú al registrarse.
     const handleSignIn = () => {
         navigate('/email-validation');
         closeMenu();
     };
 
+    // Realiza el proceso de inicio de sesión, enviando las credenciales al backend.
+    // Si el inicio es exitoso, guarda el token en localStorage y redirige al perfil del usuario.
     const handleLogin = async (event) => {
-        event.preventDefault();
+        event.preventDefault(); // Previene el comportamiento por defecto del formulario.
 
         if (!email || !password) {
             alert('Por favor, completa todos los campos.');
-            return;
+            return; // Finaliza si los campos están vacíos.
         }
 
         try {
-            const url = `${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/login`;
+            const url = `${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/login`; // URL del backend.
             const response = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ email, password }), // Datos enviados.
             });
 
-            const data = await response.json();
+            const data = await response.json(); // Procesa la respuesta.
 
             if (response.ok) {
-                localStorage.setItem('authToken', data.token);
-                navigate('/profile');
-                closeMenu();
+                localStorage.setItem('authToken', data.token); // Guarda el token.
+                navigate('/profile'); // Redirige al perfil.
+                closeMenu(); // Cierra el menú.
             } else {
                 alert(data.message || 'El correo electrónico o contraseña no son correctos.');
             }

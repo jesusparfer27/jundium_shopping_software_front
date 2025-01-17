@@ -12,20 +12,24 @@ import { ProductContext } from './admin_page/context/ProductContext';
 import imageLogoBlackBackground from '../assets/mini-logos/mini-logo-black-background.png'
  
 export const CheckOutPage = () => {
-    const [expandedSections, setExpandedSections] = useState({});
+    // Estados locales
+    const [expandedSections, setExpandedSections] = useState({}); // Estado para manejar las secciones expandidas en el checkout
+
+    // Obtiene el usuario actual
     const { user } = useUser();
+
+    // Contextos
     const { activeModal, openModal } = useContext(ModalContext);
-    const navigate = useNavigate();
     const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
     const { activeMenu, openMenu } = useContext(HeaderContext);
     const {
         hasDiscount,
         renderPriceWithDiscount
-    } = useContext(ProductContext)
+    } = useContext(ProductContext) // Funcionalidades para productos con descuento
 
     const {
         handleAddToWishlist,
-    } = useContext(WishlistContext);
+    } = useContext(WishlistContext); // Maneja agregar productos a la lista de deseos
 
     const {
         total,
@@ -33,24 +37,27 @@ export const CheckOutPage = () => {
         handleQuantityChange,
         removeFromCart,
         clearCart
-    } = useContext(CartContext);
+    } = useContext(CartContext); // Funcionalidades del carrito
 
+    // Navegación
+    const navigate = useNavigate();
 
+    // Efecto para redirigir si no hay usuario o token
     useEffect(() => {
         if (user === null || user === undefined) {
-            navigate('/errorPage');
+            navigate('/errorPage'); // Redirige si no hay usuario
             return;
         }
 
         const fromCart = localStorage.getItem('authToken');
         if (!fromCart) {
-            navigate('/errorPage');
+            navigate('/errorPage'); // Redirige si no hay token
             return;
         }
 
     }, [user, navigate]);
     
-
+    // Verifica la disponibilidad de stock para los productos en el carrito
     const checkStockAvailability = () => {
         for (let item of cartItems) {
             const variant = item.product_id.variants.find(v => v.variant_id === item.variant_id);
@@ -72,7 +79,7 @@ export const CheckOutPage = () => {
           return;
         }
         if (!user) {
-          return <div>Inicia sesión para continuar con el proceso de pago.</div>;
+          return <div>Inicia sesión para continuar con el proceso de pago.</div>; // Redirige si no hay usuario
         }
       
         if (!checkStockAvailability()) {
@@ -80,6 +87,7 @@ export const CheckOutPage = () => {
         }
         console.log("User before checkout:", user);
       
+        // Mapea los productos del carrito para preparar el cuerpo de la solicitud
         const items = cartItems.map(item => ({
           product_id: item.product_id._id,
           variant_id: item.variant_id,
@@ -93,13 +101,13 @@ export const CheckOutPage = () => {
           items,
           total: total.price,
           user_id: user._id,
-          status: 'Pending',
+          status: 'Pending', // Estado inicial del pedido
         };
       
         console.log("Request body:", body);
       
         try {
-          // Realiza el pedido
+          // Realiza la solicitud para crear el pedido
           const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}/create-order`, {
             method: 'POST',
             headers: {
@@ -113,14 +121,11 @@ export const CheckOutPage = () => {
       
           if (response.ok) {
             console.log('Pedido creado:', data);
-            openModal('modalOrderSuccessful');
-
-            
-            await clearCart();
+            openModal('modalOrderSuccessful'); // Muestra modal de éxito
+            await clearCart(); // Limpia el carrito después del pedido
             console.log('clearCart ejecutado');
-      
             setTimeout(() => {
-              navigate('/');
+              navigate('/'); // Redirige al inicio después de 2 segundos
             }, 2000); 
       
             // Actualiza el stock de los productos comprados
@@ -165,20 +170,15 @@ export const CheckOutPage = () => {
           console.error('Error en la solicitud:', error);
         }
       };
-      
-    
     
     // Método para registrar el stock actualizado
     const logUpdatedStock = (productId, size, stock) => {
         console.log(`Stock restante del producto ${productId} para la talla ${size}: ${stock}`);
     };
     
-    
-    
-
-
+    // Maneja la apertura de secciones específicas del modal
     const handleOpenSectionModal = (sectionId) => {
-        openMenu(`modalInfo_CheckOut_${sectionId}`);
+        openMenu(`modalInfo_CheckOut_${sectionId}`); // Abre el modal con un identificador específico
     };
 
     return (
@@ -261,9 +261,6 @@ export const CheckOutPage = () => {
                                                     <p className="textCard_Header discountedPrice">
                                                         {priceToDisplay}
                                                     </p>
-                                                    {/* <p className="textCard_Header originalPrice">
-                                                        Antes: ${variantPrice.toFixed(2)}
-                                                    </p> */}
                                                 </>
                                             ) : (
                                                 <p className="textCard_Header">${variantPrice.toFixed(2)}</p>
@@ -347,22 +344,28 @@ export const CheckOutPage = () => {
                     </div>
                 </div>
 
+            {/* Componente principal para mostrar secciones de información */}
                 <div className="right-columnInformation">
+                    {/* Mapea las secciones definidas ('pedido', 'envio', 'devolucion', 'atencion') */}
                     {['pedido', 'envio', 'devolucion', 'atencion'].map((section, index) => (
                         <div key={`${section}-${index}`} className="informationToggle">
+                            {/* Contenedor principal para cada sección */}
                             <div className="groupInformation">
+                                {/* Icono y título de la sección */}
                                 <div className="iconAccordion">
-                                    {getSectionIcon(section)}
-                                    <div className="accordion-CheckOut">{getSectionTitle(section)}</div>
+                                    {getSectionIcon(section)} {/* Llama a una función para obtener el icono correspondiente */}
+                                    <div className="accordion-CheckOut">{getSectionTitle(section)}</div> {/* Muestra el título de la sección */}
                                 </div>
+                                {/* Botón que aparece solo si la sección está expandida */}
                                 <div className="accordion-CheckOut">
                                     {expandedSections[section] && (
                                         <button className="button cartButton"></button>
                                     )}
                                 </div>
+                                {/* Botón para abrir el modal relacionado con la sección */}
                                 <button
                                     className="buttonForward"
-                                    onClick={() => handleOpenSectionModal(section)}
+                                    onClick={() => handleOpenSectionModal(section)} // Maneja la apertura del modal 
                                 >
                                     <span className="material-symbols-outlined">arrow_forward_ios</span>
                                 </button>
@@ -373,13 +376,15 @@ export const CheckOutPage = () => {
                 </div>
 
             </div>
+            {/* Renderiza el modal si el estado del menú indica que debe mostrarse */}
             {activeMenu.startsWith('modalInfo_CheckOut') && <Modal />}
+            {/* Renderiza un modal multifuncional si está activo */}
             {activeModal && <MultifunctionalModal />}
         </section>
     );
 };
 
-
+{/* Devuelve el título correspondiente a cada sección */}
 const getSectionTitle = (section) => {
     switch (section) {
         case 'pedido': return 'Pedido';
@@ -390,6 +395,7 @@ const getSectionTitle = (section) => {
     }
 };
 
+{/* Devuelve el contenido correspondiente a cada sección */}
 const getSectionContent = (section) => {
     switch (section) {
         case 'pedido': return 'Información sobre el pedido...';
@@ -400,6 +406,7 @@ const getSectionContent = (section) => {
     }
 };
 
+{/* Definición de las secciones con su ID, título y clase para el icono */}
 const sections = [
     { id: 'pedido', title: 'Pedido', icon: 'iconPedido' },
     { id: 'envio', title: 'Envío', icon: 'iconEnvio' },
@@ -407,7 +414,7 @@ const sections = [
     { id: 'atencion', title: 'Atención al Cliente', icon: 'iconAtencion' },
 ];
 
-
+{/* Devuelve el icono correspondiente a cada sección */}
 const getSectionIcon = (section) => {
     switch (section) {
         case 'pedido':

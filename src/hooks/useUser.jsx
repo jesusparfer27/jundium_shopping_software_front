@@ -1,23 +1,24 @@
 import { createContext, useContext, useState, useEffect, useMemo, useRef } from "react";
 
+// Contexto global para manejar el estado del usuario
 const UserContext = createContext();
 
 export function UserProvider({ children }) {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(null); // Estado del usuario actual
     const [loading, setLoading] = useState(true);
-    const [ data, setData ] = useState([])
+    const [data, setData] = useState([]); // Estado para datos adicionales (ej. wishlist)
     const [error, setError] = useState(null);
-    const {VITE_API_BACKEND, VITE_BACKEND_ENDPOINT} = import.meta.env;
-    const isFetched = useRef(false);
+    const { VITE_API_BACKEND, VITE_BACKEND_ENDPOINT } = import.meta.env;
+    const isFetched = useRef(false); // Referencia para evitar múltiples fetches innecesarios
 
-
+    // Comprueba si hay un usuario almacenado en localStorage al cargar el componente
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
             setUser(JSON.parse(storedUser));
             const token = localStorage.getItem('authToken');
             if (token) {
-                fetchUserDetails();
+                fetchUserDetails(); // Obtiene los detalles del usuario si hay un token válido
             } else {
                 setLoading(false);
             }
@@ -26,6 +27,7 @@ export function UserProvider({ children }) {
         }
     }, []);
 
+    // Obtiene elementos de la wishlist del usuario
     const fetchWishlistItems = async () => {
         const token = localStorage.getItem('authToken');
         if (!token) return;
@@ -37,12 +39,13 @@ export function UserProvider({ children }) {
                 },
             });
             const data = await response.json();
-            return data;
+            return data; // Devuelve los datos de la wishlist
         } catch (err) {
             console.error('Error loading wishlist:', err);
         }
     };
 
+    // Almacena el usuario en localStorage cuando cambia
     useEffect(() => {
         if (user) {
             localStorage.setItem("user", JSON.stringify(user));
@@ -50,6 +53,7 @@ export function UserProvider({ children }) {
     }, [user]);
 
 
+    // Inicia sesión con credenciales proporcionadas
     const login = async (userData) => {
         setError(null);
         try {
@@ -66,8 +70,8 @@ export function UserProvider({ children }) {
             if (response.ok) {
                 const usuario = responseData.data;
                 setUser(usuario);
-                localStorage.setItem("user", JSON.stringify(usuario));
-                localStorage.setItem('authToken', responseData.token);
+                localStorage.setItem("user", JSON.stringify(usuario)); // Guarda usuario en localStorage
+                localStorage.setItem('authToken', responseData.token); // Guarda el token
             } else {
                 throw new Error(responseData.message || "Error en el servidor");
             }
@@ -77,6 +81,7 @@ export function UserProvider({ children }) {
         }
     };
 
+    // Registra un nuevo usuario
     const register = async (userData) => {
         setError(null);
         try {
@@ -93,8 +98,8 @@ export function UserProvider({ children }) {
             if (response.ok) {
                 const user = responseData.data;
                 setUser(user);
-                localStorage.setItem("user", JSON.stringify(user));
-                localStorage.setItem('authToken', responseData.token);
+                localStorage.setItem("user", JSON.stringify(user)); // Guarda el usuario
+                localStorage.setItem('authToken', responseData.token); // Guarda el token
             } else {
                 throw new Error(responseData.message || "Error en el registro");
             }
@@ -104,6 +109,7 @@ export function UserProvider({ children }) {
         }
     };
 
+    // Maneja respuestas de fetch y verifica si hay errores
     const handleFetchResponse = async (response) => {
         if (!response.ok) {
             if (response.status === 401) {
@@ -119,6 +125,7 @@ export function UserProvider({ children }) {
         return response.json();
     };
 
+    // Obtiene detalles del usuario autenticado
     const fetchUserDetails = async () => {
         const token = localStorage.getItem('authToken');
         if (!token) return;
@@ -130,7 +137,7 @@ export function UserProvider({ children }) {
                 },
             });
             const data = await handleFetchResponse(response);
-            setUser(data.data);
+            setUser(data.data); // Actualiza el estado del usuario
             localStorage.setItem("user", JSON.stringify(data.data));
             isFetched.current = true;
 
@@ -139,7 +146,7 @@ export function UserProvider({ children }) {
         }
     };
     
-
+    // Define los valores que estarán disponibles en el contexto
     const value = useMemo(() => ({
         user,
         loading,
@@ -161,6 +168,7 @@ export function UserProvider({ children }) {
     );
 }
 
+// Hook para acceder al contexto de usuario
 export function useUser() {
     return useContext(UserContext);
 }

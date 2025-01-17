@@ -7,12 +7,13 @@ import { ProductContext } from './admin_page/context/ProductContext';
 import { useUser } from '../hooks/useUser';
 import '../css/pages/showing_product_page.css';
 
+// Componente para mostrar los detalles de un producto seleccionado
 export const ShowingProductPage = () => {
-    const { id } = useParams();
-    const { user } = useUser();
-    const [accordionOpen, setAccordionOpen] = useState(false);
-    const [lowStockWarning, setLowStockWarning] = useState(false);
-    const { hasDiscount, renderPriceWithDiscount } = useContext(ProductContext)
+    const { id } = useParams(); // Obtiene el ID del producto desde la URL
+    const { user } = useUser(); // Obtiene los datos del usuario actual
+    const [accordionOpen, setAccordionOpen] = useState(false); // Controla el estado del acordeón de materiales
+    const [lowStockWarning, setLowStockWarning] = useState(false); // Muestra advertencias sobre bajo stock
+    const { hasDiscount, renderPriceWithDiscount } = useContext(ProductContext); // Utilidades para descuentos
     const { loading,
         setErrorMessage,
         errorMessage,
@@ -24,14 +25,15 @@ export const ShowingProductPage = () => {
         setLoading,
         product,
         setProduct
-    } = useContext(CartContext);
-
-    const { activeModal } = useContext(ModalContext);
+    } = useContext(CartContext); // Contexto del carrito
+    const { activeModal } = useContext(ModalContext); // Contexto del modal activo
 
     const { VITE_API_BACKEND, VITE_IMAGES_BASE_URL, VITE_PRODUCTS_ENDPOINT, VITE_BACKEND_ENDPOINT, VITE_IMAGE } = import.meta.env;
 
+    // Alterna el estado del acordeón para mostrar/ocultar materiales
     const toggleAccordion = () => setAccordionOpen(!accordionOpen);
 
+    // Maneja el cambio de color seleccionado y actualiza la variante
     const handleColorChange = (e) => {
         const selectedColor = e.target.value;
 
@@ -49,17 +51,19 @@ export const ShowingProductPage = () => {
             console.warn("No se encontró el color con el nombre:", selectedColor);
             setSelectedVariant(null);
         }
-        setSelectedSize("");
+        setSelectedSize(""); // Reinicia la talla seleccionada
     };
 
+    // Fetch para obtener los detalles del producto por su ID
     const fetchProductById = async (productId) => {
         try {
             const response = await fetch(`${VITE_API_BACKEND}${VITE_BACKEND_ENDPOINT}${VITE_PRODUCTS_ENDPOINT}/${productId}`);
             if (!response.ok) throw new Error('Error al obtener el producto');
 
             const productData = await response.json();
-            if (productData && productData._id) {
-                productData.id = productData._id;
+
+            if (productData && productData._id) { 
+                productData.id = productData._id; // Ajusta el ID del producto
                 productData.variants = productData.variants.map(variant => ({
                     ...variant,
                     product_id: productData.id,
@@ -69,6 +73,7 @@ export const ShowingProductPage = () => {
                 console.log('Producto cargado:', productData);
                 console.log('Variantes cargadas:', productData.variants);
 
+                // Configura la variante inicial desde la URL o elige la primera
                 const params = new URLSearchParams(location.search);
                 const variantIdFromUrl = params.get("variant_id");
                 console.log("Variant ID from URL:", variantIdFromUrl);
@@ -95,16 +100,18 @@ export const ShowingProductPage = () => {
             console.error('Error al obtener el producto:', error);
             setErrorMessage("Hubo un problema al cargar el producto. Inténtalo más tarde.");
         } finally {
-            setLoading(false);
+            setLoading(false); // Finaliza el estado de carga
         }
     };
 
+    // Hook para obtener el producto cuando cambia el ID
     useEffect(() => {
         if (id) {
             fetchProductById(id);
         }
     }, [id, VITE_API_BACKEND, VITE_BACKEND_ENDPOINT, VITE_PRODUCTS_ENDPOINT]);
 
+    // Maneja el cambio de tamaño seleccionado y actualiza la variante
     const handleSizeChange = (e) => {
         const selectedSize = e.target.value;
         setSelectedSize(selectedSize);
@@ -128,17 +135,13 @@ export const ShowingProductPage = () => {
         }
     };
 
+    // Mostrar mensaje de carga o producto no encontrado
     if (loading) return <div>Cargando producto...</div>;
     if (!product) return <div>Producto no encontrado.</div>;
 
     const otherImages = selectedVariant?.image || [];
-
-    // Comprobación de descuento y cálculo de precio
-    // const price = selectedVariant?.price || product.base_price;
-    // const finalPrice = hasDiscount && hasDiscount() ? renderPriceWithDiscount(selectedVariant) : price;
     const hasDiscountApplied = selectedVariant?.discount > 0;
     const variantPrice = selectedVariant?.price || 0;
-    // Usamos renderPriceWithDiscount para obtener el precio final con descuento
     const priceToDisplay = renderPriceWithDiscount(selectedVariant);
 
     // Verificar permisos del usuario

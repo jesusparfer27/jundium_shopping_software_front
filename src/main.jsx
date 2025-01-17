@@ -10,6 +10,7 @@ import { ModalProvider } from './components/modal-wishlist/ModalContext.jsx';
 import { WishlistProvider } from './context/WishlistContext.jsx';
 import '../src/css/main/main.css';
 
+// Renderiza la aplicación con todos los contextos envueltos
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <UserProvider>
