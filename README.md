@@ -12,6 +12,4 @@ Currently, two official plugins are available:
 
 Arreglar porque no se ven las imagenes
 urls en memoria
-editar contraseña en bson
 zip del todos los archivos juntos
-gitignore

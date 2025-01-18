@@ -31,7 +31,7 @@ const Header = () => {
     }, [location.pathname]); // Se ejecuta cada vez que cambia la URL
 
     // Efecto que cambia la noticia activa cada 3 segundos si la barra de noticias está visible
-    useEffect(() => {
+    useEffect(() => { 
         if (isNewsVisible) {
             const interval = setInterval(() => {
                 setActiveNewsIndex((prevIndex) => (prevIndex + 1) % news.length); // Cambia la noticia activa
