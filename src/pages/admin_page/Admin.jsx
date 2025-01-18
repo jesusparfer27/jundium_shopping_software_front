@@ -15,6 +15,7 @@ import { AddVariantVariantForm } from './add-variants/AddVariantVariantForm';
 import { EditProduct } from './edit-form/EditProduct'; 
 import { EditVariant } from './edit-form/EditVariant';
 
+import { ProductContext } from "./context/ProductContext";
 import "../../css/pages/admin.css"; // Estilos CSS específicos para la página de administración
 
 // Componente principal para la página de administración
