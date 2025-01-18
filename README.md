@@ -8,6 +8,10 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
 
-## REMATES FUNCIONALES:
+## PARA EL ENVIO
 
-PROFILEPAGE USER INFORMATION
+Arreglar porque no se ven las imagenes
+urls en memoria
+editar contraseña en bson
+zip del todos los archivos juntos
+gitignore

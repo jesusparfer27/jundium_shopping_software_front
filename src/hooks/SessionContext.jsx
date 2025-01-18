@@ -18,14 +18,14 @@ export const SessionProvider = ({ children }) => {
                     // Si el token ha expirado, elimina datos del usuario y redirige    
                     localStorage.removeItem('authToken');
                     localStorage.removeItem('user');
-                    navigate('/error', { state: { tokenExpired: true } });
+                    // navigate('/error', { state: { tokenExpired: true } });
                 }
             } catch (error) {
                 // Maneja errores en la decodificación del token
                 console.error("Error al decodificar el token:", error);
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('user');
-                navigate('/error', { state: { tokenExpired: false } });
+                // navigate('/error', { state: { tokenExpired: false } });
             }
         };
 
