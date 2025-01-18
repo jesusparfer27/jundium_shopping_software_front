@@ -38,7 +38,7 @@ const Header = () => {
             }, 3000);
             return () => clearInterval(interval); // Limpia el intervalo cuando se oculta la barra de noticias
         }
-    }, [isNewsVisible]); // Este efecto depende de si la barra de noticias es visible
+    }, [isNewsVisible]);  // Este efecto depende de si la barra de noticias es visible
 
     // Función para manejar el clic en el botón de login
     const handleLoginClick = () => {
